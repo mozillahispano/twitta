@@ -9,32 +9,32 @@
   });
 
   T.setCredentials = function(tokens) {
-  	T.setAuth(tokens);
+    T.setAuth(tokens);
   };
 
   T.initialize = function() {
 
-  	// Check if we have all data
-  	var neededTokens = ['consumer_key', 'consumer_secret', 'access_token', 'access_token_secret'];
-  	var tokens = T.getAuth();
-  	var fullConfig = neededTokens.every(function(el) {
-  		return tokens[el] ? true : false;
-  	});
+    // Check if we have all data
+    var neededTokens = ['consumer_key', 'consumer_secret', 'access_token', 'access_token_secret'];
+    var tokens = T.getAuth();
+    var fullConfig = neededTokens.every(function(el) {
+      return tokens[el] ? true : false;
+    });
 
-  	if (!fullConfig) {
-  		console.warn('Not enough data!');
-  		// TODO: ask for credentials in the UI
-  	}
+    if (!fullConfig) {
+      console.warn('Not enough data!');
+      // TODO: ask for credentials in the UI
+    }
 
-  	// Track user stream. Enough for realtime things
-  	var stream = T.stream('user');
-  	var listEvents = ['blocked', 'unblocked', 'favorite', 'unfavorite', 'follow', 'unfollow', 'user_update', 'list_created',
-  	'list_destroyed', 'list_updated', 'list_member_added', 'list_member_removed', 'list_user_subscribed', 'list_user_unsubscribed',
-  	'unknown_user_event', 'tweet', 'error'];
+    // Track user stream. Enough for realtime things
+    var stream = T.stream('user');
+    var listEvents = ['blocked', 'unblocked', 'favorite', 'unfavorite', 'follow', 'unfollow', 'user_update', 'list_created',
+    'list_destroyed', 'list_updated', 'list_member_added', 'list_member_removed', 'list_user_subscribed', 'list_user_unsubscribed',
+    'unknown_user_event', 'tweet', 'error'];
 
     var timelineCtrl = new timeline.controller();
     var count = 0;
-  	listEvents.forEach(function(elem, i) {
+    listEvents.forEach(function(elem, i) {
       stream.on(listEvents[i], function(msg) {
         console.log(listEvents[i], msg);
         if (listEvents[i] === 'tweet') {
@@ -44,7 +44,7 @@
           }
         }
       })
-  	});
+    });
   }
 
   window.T = T;
@@ -64,7 +64,7 @@ var required = [
   , 'access_token'
   , 'access_token_secret'
 ];
- 
+
 //
 //  OAuth Authentication Object
 //
@@ -554,7 +554,7 @@ module.exports = OARequest
 var util = require('util')
   , EventEmitter = require('events').EventEmitter;
 
-var Parser = module.exports = function ()  { 
+var Parser = module.exports = function ()  {
   this.message = ''
 
   EventEmitter.call(this);
@@ -562,7 +562,7 @@ var Parser = module.exports = function ()  {
 
 util.inherits(Parser, EventEmitter);
 
-Parser.prototype.parse = function (chunk) {  
+Parser.prototype.parse = function (chunk) {
   this.message += chunk;
   chunk = this.message;
 
@@ -571,17 +571,17 @@ Parser.prototype.parse = function (chunk) {
     , offset = 0
     , curr
     , next;
-  
+
   while (offset < size) {
     curr = chunk[offset];
     next = chunk[offset + 1];
-    
+
     if (curr === '\r' && next === '\n') {
       var piece = chunk.slice(start, offset);
       start = offset += 2;
-      
+
       if (!piece.length) { continue; } //empty object
-      
+
       try {
         var msg = JSON.parse(piece)
       } catch (err) {
@@ -835,7 +835,7 @@ exports.OAuth.prototype._getSignature= function(method, url, parameters, tokenSe
 exports.OAuth.prototype._normalizeUrl= function(url) {
   var parsedUrl= URL.parse(url, true)
    var port ="";
-   if( parsedUrl.port ) { 
+   if( parsedUrl.port ) {
      if( (parsedUrl.protocol == "http:" && parsedUrl.port != "80" ) ||
          (parsedUrl.protocol == "https:" && parsedUrl.port != "443") ) {
            port= ":" + parsedUrl.port;
@@ -843,7 +843,7 @@ exports.OAuth.prototype._normalizeUrl= function(url) {
    }
 
   if( !parsedUrl.pathname  || parsedUrl.pathname == "" ) parsedUrl.pathname ="/";
-   
+
   return parsedUrl.protocol + "//" + parsedUrl.hostname + port + parsedUrl.pathname;
 }
 
@@ -873,7 +873,7 @@ exports.OAuth.prototype._buildAuthorizationHeaders= function(orderedParameters) 
      }
   }
 
-  authHeader= authHeader.substring(0, authHeader.length-this._oauthParameterSeperator.length);  
+  authHeader= authHeader.substring(0, authHeader.length-this._oauthParameterSeperator.length);
   return authHeader;
 }
 
@@ -892,17 +892,17 @@ exports.OAuth.prototype._makeArrayOfArgumentsHash= function(argumentsHash) {
          argument_pairs[argument_pairs.length]= [key, value];
        }
   }
-  return argument_pairs;  
-} 
+  return argument_pairs;
+}
 
 // Sorts the encoded key value pairs by encoded name, then encoded value
 exports.OAuth.prototype._sortRequestParams= function(argument_pairs) {
   // Sort by name, then value.
   argument_pairs.sort(function(a,b) {
       if ( a[0]== b[0] )  {
-        return a[1] < b[1] ? -1 : 1; 
+        return a[1] < b[1] ? -1 : 1;
       }
-      else return a[0] < b[0] ? -1 : 1;  
+      else return a[0] < b[0] ? -1 : 1;
   });
 
   return argument_pairs;
@@ -915,10 +915,10 @@ exports.OAuth.prototype._normaliseRequestParams= function(arguments) {
     argument_pairs[i][0]= this._encodeData( argument_pairs[i][0] );
     argument_pairs[i][1]= this._encodeData( argument_pairs[i][1] );
   }
-  
+
   // Then sort them #3.4.1.3.2 .2
   argument_pairs= this._sortRequestParams( argument_pairs );
-  
+
   // Then concatenate together #3.4.1.3.2 .3 & .4
   var args= "";
   for(var i=0;i<argument_pairs.length;i++) {
@@ -926,19 +926,19 @@ exports.OAuth.prototype._normaliseRequestParams= function(arguments) {
       args+= "="
       args+= argument_pairs[i][1];
       if( i < argument_pairs.length-1 ) args+= "&";
-  }     
+  }
   return args;
 }
 
 exports.OAuth.prototype._createSignatureBase= function(method, url, parameters) {
-  url= this._encodeData( this._normalizeUrl(url) ); 
+  url= this._encodeData( this._normalizeUrl(url) );
   parameters= this._encodeData( parameters );
   return method.toUpperCase() + "&" + url + "&" + parameters;
 }
 
 exports.OAuth.prototype._createSignature= function(signatureBase, tokenSecret) {
    if( tokenSecret === undefined ) var tokenSecret= "";
-   else tokenSecret= this._encodeData( tokenSecret ); 
+   else tokenSecret= this._encodeData( tokenSecret );
    // consumerSecret is already encoded
    var key= this._consumerSecret + "&" + tokenSecret;
 
@@ -951,7 +951,7 @@ exports.OAuth.prototype._createSignature= function(signatureBase, tokenSecret) {
          hash = crypto.createHmac("sha1", key).update(signatureBase).digest("base64");
        }
        else {
-         hash= sha1.HMACSHA1(key, signatureBase);  
+         hash= sha1.HMACSHA1(key, signatureBase);
        }
    }
    return hash;
@@ -967,7 +967,7 @@ exports.OAuth.prototype._getNonce= function(nonceSize) {
    var chars= this.NONCE_CHARS;
    var char_pos;
    var nonce_chars_length= chars.length;
-   
+
    for (var i = 0; i < nonceSize; i++) {
        char_pos= Math.floor(Math.random() * nonce_chars_length);
        result[i]=  chars[char_pos];
@@ -989,7 +989,7 @@ exports.OAuth.prototype._createClient= function( port, hostname, method, path, h
   } else {
     httpModel= http;
   }
-  return httpModel.request(options);     
+  return httpModel.request(options);
 }
 
 exports.OAuth.prototype._prepareParameters= function( oauth_token, oauth_token_secret, method, url, extra_params ) {
@@ -1087,7 +1087,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
 
   headers["Content-length"]= post_body ? Buffer.byteLength(post_body) : 0;
   headers["Content-Type"]= post_content_type;
-   
+
   var path;
   if( !parsedUrl.pathname  || parsedUrl.pathname == "" ) parsedUrl.pathname ="/";
   if( parsedUrl.query ) path= parsedUrl.pathname + "?"+ parsedUrl.query ;
@@ -1102,7 +1102,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
   }
 
   if( callback ) {
-    var data=""; 
+    var data="";
     var self= this;
 
     // Some hosts *cough* google appear to close the connection early / send no content-length header
@@ -1140,12 +1140,12 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
         }
       });
     });
-  
+
     request.on("error", function(err) {
       callbackCalled= true;
       callback( err )
     });
-    
+
     if( (method == "POST" || method =="PUT") && post_body != null && post_body != "" ) {
       request.write(post_body);
     }
@@ -1157,7 +1157,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
     }
     return request;
   }
-  
+
   return;
 }
 
@@ -1184,7 +1184,7 @@ exports.OAuth.prototype.getOAuthAccessToken= function(oauth_token, oauth_token_s
   } else {
     extraParams.oauth_verifier= oauth_verifier;
   }
-  
+
    this._performSecureRequest( oauth_token, oauth_token_secret, this._clientOptions.accessTokenHttpMethod, this._accessUrl, extraParams, null, null, function(error, data, response) {
          if( error ) callback(error);
          else {
@@ -1224,7 +1224,7 @@ exports.OAuth.prototype._putOrPost= function(method, url, oauth_token, oauth_tok
   }
   return this._performSecureRequest( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type, callback );
 }
- 
+
 
 exports.OAuth.prototype.put= function(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback) {
   return this._putOrPost("PUT", url, oauth_token, oauth_token_secret, post_body, post_content_type, callback);
@@ -1240,7 +1240,7 @@ exports.OAuth.prototype.post= function(url, oauth_token, oauth_token_secret, pos
  *
  * The callback should expect a function of the following form:
  *
- * function(err, token, token_secret, parsedQueryString) {} 
+ * function(err, token, token_secret, parsedQueryString) {}
  *
  * This method has optional parameters so can be called in the following 2 ways:
  *
@@ -1259,7 +1259,7 @@ exports.OAuth.prototype.getOAuthRequestToken= function( extraParams, callback ) 
      callback = extraParams;
      extraParams = {};
    }
-  // Callbacks are 1.0A related 
+  // Callbacks are 1.0A related
   if( this._authorize_callback ) {
     extraParams["oauth_callback"]= this._authorize_callback;
   }
@@ -1286,12 +1286,12 @@ exports.OAuth.prototype.signUrl= function(url, oauth_token, oauth_token_secret, 
   var orderedParameters= this._prepareParameters(oauth_token, oauth_token_secret, method, url, {});
   var parsedUrl= URL.parse( url, false );
 
-  var query=""; 
+  var query="";
   for( var i= 0 ; i < orderedParameters.length; i++) {
     query+= orderedParameters[i][0]+"="+ this._encodeData(orderedParameters[i][1]) + "&";
   }
   query= query.substring(0, query.length-1);
- 
+
   return parsedUrl.protocol + "//"+ parsedUrl.host + parsedUrl.pathname + "?" + query;
 };
 
@@ -2997,122 +2997,122 @@ function assert (test, message) {
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
-	'use strict';
+  'use strict';
 
   var Arr = (typeof Uint8Array !== 'undefined')
     ? Uint8Array
     : Array
 
-	var PLUS   = '+'.charCodeAt(0)
-	var SLASH  = '/'.charCodeAt(0)
-	var NUMBER = '0'.charCodeAt(0)
-	var LOWER  = 'a'.charCodeAt(0)
-	var UPPER  = 'A'.charCodeAt(0)
+  var PLUS   = '+'.charCodeAt(0)
+  var SLASH  = '/'.charCodeAt(0)
+  var NUMBER = '0'.charCodeAt(0)
+  var LOWER  = 'a'.charCodeAt(0)
+  var UPPER  = 'A'.charCodeAt(0)
 
-	function decode (elt) {
-		var code = elt.charCodeAt(0)
-		if (code === PLUS)
-			return 62 // '+'
-		if (code === SLASH)
-			return 63 // '/'
-		if (code < NUMBER)
-			return -1 //no match
-		if (code < NUMBER + 10)
-			return code - NUMBER + 26 + 26
-		if (code < UPPER + 26)
-			return code - UPPER
-		if (code < LOWER + 26)
-			return code - LOWER + 26
-	}
+  function decode (elt) {
+    var code = elt.charCodeAt(0)
+    if (code === PLUS)
+      return 62 // '+'
+    if (code === SLASH)
+      return 63 // '/'
+    if (code < NUMBER)
+      return -1 //no match
+    if (code < NUMBER + 10)
+      return code - NUMBER + 26 + 26
+    if (code < UPPER + 26)
+      return code - UPPER
+    if (code < LOWER + 26)
+      return code - LOWER + 26
+  }
 
-	function b64ToByteArray (b64) {
-		var i, j, l, tmp, placeHolders, arr
+  function b64ToByteArray (b64) {
+    var i, j, l, tmp, placeHolders, arr
 
-		if (b64.length % 4 > 0) {
-			throw new Error('Invalid string. Length must be a multiple of 4')
-		}
+    if (b64.length % 4 > 0) {
+      throw new Error('Invalid string. Length must be a multiple of 4')
+    }
 
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		var len = b64.length
-		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+    // the number of equal signs (place holders)
+    // if there are two placeholders, than the two characters before it
+    // represent one byte
+    // if there is only one, then the three characters before it represent 2 bytes
+    // this is just a cheap hack to not do indexOf twice
+    var len = b64.length
+    placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
 
-		// base64 is 4/3 + up to two characters of the original data
-		arr = new Arr(b64.length * 3 / 4 - placeHolders)
+    // base64 is 4/3 + up to two characters of the original data
+    arr = new Arr(b64.length * 3 / 4 - placeHolders)
 
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length
+    // if there are placeholders, only get up to the last complete 4 chars
+    l = placeHolders > 0 ? b64.length - 4 : b64.length
 
-		var L = 0
+    var L = 0
 
-		function push (v) {
-			arr[L++] = v
-		}
+    function push (v) {
+      arr[L++] = v
+    }
 
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
-			push((tmp & 0xFF0000) >> 16)
-			push((tmp & 0xFF00) >> 8)
-			push(tmp & 0xFF)
-		}
+    for (i = 0, j = 0; i < l; i += 4, j += 3) {
+      tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+      push((tmp & 0xFF0000) >> 16)
+      push((tmp & 0xFF00) >> 8)
+      push(tmp & 0xFF)
+    }
 
-		if (placeHolders === 2) {
-			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
-			push(tmp & 0xFF)
-		} else if (placeHolders === 1) {
-			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
-			push((tmp >> 8) & 0xFF)
-			push(tmp & 0xFF)
-		}
+    if (placeHolders === 2) {
+      tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+      push(tmp & 0xFF)
+    } else if (placeHolders === 1) {
+      tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+      push((tmp >> 8) & 0xFF)
+      push(tmp & 0xFF)
+    }
 
-		return arr
-	}
+    return arr
+  }
 
-	function uint8ToBase64 (uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length
+  function uint8ToBase64 (uint8) {
+    var i,
+      extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+      output = "",
+      temp, length
 
-		function encode (num) {
-			return lookup.charAt(num)
-		}
+    function encode (num) {
+      return lookup.charAt(num)
+    }
 
-		function tripletToBase64 (num) {
-			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
-		}
+    function tripletToBase64 (num) {
+      return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+    }
 
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-			output += tripletToBase64(temp)
-		}
+    // go through the array every three bytes, we'll deal with trailing stuff later
+    for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+      temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+      output += tripletToBase64(temp)
+    }
 
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1]
-				output += encode(temp >> 2)
-				output += encode((temp << 4) & 0x3F)
-				output += '=='
-				break
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
-				output += encode(temp >> 10)
-				output += encode((temp >> 4) & 0x3F)
-				output += encode((temp << 2) & 0x3F)
-				output += '='
-				break
-		}
+    // pad the end with zeros, but make sure to not forget the extra bytes
+    switch (extraBytes) {
+      case 1:
+        temp = uint8[uint8.length - 1]
+        output += encode(temp >> 2)
+        output += encode((temp << 4) & 0x3F)
+        output += '=='
+        break
+      case 2:
+        temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+        output += encode(temp >> 10)
+        output += encode((temp >> 4) & 0x3F)
+        output += encode((temp << 2) & 0x3F)
+        output += '='
+        break
+    }
 
-		return output
-	}
+    return output
+  }
 
-	exports.toByteArray = b64ToByteArray
-	exports.fromByteArray = uint8ToBase64
+  exports.toByteArray = b64ToByteArray
+  exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 },{}],13:[function(require,module,exports){
@@ -3891,7 +3891,7 @@ module.exports = function (Buffer, Hash) {
     if(!(this instanceof Sha1)) return new Sha1()
     this._w = W
     Hash.call(this, 16*4, 14*4)
-  
+
     this._h = null
     this.init()
   }
@@ -4642,7 +4642,7 @@ http.request = function (params, cb) {
     if (!params.host && params.hostname) {
         params.host = params.hostname;
     }
-    
+
     if (!params.scheme) params.scheme = window.location.protocol.split(':')[0];
     if (!params.host) {
         params.host = window.location.hostname || window.location.host;
@@ -4654,7 +4654,7 @@ http.request = function (params, cb) {
         params.host = params.host.split(':')[0];
     }
     if (!params.port) params.port = params.scheme == 'https' ? 443 : 80;
-    
+
     var req = new Request(new xhrHttp, params);
     if (cb) req.on('response', cb);
     return req;
@@ -4775,23 +4775,23 @@ var Request = module.exports = function (xhr, params) {
     self.writable = true;
     self.xhr = xhr;
     self.body = [];
-    
+
     self.uri = (params.scheme || 'http') + '://'
         + params.host
         + (params.port ? ':' + params.port : '')
         + (params.path || '/')
     ;
-    
+
     if (typeof params.withCredentials === 'undefined') {
         params.withCredentials = true;
     }
 
     try { xhr.withCredentials = params.withCredentials }
     catch (e) {}
-    
+
     if (params.responseType) try { xhr.responseType = params.responseType }
     catch (e) {}
-    
+
     xhr.open(
         params.method || 'GET',
         self.uri,
@@ -4799,7 +4799,7 @@ var Request = module.exports = function (xhr, params) {
     );
 
     self._headers = {};
-    
+
     if (params.headers) {
         var keys = objectKeys(params.headers);
         for (var i = 0; i < keys.length; i++) {
@@ -4809,7 +4809,7 @@ var Request = module.exports = function (xhr, params) {
             self.setHeader(key, value);
         }
     }
-    
+
     if (params.auth) {
         //basic auth
         this.setHeader('Authorization', 'Basic ' + Base64.btoa(params.auth));
@@ -4819,11 +4819,11 @@ var Request = module.exports = function (xhr, params) {
     res.on('close', function () {
         self.emit('close');
     });
-    
+
     res.on('ready', function () {
         self.emit('response', res);
     });
-    
+
     xhr.onreadystatechange = function () {
         // Fix for IE9 bug
         // SCRIPT575: Could not complete the operation due to error c00c023f
@@ -4892,7 +4892,7 @@ Request.prototype.end = function (s) {
         }
         var body = new(this.body[0].constructor)(len);
         var k = 0;
-        
+
         for (var i = 0; i < this.body.length; i++) {
             var b = this.body[i];
             for (var j = 0; j < b.length; j++) {
@@ -4980,13 +4980,13 @@ function parseHeaders (res) {
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i];
         if (line === '') continue;
-        
+
         var m = line.match(/^([^:]+):\s*(.*)/);
         if (m) {
             var key = m[1].toLowerCase(), value = m[2];
-            
+
             if (headers[key] !== undefined) {
-            
+
                 if (isArray(headers[key])) {
                     headers[key].push(value);
                 }
@@ -5025,7 +5025,7 @@ Response.prototype.handle = function (res) {
         catch (err) {
             capable.status2 = false;
         }
-        
+
         if (capable.status2) {
             this.emit('ready');
         }
@@ -5039,7 +5039,7 @@ Response.prototype.handle = function (res) {
             }
         }
         catch (err) {}
-        
+
         try {
             this._emitData(res);
         }
@@ -5053,12 +5053,12 @@ Response.prototype.handle = function (res) {
             this.emit('ready');
         }
         this._emitData(res);
-        
+
         if (res.error) {
             this.emit('error', this.getResponse(res));
         }
         else this.emit('end');
-        
+
         this.emit('close');
     }
 };
@@ -5257,508 +5257,508 @@ process.chdir = function (dir) {
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
 
-	/** Detect free variables */
-	var freeExports = typeof exports == 'object' && exports;
-	var freeModule = typeof module == 'object' && module &&
-		module.exports == freeExports && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-		root = freeGlobal;
-	}
+  /** Detect free variables */
+  var freeExports = typeof exports == 'object' && exports;
+  var freeModule = typeof module == 'object' && module &&
+    module.exports == freeExports && module;
+  var freeGlobal = typeof global == 'object' && global;
+  if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+    root = freeGlobal;
+  }
 
-	/**
-	 * The `punycode` object.
-	 * @name punycode
-	 * @type Object
-	 */
-	var punycode,
+  /**
+   * The `punycode` object.
+   * @name punycode
+   * @type Object
+   */
+  var punycode,
 
-	/** Highest positive signed 32-bit float value */
-	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+  /** Highest positive signed 32-bit float value */
+  maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
 
-	/** Bootstring parameters */
-	base = 36,
-	tMin = 1,
-	tMax = 26,
-	skew = 38,
-	damp = 700,
-	initialBias = 72,
-	initialN = 128, // 0x80
-	delimiter = '-', // '\x2D'
+  /** Bootstring parameters */
+  base = 36,
+  tMin = 1,
+  tMax = 26,
+  skew = 38,
+  damp = 700,
+  initialBias = 72,
+  initialN = 128, // 0x80
+  delimiter = '-', // '\x2D'
 
-	/** Regular expressions */
-	regexPunycode = /^xn--/,
-	regexNonASCII = /[^ -~]/, // unprintable ASCII chars + non-ASCII chars
-	regexSeparators = /\x2E|\u3002|\uFF0E|\uFF61/g, // RFC 3490 separators
+  /** Regular expressions */
+  regexPunycode = /^xn--/,
+  regexNonASCII = /[^ -~]/, // unprintable ASCII chars + non-ASCII chars
+  regexSeparators = /\x2E|\u3002|\uFF0E|\uFF61/g, // RFC 3490 separators
 
-	/** Error messages */
-	errors = {
-		'overflow': 'Overflow: input needs wider integers to process',
-		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-		'invalid-input': 'Invalid input'
-	},
+  /** Error messages */
+  errors = {
+    'overflow': 'Overflow: input needs wider integers to process',
+    'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+    'invalid-input': 'Invalid input'
+  },
 
-	/** Convenience shortcuts */
-	baseMinusTMin = base - tMin,
-	floor = Math.floor,
-	stringFromCharCode = String.fromCharCode,
+  /** Convenience shortcuts */
+  baseMinusTMin = base - tMin,
+  floor = Math.floor,
+  stringFromCharCode = String.fromCharCode,
 
-	/** Temporary variable */
-	key;
+  /** Temporary variable */
+  key;
 
-	/*--------------------------------------------------------------------------*/
+  /*--------------------------------------------------------------------------*/
 
-	/**
-	 * A generic error utility function.
-	 * @private
-	 * @param {String} type The error type.
-	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-	 */
-	function error(type) {
-		throw RangeError(errors[type]);
-	}
+  /**
+   * A generic error utility function.
+   * @private
+   * @param {String} type The error type.
+   * @returns {Error} Throws a `RangeError` with the applicable error message.
+   */
+  function error(type) {
+    throw RangeError(errors[type]);
+  }
 
-	/**
-	 * A generic `Array#map` utility function.
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} callback The function that gets called for every array
-	 * item.
-	 * @returns {Array} A new array of values returned by the callback function.
-	 */
-	function map(array, fn) {
-		var length = array.length;
-		while (length--) {
-			array[length] = fn(array[length]);
-		}
-		return array;
-	}
+  /**
+   * A generic `Array#map` utility function.
+   * @private
+   * @param {Array} array The array to iterate over.
+   * @param {Function} callback The function that gets called for every array
+   * item.
+   * @returns {Array} A new array of values returned by the callback function.
+   */
+  function map(array, fn) {
+    var length = array.length;
+    while (length--) {
+      array[length] = fn(array[length]);
+    }
+    return array;
+  }
 
-	/**
-	 * A simple `Array#map`-like wrapper to work with domain name strings.
-	 * @private
-	 * @param {String} domain The domain name.
-	 * @param {Function} callback The function that gets called for every
-	 * character.
-	 * @returns {Array} A new string of characters returned by the callback
-	 * function.
-	 */
-	function mapDomain(string, fn) {
-		return map(string.split(regexSeparators), fn).join('.');
-	}
+  /**
+   * A simple `Array#map`-like wrapper to work with domain name strings.
+   * @private
+   * @param {String} domain The domain name.
+   * @param {Function} callback The function that gets called for every
+   * character.
+   * @returns {Array} A new string of characters returned by the callback
+   * function.
+   */
+  function mapDomain(string, fn) {
+    return map(string.split(regexSeparators), fn).join('.');
+  }
 
-	/**
-	 * Creates an array containing the numeric code points of each Unicode
-	 * character in the string. While JavaScript uses UCS-2 internally,
-	 * this function will convert a pair of surrogate halves (each of which
-	 * UCS-2 exposes as separate characters) into a single code point,
-	 * matching UTF-16.
-	 * @see `punycode.ucs2.encode`
-	 * @see <http://mathiasbynens.be/notes/javascript-encoding>
-	 * @memberOf punycode.ucs2
-	 * @name decode
-	 * @param {String} string The Unicode input string (UCS-2).
-	 * @returns {Array} The new array of code points.
-	 */
-	function ucs2decode(string) {
-		var output = [],
-		    counter = 0,
-		    length = string.length,
-		    value,
-		    extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
+  /**
+   * Creates an array containing the numeric code points of each Unicode
+   * character in the string. While JavaScript uses UCS-2 internally,
+   * this function will convert a pair of surrogate halves (each of which
+   * UCS-2 exposes as separate characters) into a single code point,
+   * matching UTF-16.
+   * @see `punycode.ucs2.encode`
+   * @see <http://mathiasbynens.be/notes/javascript-encoding>
+   * @memberOf punycode.ucs2
+   * @name decode
+   * @param {String} string The Unicode input string (UCS-2).
+   * @returns {Array} The new array of code points.
+   */
+  function ucs2decode(string) {
+    var output = [],
+        counter = 0,
+        length = string.length,
+        value,
+        extra;
+    while (counter < length) {
+      value = string.charCodeAt(counter++);
+      if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+        // high surrogate, and there is a next character
+        extra = string.charCodeAt(counter++);
+        if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+          output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+        } else {
+          // unmatched surrogate; only append this code unit, in case the next
+          // code unit is the high surrogate of a surrogate pair
+          output.push(value);
+          counter--;
+        }
+      } else {
+        output.push(value);
+      }
+    }
+    return output;
+  }
 
-	/**
-	 * Creates a string based on an array of numeric code points.
-	 * @see `punycode.ucs2.decode`
-	 * @memberOf punycode.ucs2
-	 * @name encode
-	 * @param {Array} codePoints The array of numeric code points.
-	 * @returns {String} The new Unicode string (UCS-2).
-	 */
-	function ucs2encode(array) {
-		return map(array, function(value) {
-			var output = '';
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-			return output;
-		}).join('');
-	}
+  /**
+   * Creates a string based on an array of numeric code points.
+   * @see `punycode.ucs2.decode`
+   * @memberOf punycode.ucs2
+   * @name encode
+   * @param {Array} codePoints The array of numeric code points.
+   * @returns {String} The new Unicode string (UCS-2).
+   */
+  function ucs2encode(array) {
+    return map(array, function(value) {
+      var output = '';
+      if (value > 0xFFFF) {
+        value -= 0x10000;
+        output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+        value = 0xDC00 | value & 0x3FF;
+      }
+      output += stringFromCharCode(value);
+      return output;
+    }).join('');
+  }
 
-	/**
-	 * Converts a basic code point into a digit/integer.
-	 * @see `digitToBasic()`
-	 * @private
-	 * @param {Number} codePoint The basic numeric code point value.
-	 * @returns {Number} The numeric value of a basic code point (for use in
-	 * representing integers) in the range `0` to `base - 1`, or `base` if
-	 * the code point does not represent a value.
-	 */
-	function basicToDigit(codePoint) {
-		if (codePoint - 48 < 10) {
-			return codePoint - 22;
-		}
-		if (codePoint - 65 < 26) {
-			return codePoint - 65;
-		}
-		if (codePoint - 97 < 26) {
-			return codePoint - 97;
-		}
-		return base;
-	}
+  /**
+   * Converts a basic code point into a digit/integer.
+   * @see `digitToBasic()`
+   * @private
+   * @param {Number} codePoint The basic numeric code point value.
+   * @returns {Number} The numeric value of a basic code point (for use in
+   * representing integers) in the range `0` to `base - 1`, or `base` if
+   * the code point does not represent a value.
+   */
+  function basicToDigit(codePoint) {
+    if (codePoint - 48 < 10) {
+      return codePoint - 22;
+    }
+    if (codePoint - 65 < 26) {
+      return codePoint - 65;
+    }
+    if (codePoint - 97 < 26) {
+      return codePoint - 97;
+    }
+    return base;
+  }
 
-	/**
-	 * Converts a digit/integer into a basic code point.
-	 * @see `basicToDigit()`
-	 * @private
-	 * @param {Number} digit The numeric value of a basic code point.
-	 * @returns {Number} The basic code point whose value (when used for
-	 * representing integers) is `digit`, which needs to be in the range
-	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-	 * used; else, the lowercase form is used. The behavior is undefined
-	 * if `flag` is non-zero and `digit` has no uppercase form.
-	 */
-	function digitToBasic(digit, flag) {
-		//  0..25 map to ASCII a..z or A..Z
-		// 26..35 map to ASCII 0..9
-		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-	}
+  /**
+   * Converts a digit/integer into a basic code point.
+   * @see `basicToDigit()`
+   * @private
+   * @param {Number} digit The numeric value of a basic code point.
+   * @returns {Number} The basic code point whose value (when used for
+   * representing integers) is `digit`, which needs to be in the range
+   * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+   * used; else, the lowercase form is used. The behavior is undefined
+   * if `flag` is non-zero and `digit` has no uppercase form.
+   */
+  function digitToBasic(digit, flag) {
+    //  0..25 map to ASCII a..z or A..Z
+    // 26..35 map to ASCII 0..9
+    return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+  }
 
-	/**
-	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * http://tools.ietf.org/html/rfc3492#section-3.4
-	 * @private
-	 */
-	function adapt(delta, numPoints, firstTime) {
-		var k = 0;
-		delta = firstTime ? floor(delta / damp) : delta >> 1;
-		delta += floor(delta / numPoints);
-		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-			delta = floor(delta / baseMinusTMin);
-		}
-		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-	}
+  /**
+   * Bias adaptation function as per section 3.4 of RFC 3492.
+   * http://tools.ietf.org/html/rfc3492#section-3.4
+   * @private
+   */
+  function adapt(delta, numPoints, firstTime) {
+    var k = 0;
+    delta = firstTime ? floor(delta / damp) : delta >> 1;
+    delta += floor(delta / numPoints);
+    for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+      delta = floor(delta / baseMinusTMin);
+    }
+    return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+  }
 
-	/**
-	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The Punycode string of ASCII-only symbols.
-	 * @returns {String} The resulting string of Unicode symbols.
-	 */
-	function decode(input) {
-		// Don't use UCS-2
-		var output = [],
-		    inputLength = input.length,
-		    out,
-		    i = 0,
-		    n = initialN,
-		    bias = initialBias,
-		    basic,
-		    j,
-		    index,
-		    oldi,
-		    w,
-		    k,
-		    digit,
-		    t,
-		    /** Cached calculation results */
-		    baseMinusT;
+  /**
+   * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+   * symbols.
+   * @memberOf punycode
+   * @param {String} input The Punycode string of ASCII-only symbols.
+   * @returns {String} The resulting string of Unicode symbols.
+   */
+  function decode(input) {
+    // Don't use UCS-2
+    var output = [],
+        inputLength = input.length,
+        out,
+        i = 0,
+        n = initialN,
+        bias = initialBias,
+        basic,
+        j,
+        index,
+        oldi,
+        w,
+        k,
+        digit,
+        t,
+        /** Cached calculation results */
+        baseMinusT;
 
-		// Handle the basic code points: let `basic` be the number of input code
-		// points before the last delimiter, or `0` if there is none, then copy
-		// the first basic code points to the output.
+    // Handle the basic code points: let `basic` be the number of input code
+    // points before the last delimiter, or `0` if there is none, then copy
+    // the first basic code points to the output.
 
-		basic = input.lastIndexOf(delimiter);
-		if (basic < 0) {
-			basic = 0;
-		}
+    basic = input.lastIndexOf(delimiter);
+    if (basic < 0) {
+      basic = 0;
+    }
 
-		for (j = 0; j < basic; ++j) {
-			// if it's not a basic code point
-			if (input.charCodeAt(j) >= 0x80) {
-				error('not-basic');
-			}
-			output.push(input.charCodeAt(j));
-		}
+    for (j = 0; j < basic; ++j) {
+      // if it's not a basic code point
+      if (input.charCodeAt(j) >= 0x80) {
+        error('not-basic');
+      }
+      output.push(input.charCodeAt(j));
+    }
 
-		// Main decoding loop: start just after the last delimiter if any basic code
-		// points were copied; start at the beginning otherwise.
+    // Main decoding loop: start just after the last delimiter if any basic code
+    // points were copied; start at the beginning otherwise.
 
-		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+    for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
 
-			// `index` is the index of the next character to be consumed.
-			// Decode a generalized variable-length integer into `delta`,
-			// which gets added to `i`. The overflow checking is easier
-			// if we increase `i` as we go, then subtract off its starting
-			// value at the end to obtain `delta`.
-			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+      // `index` is the index of the next character to be consumed.
+      // Decode a generalized variable-length integer into `delta`,
+      // which gets added to `i`. The overflow checking is easier
+      // if we increase `i` as we go, then subtract off its starting
+      // value at the end to obtain `delta`.
+      for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
 
-				if (index >= inputLength) {
-					error('invalid-input');
-				}
+        if (index >= inputLength) {
+          error('invalid-input');
+        }
 
-				digit = basicToDigit(input.charCodeAt(index++));
+        digit = basicToDigit(input.charCodeAt(index++));
 
-				if (digit >= base || digit > floor((maxInt - i) / w)) {
-					error('overflow');
-				}
+        if (digit >= base || digit > floor((maxInt - i) / w)) {
+          error('overflow');
+        }
 
-				i += digit * w;
-				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+        i += digit * w;
+        t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
 
-				if (digit < t) {
-					break;
-				}
+        if (digit < t) {
+          break;
+        }
 
-				baseMinusT = base - t;
-				if (w > floor(maxInt / baseMinusT)) {
-					error('overflow');
-				}
+        baseMinusT = base - t;
+        if (w > floor(maxInt / baseMinusT)) {
+          error('overflow');
+        }
 
-				w *= baseMinusT;
+        w *= baseMinusT;
 
-			}
+      }
 
-			out = output.length + 1;
-			bias = adapt(i - oldi, out, oldi == 0);
+      out = output.length + 1;
+      bias = adapt(i - oldi, out, oldi == 0);
 
-			// `i` was supposed to wrap around from `out` to `0`,
-			// incrementing `n` each time, so we'll fix that now:
-			if (floor(i / out) > maxInt - n) {
-				error('overflow');
-			}
+      // `i` was supposed to wrap around from `out` to `0`,
+      // incrementing `n` each time, so we'll fix that now:
+      if (floor(i / out) > maxInt - n) {
+        error('overflow');
+      }
 
-			n += floor(i / out);
-			i %= out;
+      n += floor(i / out);
+      i %= out;
 
-			// Insert `n` at position `i` of the output
-			output.splice(i++, 0, n);
+      // Insert `n` at position `i` of the output
+      output.splice(i++, 0, n);
 
-		}
+    }
 
-		return ucs2encode(output);
-	}
+    return ucs2encode(output);
+  }
 
-	/**
-	 * Converts a string of Unicode symbols to a Punycode string of ASCII-only
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The string of Unicode symbols.
-	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */
-	function encode(input) {
-		var n,
-		    delta,
-		    handledCPCount,
-		    basicLength,
-		    bias,
-		    j,
-		    m,
-		    q,
-		    k,
-		    t,
-		    currentValue,
-		    output = [],
-		    /** `inputLength` will hold the number of code points in `input`. */
-		    inputLength,
-		    /** Cached calculation results */
-		    handledCPCountPlusOne,
-		    baseMinusT,
-		    qMinusT;
+  /**
+   * Converts a string of Unicode symbols to a Punycode string of ASCII-only
+   * symbols.
+   * @memberOf punycode
+   * @param {String} input The string of Unicode symbols.
+   * @returns {String} The resulting Punycode string of ASCII-only symbols.
+   */
+  function encode(input) {
+    var n,
+        delta,
+        handledCPCount,
+        basicLength,
+        bias,
+        j,
+        m,
+        q,
+        k,
+        t,
+        currentValue,
+        output = [],
+        /** `inputLength` will hold the number of code points in `input`. */
+        inputLength,
+        /** Cached calculation results */
+        handledCPCountPlusOne,
+        baseMinusT,
+        qMinusT;
 
-		// Convert the input in UCS-2 to Unicode
-		input = ucs2decode(input);
+    // Convert the input in UCS-2 to Unicode
+    input = ucs2decode(input);
 
-		// Cache the length
-		inputLength = input.length;
+    // Cache the length
+    inputLength = input.length;
 
-		// Initialize the state
-		n = initialN;
-		delta = 0;
-		bias = initialBias;
+    // Initialize the state
+    n = initialN;
+    delta = 0;
+    bias = initialBias;
 
-		// Handle the basic code points
-		for (j = 0; j < inputLength; ++j) {
-			currentValue = input[j];
-			if (currentValue < 0x80) {
-				output.push(stringFromCharCode(currentValue));
-			}
-		}
+    // Handle the basic code points
+    for (j = 0; j < inputLength; ++j) {
+      currentValue = input[j];
+      if (currentValue < 0x80) {
+        output.push(stringFromCharCode(currentValue));
+      }
+    }
 
-		handledCPCount = basicLength = output.length;
+    handledCPCount = basicLength = output.length;
 
-		// `handledCPCount` is the number of code points that have been handled;
-		// `basicLength` is the number of basic code points.
+    // `handledCPCount` is the number of code points that have been handled;
+    // `basicLength` is the number of basic code points.
 
-		// Finish the basic string - if it is not empty - with a delimiter
-		if (basicLength) {
-			output.push(delimiter);
-		}
+    // Finish the basic string - if it is not empty - with a delimiter
+    if (basicLength) {
+      output.push(delimiter);
+    }
 
-		// Main encoding loop:
-		while (handledCPCount < inputLength) {
+    // Main encoding loop:
+    while (handledCPCount < inputLength) {
 
-			// All non-basic code points < n have been handled already. Find the next
-			// larger one:
-			for (m = maxInt, j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-				if (currentValue >= n && currentValue < m) {
-					m = currentValue;
-				}
-			}
+      // All non-basic code points < n have been handled already. Find the next
+      // larger one:
+      for (m = maxInt, j = 0; j < inputLength; ++j) {
+        currentValue = input[j];
+        if (currentValue >= n && currentValue < m) {
+          m = currentValue;
+        }
+      }
 
-			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-			// but guard against overflow
-			handledCPCountPlusOne = handledCPCount + 1;
-			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-				error('overflow');
-			}
+      // Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+      // but guard against overflow
+      handledCPCountPlusOne = handledCPCount + 1;
+      if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+        error('overflow');
+      }
 
-			delta += (m - n) * handledCPCountPlusOne;
-			n = m;
+      delta += (m - n) * handledCPCountPlusOne;
+      n = m;
 
-			for (j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
+      for (j = 0; j < inputLength; ++j) {
+        currentValue = input[j];
 
-				if (currentValue < n && ++delta > maxInt) {
-					error('overflow');
-				}
+        if (currentValue < n && ++delta > maxInt) {
+          error('overflow');
+        }
 
-				if (currentValue == n) {
-					// Represent delta as a generalized variable-length integer
-					for (q = delta, k = base; /* no condition */; k += base) {
-						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-						if (q < t) {
-							break;
-						}
-						qMinusT = q - t;
-						baseMinusT = base - t;
-						output.push(
-							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-						);
-						q = floor(qMinusT / baseMinusT);
-					}
+        if (currentValue == n) {
+          // Represent delta as a generalized variable-length integer
+          for (q = delta, k = base; /* no condition */; k += base) {
+            t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+            if (q < t) {
+              break;
+            }
+            qMinusT = q - t;
+            baseMinusT = base - t;
+            output.push(
+              stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+            );
+            q = floor(qMinusT / baseMinusT);
+          }
 
-					output.push(stringFromCharCode(digitToBasic(q, 0)));
-					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-					delta = 0;
-					++handledCPCount;
-				}
-			}
+          output.push(stringFromCharCode(digitToBasic(q, 0)));
+          bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+          delta = 0;
+          ++handledCPCount;
+        }
+      }
 
-			++delta;
-			++n;
+      ++delta;
+      ++n;
 
-		}
-		return output.join('');
-	}
+    }
+    return output.join('');
+  }
 
-	/**
-	 * Converts a Punycode string representing a domain name to Unicode. Only the
-	 * Punycoded parts of the domain name will be converted, i.e. it doesn't
-	 * matter if you call it on a string that has already been converted to
-	 * Unicode.
-	 * @memberOf punycode
-	 * @param {String} domain The Punycode domain name to convert to Unicode.
-	 * @returns {String} The Unicode representation of the given Punycode
-	 * string.
-	 */
-	function toUnicode(domain) {
-		return mapDomain(domain, function(string) {
-			return regexPunycode.test(string)
-				? decode(string.slice(4).toLowerCase())
-				: string;
-		});
-	}
+  /**
+   * Converts a Punycode string representing a domain name to Unicode. Only the
+   * Punycoded parts of the domain name will be converted, i.e. it doesn't
+   * matter if you call it on a string that has already been converted to
+   * Unicode.
+   * @memberOf punycode
+   * @param {String} domain The Punycode domain name to convert to Unicode.
+   * @returns {String} The Unicode representation of the given Punycode
+   * string.
+   */
+  function toUnicode(domain) {
+    return mapDomain(domain, function(string) {
+      return regexPunycode.test(string)
+        ? decode(string.slice(4).toLowerCase())
+        : string;
+    });
+  }
 
-	/**
-	 * Converts a Unicode string representing a domain name to Punycode. Only the
-	 * non-ASCII parts of the domain name will be converted, i.e. it doesn't
-	 * matter if you call it with a domain that's already in ASCII.
-	 * @memberOf punycode
-	 * @param {String} domain The domain name to convert, as a Unicode string.
-	 * @returns {String} The Punycode representation of the given domain name.
-	 */
-	function toASCII(domain) {
-		return mapDomain(domain, function(string) {
-			return regexNonASCII.test(string)
-				? 'xn--' + encode(string)
-				: string;
-		});
-	}
+  /**
+   * Converts a Unicode string representing a domain name to Punycode. Only the
+   * non-ASCII parts of the domain name will be converted, i.e. it doesn't
+   * matter if you call it with a domain that's already in ASCII.
+   * @memberOf punycode
+   * @param {String} domain The domain name to convert, as a Unicode string.
+   * @returns {String} The Punycode representation of the given domain name.
+   */
+  function toASCII(domain) {
+    return mapDomain(domain, function(string) {
+      return regexNonASCII.test(string)
+        ? 'xn--' + encode(string)
+        : string;
+    });
+  }
 
-	/*--------------------------------------------------------------------------*/
+  /*--------------------------------------------------------------------------*/
 
-	/** Define the public API */
-	punycode = {
-		/**
-		 * A string representing the current Punycode.js version number.
-		 * @memberOf punycode
-		 * @type String
-		 */
-		'version': '1.2.4',
-		/**
-		 * An object of methods to convert from JavaScript's internal character
-		 * representation (UCS-2) to Unicode code points, and back.
-		 * @see <http://mathiasbynens.be/notes/javascript-encoding>
-		 * @memberOf punycode
-		 * @type Object
-		 */
-		'ucs2': {
-			'decode': ucs2decode,
-			'encode': ucs2encode
-		},
-		'decode': decode,
-		'encode': encode,
-		'toASCII': toASCII,
-		'toUnicode': toUnicode
-	};
+  /** Define the public API */
+  punycode = {
+    /**
+     * A string representing the current Punycode.js version number.
+     * @memberOf punycode
+     * @type String
+     */
+    'version': '1.2.4',
+    /**
+     * An object of methods to convert from JavaScript's internal character
+     * representation (UCS-2) to Unicode code points, and back.
+     * @see <http://mathiasbynens.be/notes/javascript-encoding>
+     * @memberOf punycode
+     * @type Object
+     */
+    'ucs2': {
+      'decode': ucs2decode,
+      'encode': ucs2encode
+    },
+    'decode': decode,
+    'encode': encode,
+    'toASCII': toASCII,
+    'toUnicode': toUnicode
+  };
 
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-	) {
-		define('punycode', function() {
-			return punycode;
-		});
-	} else if (freeExports && !freeExports.nodeType) {
-		if (freeModule) { // in Node.js or RingoJS v0.8.0+
-			freeModule.exports = punycode;
-		} else { // in Narwhal or RingoJS v0.7.0-
-			for (key in punycode) {
-				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-			}
-		}
-	} else { // in Rhino or a web browser
-		root.punycode = punycode;
-	}
+  /** Expose `punycode` */
+  // Some AMD build optimizers, like r.js, check for specific condition patterns
+  // like the following:
+  if (
+    typeof define == 'function' &&
+    typeof define.amd == 'object' &&
+    define.amd
+  ) {
+    define('punycode', function() {
+      return punycode;
+    });
+  } else if (freeExports && !freeExports.nodeType) {
+    if (freeModule) { // in Node.js or RingoJS v0.8.0+
+      freeModule.exports = punycode;
+    } else { // in Narwhal or RingoJS v0.7.0-
+      for (key in punycode) {
+        punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+      }
+    }
+  } else { // in Rhino or a web browser
+    root.punycode = punycode;
+  }
 
 }(this));
 
