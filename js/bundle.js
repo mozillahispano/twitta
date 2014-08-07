@@ -27,19 +27,21 @@
   	}
 
   	// Track user stream. Enough for realtime things
-  	var stream = T.stream('statuses/sample');
+  	var stream = T.stream('user');
   	var listEvents = ['blocked', 'unblocked', 'favorite', 'unfavorite', 'follow', 'unfollow', 'user_update', 'list_created',
   	'list_destroyed', 'list_updated', 'list_member_added', 'list_member_removed', 'list_user_subscribed', 'list_user_unsubscribed',
   	'unknown_user_event', 'tweet', 'error'];
 
-    var ctrl = new timeline.controller();
-    var counter = 0;
+    var timelineCtrl = new timeline.controller();
+    var count = 0;
   	listEvents.forEach(function(elem, i) {
       stream.on(listEvents[i], function(msg) {
-        console.log(listEvents[i], counter);
+        console.log(listEvents[i], msg);
         if (listEvents[i] === 'tweet') {
-          ctrl.add(msg);
-          if (++counter == 100) { stream.stop(); }
+          timelineCtrl.add(msg);
+          if (++count == 10) {
+            stream.stop();
+          }
         }
       })
   	});
@@ -253,7 +255,7 @@ OARequest.prototype.keepAlive = function () {
     // reset our reconnection attempt flag
     self.usedFirstReconnect = false;
     self.response = response;
-    //self.response.setEncoding('utf8');
+    self.response.setEncoding('utf8');
 
     //pass all response data to parser
     self.response.on('data', function (chunk) {
@@ -1125,7 +1127,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
     }
 
     request.on('response', function (response) {
-      //response.setEncoding('utf8');
+      response.setEncoding('utf8');
       response.on('data', function (chunk) {
         data+=chunk;
       });
@@ -4653,7 +4655,7 @@ http.request = function (params, cb) {
     }
     if (!params.port) params.port = params.scheme == 'https' ? 443 : 80;
     
-    var req = new Request(new xhrHttp({ mozSystem: true }), params);
+    var req = new Request(new xhrHttp, params);
     if (cb) req.on('response', cb);
     return req;
 };

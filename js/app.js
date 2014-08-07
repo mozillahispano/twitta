@@ -1,3 +1,5 @@
+/* jshint browser: true, esnext: true, strict: true */
+
 (function(window) {
     'use strict';
 
@@ -15,6 +17,5 @@
         "/list/:id": listDetail,
         "/settings": settings*/
     });
-
 
 })(window);

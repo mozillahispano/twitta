@@ -1,12 +1,12 @@
 {
-  "name": "TWITTER",
-  "description": "UNOFFICIAL Telegram Web App.\nMore info & source code here: https://github.com/zhukov/webogram",
-  "version": "0.2.1",
+  "name": "Twitta",
+  "description": "Twitter made awesome for Firefox OS",
+  "version": "0.0.1",
   "type": "privileged",
   "launch_path": "/index.html",
   "developer": {
-    "name": "Igor Zhukov",
-    "url": "https://github.com/zhukov"
+    "name": "Guillermo López",
+    "url": "https://github.com/willyaranda"
   },
   "installs_allowed_from": [
     "*"
@@ -18,17 +18,13 @@
   }],
   "permissions": {
     "desktop-notification": {
-      "description": "Required to show new message notifications"
-    },
-    "contacts": {
-      "description": "Required to import phonebook contacts",
-      "access": "readonly"
+      "description": "Required to show notifications"
     },
     "push": {
-      "description": "Required for notifications"
+      "description": "Required for push notifications (future)"
     },
     "systemXHR": {
-      "description": "Allow XHR requests without CORS restrictions"
+      "description": "Allow connections to the Twitter API without restrictions"
     }
   },
   "icons": {
