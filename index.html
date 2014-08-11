@@ -5,21 +5,32 @@
     <title>Twitta</title>
     <link rel="stylesheet" href="">
 
-    <!-- Framework and twitter library -->
-    <script src="js/vendor/mithril/mithril.min.js"></script>
-    <script src="js/bundle.js"></script>
+    <!-- Frameworks and twitter library -->
+    <script src="js/vendor/mithril/mithril.js"></script>
+    <!-- <script src="js/bundle.js"></script> -->
+    <script src="js/vendor/moment/moment.js" async></script>
 
     <!-- Timeline resources
     <script src="js/controller/timeline.js" async></script>
     <script src="js/models/timeline.js" async></script>
     <script src="js/view/timeline.js" async></script>-->
-    <script src="js/timeline.js" async></script>
+    <script src="js/timeline.js"></script>
 
+    <!-- User resources -->
+    <script src="js/user.js"></script>
+
+    <!-- Home -->
+    <script src="js/home.js"></script>
 
     <!-- Routes -->
-    <script src="js/app.js" async></script>
+    <script src="js/app.js" defer></script>
+
+    <!-- MOCKS! -->
+    <script src="js/mocks.js" defer></script>
+
 </head>
 <body>
+    <section id="home"></section>
     <section id="timeline"></section>
     <section id="login"></section>
     <section id="profile"></section>

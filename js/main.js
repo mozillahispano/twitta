@@ -3,6 +3,7 @@
 (function(window) {
   'use strict';
   var Twit = require('twit');
+
   var T = new Twit({
       consumer_key: '6G62H3Cv6shuI4LbjsVe7rxJx',
       consumer_secret: 'ASSDrn797pc5igFOkzGdeyQnS2IbUpCKHZivcRVIcctLl6VZxS',
