@@ -9,7 +9,16 @@ var login = login || {};
         console.log('login.controller');
         this.lg = function() {
             console.log('login.controller.login called');
-            window.open('https://google.com');
+            var w = window.open('https://twitta.pijusmagnificus.com/sessions/connect');
+            window.addEventListener("message", receiveMessage, false);
+
+            function receiveMessage(event)
+            {
+              if (event.origin !== "https://twitta.pijusmagnificus.com") {
+                return;
+              }
+              var data = event.data;
+            }
         }.bind(this)
     };
 
