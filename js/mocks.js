@@ -171,7 +171,7 @@
         tmCtrl.add(basicTweet);
     }, 2000);
 
-window.setInterval(function sendRetweet() {
+window.setTimeout(function sendRetweet() {
     console.log('sendRetweet');
     if (!tmCtrl) {
         tmCtrl = new timeline.controller();
@@ -570,7 +570,7 @@ window.setInterval(function sendRetweet() {
     tmCtrl.add(RT);
 }, 5000);
 
-window.setInterval(function sendRetweet() {
+window.setTimeout(function sendRetweet() {
     console.log('sendRetweet');
     if (!tmCtrl) {
         tmCtrl = new timeline.controller();

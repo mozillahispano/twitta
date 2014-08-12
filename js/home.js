@@ -10,7 +10,7 @@ var home = home || {};
 
         // We do not have any keys for connecting to twitter, so let's redirect
         // to /login
-        if (keys !== null) {
+        if (keys === null) {
             console.log('routing to /login');
             m.route('/login');
         } else {

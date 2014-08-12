@@ -41,16 +41,12 @@ var timeline = timeline || {};
     };
 
     // List of tweets: timeline
-    timeline.TweetList = Array;
+    var tweetList = [];
 
     // Controller
     timeline.controller = function() {
-        if (!this.list) {
-            this.list = new timeline.TweetList();
-        }
-
         this.add = function(tweet) {
-            this.list.push(new timeline.Tweet(tweet));
+            tweetList.push(new timeline.Tweet(tweet));
             // Do not render if we are not on the view
             if (m.route() !== '/timeline') { return; }
             m.render(document.getElementById('timeline'), timeline.view(this));
@@ -59,8 +55,6 @@ var timeline = timeline || {};
 
     // View
     timeline.view = function(controller) {
-        console.log('timeline.view');
-
         function mediaNodes(tweet) {
             if (tweet.media()) {
                 return m('a', {
@@ -70,8 +64,7 @@ var timeline = timeline || {};
             }
         }
 
-        if (controller.list.length === 0) return;
-        return controller.list.map(function(tweet) {
+        return tweetList.map(function(tweet) {
             var ago = moment(tweet.created_at()).fromNow();
             return m('div#' + tweet.id_str(), [
                        m('div#img', [
