@@ -5,10 +5,15 @@
     <title>Twitta</title>
     <link rel="stylesheet" href="">
 
-    <!-- Frameworks and twitter library -->
+    <!-- Frameworks -->
     <script src="js/vendor/mithril/mithril.js"></script>
-    <!-- <script src="js/bundle.js"></script> -->
     <script src="js/vendor/moment/moment.js" async></script>
+    <script src="js/vendor/oauth/oauth.js" async></script>
+    <script src="js/vendor/oauth/sha1.js" async></script>
+
+    <!-- twitter library -->
+    <script src="js/vendor/willyaranda/twitter.js" async></script>
+
 
     <!-- Routes -->
     <script src="js/app.js"></script>
@@ -28,12 +33,12 @@
     <!-- Login -->
     <script src="js/login.js" async></script>
 
-    <!-- MOCKS! -->
-    <script src="js/mocks.js" async></script>
+    <!-- MOCKS!
+    <script src="js/mocks.js" async></script>-->
 
 </head>
 <body>
-    <section id="routing" style="display:none"></section>
+    <section id="routing"></section>
     <section id="timeline"></section>
     <section id="login"></section>
     <section id="profile"></section>

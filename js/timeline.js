@@ -38,6 +38,10 @@ var timeline = timeline || {};
             this.media_url = m.prop(tweet.entities.media[0].media_url_https);
             this.expanded_url = m.prop(tweet.entities.media[0].expanded_url);
         }
+
+        // Own actions:
+        this.retweeted = m.prop(tweet.retweeted);
+        this.favorited = m.prop(tweet.favorited);
     };
 
     // List of tweets: timeline
@@ -51,6 +55,80 @@ var timeline = timeline || {};
             if (m.route() !== '/timeline') { return; }
             m.render(document.getElementById('timeline'), timeline.view(this));
         }.bind(this);
+
+        this.find = function(id, index) {
+            var found = null;
+            function findFunction (element) {
+                if (element.id() === id) {
+                    found = {};
+                    found.value = element;
+                    found.index = index;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            // Find the tweet
+            tweetList.some(findFunction);
+            return found;
+        }
+
+        this.remove = function(id) {
+            tweetList.splice(this.find(id), 1);
+        }.bind(this)
+
+        this.favorited = function(id) {
+            var tw = this.find(id);
+            tw.favorited(true);
+        }.bind(this)
+
+        this.unfavorited = function(id) {
+            var tw = this.find(id);
+            tw.favorited(false);
+        }.bind(this)
+
+        this.retweeted = function(id) {
+            var tw = this.find(id);
+            tw.retweeted(true);
+        }.bind(this)
+
+        this.unretweeted = function(id) {
+            var tw = this.find(id);
+            tw.retweeted(false);
+        }.bind(this)
+
+        this.test = function() {
+            var accessor = {
+                consumerKey: window.tokens['consumerKey'],
+                consumerSecret: window.tokens['consumerSecret'],
+                token: window.tokens['oauthAccessToken'],
+                tokenSecret: window.tokens['oauthAccessTokenSecret']
+            };
+            /*var message = {
+                action: 'https://api.twitter.com/1.1/statuses/show.json',
+                method: 'GET',
+                parameters: {
+                    id: '499454069568991233'
+                }
+            };*/
+            var message = {
+                action: ' https://userstream.twitter.com/1.1/user.json',
+                method: 'GET'
+            }
+            OAuth.completeRequest(message, accessor);
+            OAuth.SignatureMethod.sign(message, accessor);
+            var final = message.action + '?' + OAuth.formEncode(message.parameters);
+            console.log(final);
+            var xhr = new XMLHttpRequest({mozSystem: true});
+            xhr.open(message.method, final);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send();
+        }
+        setTimeout(this.test, 200);
     };
 
     // View
@@ -85,5 +163,4 @@ var timeline = timeline || {};
         });
     };
 
-    m.module(document.getElementById('timeline'), timeline);
 })(window);

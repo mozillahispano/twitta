@@ -4,31 +4,7 @@
     'use strict';
     //T.initialize();
 
-    // Stubs
-    window.home = {
-        model: {},
-        controller: {},
-        view: {}
-    };
-    window.timeline = {
-        model: {},
-        controller: {},
-        view: {}
-    };
-
-    window.user = {
-        model: {},
-        controller: {},
-        view: {}
-    };
-
-    window.login = {
-        model: {},
-        controller: {},
-        view: {}
-    };
-
-    window.onload = function() {
+    window.addEventListener('load', function() {
         m.route.mode = "hash";
         var start = document.getElementById('routing');
         m.route(start, "/", {
@@ -46,6 +22,6 @@
             "/list/:id": listDetail,
             "/settings": settings*/
         });
-    }
+    });
 
 })(window);

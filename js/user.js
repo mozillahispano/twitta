@@ -89,5 +89,4 @@ var user = user || {};
         return m('div', data);
     };
 
-    m.module(document.getElementById('userprofile'), user);
 })(window);
