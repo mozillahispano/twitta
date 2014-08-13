@@ -59,11 +59,44 @@
     xhr.open(message.method, final);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-            callback(xhr.responseText);
+            callback(null, xhr.responseText);
         }
     };
     xhr.send();
   };
+
+  /**
+   * Returns a collection of the most recent Tweets and retweets posted by the
+   * authenticating user and the users they follow. The home timeline is
+   * central to how most users interact with the Twitter service.
+   * Up to 800 Tweets are obtainable on the home timeline. It is more volatile
+   * for users that follow many users or follow users who tweet frequently.
+   *
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+   * @param  {Object}   params Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   */
+  tuiter.getHomeTimeline = function(params, cb)  {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/home_timeline.json';
+    var method = 'GET';
+    var params = {
+      count: params.count || 20,
+      since_id: params.since_id || null,
+      max_id: params.max_id || null,
+      trim_user: params.trim_user || false,
+      exclude_replies: params.exclude_replies || false,
+      contributor_details: params.contributor_details || true,
+      include_entities: params.include_entities || true
+    }
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  tuiter.getUserTimeline = function(id, screen_name, params, cb) {
+    if (!id || !screen_name) {
+      callback('You did not specify a id or screen_name');
+      return;
+    }
+  }
 
   /**
    * Opens a connection to the specified stream, calling any callback
