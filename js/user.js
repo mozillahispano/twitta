@@ -1,5 +1,3 @@
-/* jshint browser: true, esnext: true, strict: true */
-
 var user = user || {};
 (function(window) {
     'use strict';

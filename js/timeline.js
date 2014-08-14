@@ -1,5 +1,3 @@
-/* jshint browser: true, esnext: true, strict: true */
-
 var timeline = timeline || {};
 (function(window) {
     'use strict';

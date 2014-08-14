@@ -1,8 +1,5 @@
-/* jshint browser: true, esnext: true, strict: true */
-
 (function(window) {
     'use strict';
-    //T.initialize();
 
     window.addEventListener('load', function() {
         m.route.mode = "hash";

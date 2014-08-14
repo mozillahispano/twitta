@@ -1,7 +1,4 @@
-/* jshint browser: true, esnext: true, strict: true */
-
 var home = home || {};
-// Controller
 (function(window) {
     'use strict';
 
