@@ -37,7 +37,7 @@ var login = login || {};
                 // And start again
                 m.route('/');
             }
-        }.bind(this)
+        }.bind(this);
         //m.render(document.getElementById('login'), login.view(this))
     };
 

@@ -15,17 +15,16 @@ var home = home || {};
         });
 
         neededTokens.forEach(function(el) {
-            console.log(el, window.tokens[el])
-        })
+            console.log(el, window.tokens[el]);
+        });
 
         function allKeys() {
-            return window.tokens.every(function(el) {
-                return window.tokens[el] ? true : false;
-            })
+            return neededTokens.every(function(el) {
+                return (window.tokens[el] !== null) ? true : false;
+            });
         }
 
-        // We do not have any keys for connecting to twitter, so let's redirect
-        // to /login
+        // Check if we have all tokens needed for working with Twitter
         if (!allKeys()) {
             console.log('Keys not found, first launch? Routing to /login');
             m.route('/login');

@@ -18,9 +18,24 @@
     return creds;
   };
 
-  tuiter.setCredentials = function(tokens) {
-    // Check if we have all data
+  tuiter.init = function(tokens) {
+    console.log('tuiter.init');
     var neededTokens = ['consumerKey', 'consumerSecret', 'oauthAccessToken', 'oauthAccessTokenSecret'];
+
+    // If we do not receive tokens, just load from localStorage
+    if (!tokens) {
+      tokens = {};
+      neededTokens.forEach(function(token) {
+        tokens[token] = localStorage.getItem(token);
+      });
+    }
+    // If receive, just save on localStorage for next usages
+    else {
+      neededTokens.forEach(function(token) {
+        localStorage.setItem(token, tokens[token]);
+      });
+    }
+    // Check if we have all data
     var fullConfig = neededTokens.every(function(el) {
       return tokens[el] ? true : false;
     });
@@ -29,7 +44,8 @@
       creds = tokens;
       ready = true;
     } else {
-      console.warn('Not enough tokens data', tokens);
+      console.warn('Not enough tokens data. Check that you have sent a object with',
+        neededTokens, '. Received ', tokens);
     }
 
     return fullConfig;
@@ -37,7 +53,7 @@
 
   /**
    * Internal method to make a request to the Twitter API.
-   * This is a low level API. Use at your own risk, but we 
+   * This is a low level API. Use at your own risk, but we
    * recommend to use the High level APIs that encapsulate
    * the requests.
    * @name _request
@@ -46,20 +62,33 @@
    * @param  {Object}   params   extra params for the petition
    */
   tuiter._request = function(endpoint, method, params, callback) {
+    console.log('tuiter.request');
+
+    if (!ready) {
+      callback('Not ready yet!');
+      return;
+    }
     var message = {
       action: endpoint,
       method: method,
       parameters: params
     };
+    var accessor = tuiter.getCredentials();
     OAuth.completeRequest(message, accessor);
     OAuth.SignatureMethod.sign(message, accessor);
-    var final = message.action + '?' + OAuth.formEncode(message.parameters);
-    console.log('req.url=' + final);
+    var url = message.action + '?' + OAuth.formEncode(message.parameters);
+    console.log(url);
     var xhr = new XMLHttpRequest({mozSystem: true});
-    xhr.open(message.method, final);
+    xhr.open(message.method, url);
+    xhr.responseType = 'json';
+
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-            callback(null, xhr.responseText);
+            if (xhr.status === 200) {
+              callback(null, xhr.response);
+            } else {
+              callback(xhr.response || 'unknown error');
+            }
         }
     };
     xhr.send();
@@ -76,18 +105,18 @@
    * @param  {Object}   params Extra parameters for the query, see link
    * @param  {Function} cb     Callback with the JSON returned (error, json)
    */
-  tuiter.getHomeTimeline = function(params, cb)  {
+  tuiter.getHomeTimeline = function(parms, cb)  {
     var endpoint = 'https://api.twitter.com/1.1/statuses/home_timeline.json';
     var method = 'GET';
     var params = {
-      count: params.count || 20,
-      since_id: params.since_id || null,
-      max_id: params.max_id || null,
-      trim_user: params.trim_user || false,
-      exclude_replies: params.exclude_replies || false,
-      contributor_details: params.contributor_details || true,
-      include_entities: params.include_entities || true
-    }
+      count: parms.count || 20,
+      since_id: parms.since_id || null,
+      max_id: parms.max_id || null,
+      trim_user: parms.trim_user || false,
+      exclude_replies: parms.exclude_replies || false,
+      contributor_details: parms.contributor_details || true,
+      include_entities: parms.include_entities || true
+    };
     tuiter._request(endpoint, method, params, cb);
   };
 
@@ -96,7 +125,7 @@
       callback('You did not specify a id or screen_name');
       return;
     }
-  }
+  };
 
   /**
    * Opens a connection to the specified stream, calling any callback

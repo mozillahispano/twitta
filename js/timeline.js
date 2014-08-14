@@ -27,7 +27,7 @@ var timeline = timeline || {};
             this.orig_id = m.prop(tweet.retweeted_status.id);
             this.retweeted_by_username = m.prop(tweet.user.screen_name);
             this.orig_user = new user.User(tweet.retweeted_status.user);
-            //userController.add(this.orig_user);
+            userController.add(this.orig_user);
         }
 
         // This has media
@@ -56,7 +56,7 @@ var timeline = timeline || {};
 
         this.find = function(id, index) {
             var found = null;
-            function findFunction (element) {
+            function findFunction(element) {
                 if (element.id() === id) {
                     found = {};
                     found.value = element;
@@ -69,63 +69,38 @@ var timeline = timeline || {};
             // Find the tweet
             tweetList.some(findFunction);
             return found;
-        }
+        };
 
         this.remove = function(id) {
             tweetList.splice(this.find(id), 1);
-        }.bind(this)
+        }.bind(this);
 
         this.favorited = function(id) {
             var tw = this.find(id);
             tw.favorited(true);
-        }.bind(this)
+        }.bind(this);
 
         this.unfavorited = function(id) {
             var tw = this.find(id);
             tw.favorited(false);
-        }.bind(this)
+        }.bind(this);
 
         this.retweeted = function(id) {
             var tw = this.find(id);
             tw.retweeted(true);
-        }.bind(this)
+        }.bind(this);
 
         this.unretweeted = function(id) {
             var tw = this.find(id);
             tw.retweeted(false);
-        }.bind(this)
+        }.bind(this);
 
         this.test = function() {
-            var accessor = {
-                consumerKey: window.tokens['consumerKey'],
-                consumerSecret: window.tokens['consumerSecret'],
-                token: window.tokens['oauthAccessToken'],
-                tokenSecret: window.tokens['oauthAccessTokenSecret']
-            };
-            /*var message = {
-                action: 'https://api.twitter.com/1.1/statuses/show.json',
-                method: 'GET',
-                parameters: {
-                    id: '499454069568991233'
-                }
-            };*/
-            var message = {
-                action: ' https://userstream.twitter.com/1.1/user.json',
-                method: 'GET'
-            }
-            OAuth.completeRequest(message, accessor);
-            OAuth.SignatureMethod.sign(message, accessor);
-            var final = message.action + '?' + OAuth.formEncode(message.parameters);
-            console.log(final);
-            var xhr = new XMLHttpRequest({mozSystem: true});
-            xhr.open(message.method, final);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    console.log(xhr.responseText);
-                }
-            };
-            xhr.send();
-        }
+            tuiter.getHomeTimeline({}, function(error, data) {
+                console.error(error);
+                console.log(data);
+            });
+        };
         setTimeout(this.test, 200);
     };
 
@@ -155,7 +130,7 @@ var timeline = timeline || {};
                        ),
                        m('p#text', tweet.text()),
                        m('p#date', ago),
-                       m('p#retweeted', tweet.is_retweet() || false),
+                       m('p#retweeted', tweet.is_retweet()),
                        mediaNodes(tweet)
                 ]);
         });

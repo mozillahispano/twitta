@@ -39,7 +39,7 @@ var user = user || {};
             var foundValue;
             for (var i = 0; i < userList.length; i++) {
                 var el = userList[i];
-                if (el.id() == id) {
+                if (el.id() === id) {
                     foundValue = el;
                 }
             }
