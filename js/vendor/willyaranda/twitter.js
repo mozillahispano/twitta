@@ -1,4 +1,4 @@
-/* jshint browser: true, esnext: true, strict: true */
+/* global OAuth */
 
 /**
  * @module tuiter
@@ -20,7 +20,7 @@
 
   tuiter.init = function(tokens) {
     console.log('tuiter.init');
-    var neededTokens = ['consumerKey', 'consumerSecret', 'oauthAccessToken', 'oauthAccessTokenSecret'];
+    var neededTokens = ['consumerKey', 'consumerSecret', 'token', 'tokenSecret'];
 
     // If we do not receive tokens, just load from localStorage
     if (!tokens) {
@@ -62,16 +62,28 @@
    * @param  {Object}   params   extra params for the petition
    */
   tuiter._request = function(endpoint, method, params, callback) {
-    console.log('tuiter.request');
+
+    function filterParams(params) {
+      var rv = {};
+      var keys = Object.keys(params);
+      keys.forEach(function(key) {
+        if (params[key]) {
+          rv[key] = params[key];
+        }
+      });
+      console.log('Filtered, ', rv);
+      return rv;
+    }
 
     if (!ready) {
       callback('Not ready yet!');
       return;
     }
+
     var message = {
       action: endpoint,
       method: method,
-      parameters: params
+      parameters: filterParams(params)
     };
     var accessor = tuiter.getCredentials();
     OAuth.completeRequest(message, accessor);
@@ -87,7 +99,7 @@
             if (xhr.status === 200) {
               callback(null, xhr.response);
             } else {
-              callback(xhr.response || 'unknown error');
+              callback(xhr.response.errors[0].message || 'unknown error');
             }
         }
     };
@@ -122,9 +134,21 @@
 
   tuiter.getUserTimeline = function(id, screen_name, params, cb) {
     if (!id || !screen_name) {
-      callback('You did not specify a id or screen_name');
+      cb('You did not specify a id or screen_name');
       return;
     }
+  };
+
+  tuiter.updateStatus = function(text, reply_to, cb) {
+    console.log('tuiter.updateStatus', text, reply_to);
+    var endpoint = 'https://api.twitter.com/1.1/statuses/update.json';
+    var method = 'POST';
+    var params = {
+      status: text,
+      in_reply_to_status_id: reply_to
+    };
+
+    tuiter._request(endpoint, method, params, cb);
   };
 
   /**
@@ -134,7 +158,7 @@
    * @return {type}          [description]
    */
   tuiter._stream = function(endpoint) {
-    var data = _parseData(length, data);
+    var data = tuiter._parseData(length, data);
     if (Array.isArray(listeners[data.type])) {
         listeners[data.type].forEach(function(elem) {
             if (typeof elem === 'function') {
@@ -153,7 +177,7 @@
     };
   };
 
-  tuiter.listenEvents = function (listenEvent, cb) {
+  tuiter.listenEvents = function(listenEvent, cb) {
     if (!Array.isArray(listeners[listenEvent])) {
         listeners[listenEvent] = [];
     }

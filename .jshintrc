@@ -9,7 +9,7 @@
     "quotmark": "single",
     "unused": true,
     "maxlen": 90,
-    "es5": true,
     "esnext": true,
-    "worker": true
+    "worker": true,
+    "predef": [ "m", "console" ]
 }

@@ -35,5 +35,6 @@
     "90": "/img/icons/icon90.png",
     "120": "/img/icons/icon120.png",
     "128": "/img/icons/icon128.png"
-  }
+  },
+  "origin": "app://twitta.pijusmagnificus.com/"
 }

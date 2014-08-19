@@ -1,0 +1,30 @@
+#compose {
+    position: absolute;
+    transition: all 0.5s ease-in 0s;
+    background-color: red;
+    top: 0px;
+    transform: translateY(-50px);
+}
+
+#compose.show {
+    top: 30px;
+}
+
+#compose > button {
+    /*background-color: blue;*/
+    background-image: url('/img/send128.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 20px;
+}
+
+#compose > textarea {
+    height: 3rem;
+    width: 16rem;
+}
+
+label input[type="file"] {
+    position: fixed;
+    top: -1000px;
+}

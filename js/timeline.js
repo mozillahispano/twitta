@@ -1,6 +1,9 @@
+/* global user, tuiter, moment */
+
+'use strict';
+
 var timeline = timeline || {};
 (function(window) {
-    'use strict';
 
     var userController;
 
@@ -94,14 +97,13 @@ var timeline = timeline || {};
             var tw = this.find(id);
             tw.retweeted(false);
         }.bind(this);
+    };
 
-        this.test = function() {
-            tuiter.getHomeTimeline({}, function(error, data) {
-                console.error(error);
-                console.log(data);
-            });
-        };
-        setTimeout(this.test, 200);
+    timeline.test = function() {
+        tuiter.getHomeTimeline({}, function(error, data) {
+            console.error(error);
+            console.log(data);
+        });
     };
 
     // View

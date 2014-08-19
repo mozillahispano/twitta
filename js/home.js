@@ -8,9 +8,9 @@ var home = home || {};
         window.tokens['consumerSecret'] = 'XBU9sIkM4qrbYhmVTdEpsdNkMSO7orrflrocFqts8eZDF4BgLc';
 
         var neededTokens = ['consumerKey', 'consumerSecret',
-            'oauthAccessToken', 'oauthAccessTokenSecret'];
+            'token', 'tokenSecret'];
         neededTokens.forEach(function(el) {
-            if (el.match(/consumer.*/)) { return; }
+            if ((el === 'consumerKey') || (el === 'consumerSecret')) { return; }
             window.tokens[el] = localStorage.getItem(el);
         });
 
@@ -30,6 +30,7 @@ var home = home || {};
             m.route('/login');
         } else {
             console.log('We have keys, routing to /timeline');
+            tuiter.init(window.tokens);
             m.route('/timeline');
         }
     };

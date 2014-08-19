@@ -1,23 +1,25 @@
+/* global home, timeline, login, user */
+
 (function(window) {
     'use strict';
 
     window.addEventListener('load', function() {
-        m.route.mode = "hash";
+        m.route.mode = 'hash';
         var start = document.getElementById('routing');
-        m.route(start, "/", {
-            "/": home,
-            "/timeline": timeline,
-            "/login": login,
+        m.route(start, '/', {
+            '/': home,
+            '/timeline': timeline,
+            '/login': login,
             /*
-            "/profile": ownProfile,
-            "/compose": compose,
-            "/mentions": mentions,*/
-            "/user/:id": user
+            '/profile': ownProfile,
+            '/compose': compose,
+            '/mentions': mentions,*/
+            '/user/:id': user
             /*,
-            "/dm/:id": dm,
-            "/tweet/:id": tweetDetail,
-            "/list/:id": listDetail,
-            "/settings": settings*/
+            '/dm/:id': dm,
+            '/tweet/:id': tweetDetail,
+            '/list/:id': listDetail,
+            '/settings': settings*/
         });
     });
 

@@ -3,13 +3,16 @@
 <head>
     <meta charset="utf-8">
     <title>Twitta</title>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="css/main.css">
 
     <!-- Frameworks -->
     <script src="js/vendor/mithril/mithril.js"></script>
     <script src="js/vendor/moment/moment.js" async></script>
     <script src="js/vendor/oauth/oauth.js" async></script>
     <script src="js/vendor/oauth/sha1.js" async></script>
+
+    <!-- Other things -->
+    <script src="js/other.js" async></script>
 
     <!-- twitter library -->
     <script src="js/vendor/willyaranda/twitter.js" async></script>
@@ -42,7 +45,17 @@
     <section id="timeline"></section>
     <section id="login"></section>
     <section id="profile"></section>
-    <section id="compose"></section>
+    <section id="compose" class="hide">
+        <textarea name="compose-area" placeholder="What do you want to say?"
+        id="compose-area"></textarea></br>
+        <button type="button" id="sendbutton"></button>
+        <span id="charsleft">140</span>
+        <label>
+            <input type="file" id="attachimage" name="attachimage" value="image/*" placeholder="Image" />
+            Select image
+        </label>
+
+    </section>
     <section id="mentions"></section>
     <section id="userprofile"></section>
     <section id="dm"></section>
