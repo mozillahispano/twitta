@@ -1,6 +1,8 @@
+/* global tuiter */
+'use strict';
+
 var home = home || {};
 (function(window) {
-    'use strict';
 
     home.controller = function() {
         window.tokens = [];

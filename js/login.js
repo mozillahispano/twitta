@@ -14,10 +14,13 @@ var login = login || {};
 
     login.controller = function() {
         console.log('login.controller');
+        var elem = document.getElementById('login');
+
         this.lg = function() {
             // Trust me, show me the code:
             // https://github.com/willyaranda/twitta
-            // See server.js, that is what is running on my server
+            // See server.js, that is what is running on my server.
+            // Please file any issues you might encounter. Thanks!
             var w = window.open('https://twitta.pijusmagnificus.com/sessions/connect');
             window.addEventListener('message', receiveMessage, false);
 
@@ -27,18 +30,22 @@ var login = login || {};
                 }
 
                 var tokens = parseData(event.data);
-                console.log(tokens);
+                w.close();
                 if (tokens && tokens[1] && tokens[2]) {
                     saveTokens(tokens);
                 } else {
-                    // TODO: Show error
+                    window.alert('We did not receive expected data from Twitter. ' +
+                        'Please try again in a few minutes. We are sorry :(');
                 }
-                w.close();
                 // And start again
+                elem.classList.remove('show');
+                elem.classList.add('hidden');
                 m.route('/');
             }
         }.bind(this);
-        //m.render(document.getElementById('login'), login.view(this))
+        elem.classList.remove('hidden');
+        elem.classList.add('show');
+        m.render(elem, login.view(this));
     };
 
     login.view = function(ctrl) {

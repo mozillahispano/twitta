@@ -6,6 +6,13 @@ var timeline = timeline || {};
 (function(window) {
 
     var userController;
+    var timelineController;
+    var timelineRefreshInterval;
+    var latestHomeRequestSinceEpochMs;
+    var eldestTweetId;
+    var newestTweetId;
+
+    var ELEM = document.getElementById('timeline');
 
     // Models
     timeline.Tweet = function(tweet) {
@@ -51,16 +58,25 @@ var timeline = timeline || {};
     // Controller
     timeline.controller = function() {
         this.add = function(tweet) {
-            tweetList.push(new timeline.Tweet(tweet));
+            var tuit = new timeline.Tweet(tweet);
+
+            // Check if we have this tweet, if so, do nothing.
+            if (this.find(tuit.id_str())) {
+                return;
+            }
+            tweetList.push(tuit);
             // Do not render if we are not on the view
             if (m.route() !== '/timeline') { return; }
-            m.render(document.getElementById('timeline'), timeline.view(this));
+            ELEM.classList.remove('hidden');
+            ELEM.classList.add('show');
+
+            m.render(ELEM, timeline.view(this));
         }.bind(this);
 
-        this.find = function(id, index) {
+        this.find = function(id) {
             var found = null;
-            function findFunction(element) {
-                if (element.id() === id) {
+            function findFunction(element, index) {
+                if (element.id_str() === id) {
                     found = {};
                     found.value = element;
                     found.index = index;
@@ -75,7 +91,10 @@ var timeline = timeline || {};
         };
 
         this.remove = function(id) {
-            tweetList.splice(this.find(id), 1);
+            var tw = this.find(id);
+            if (tw) {
+                tweetList.splice(tw.index, 1);
+            }
         }.bind(this);
 
         this.favorited = function(id) {
@@ -97,12 +116,26 @@ var timeline = timeline || {};
             var tw = this.find(id);
             tw.retweeted(false);
         }.bind(this);
+
+        if (!timelineRefreshInterval) {
+            timelineRefreshInterval = setTimeout(function() {
+                timeline.test();
+            }, 1000);
+        }
     };
 
     timeline.test = function() {
+        if (!timelineController) {
+            timelineController = new timeline.controller();
+        }
         tuiter.getHomeTimeline({}, function(error, data) {
-            console.error(error);
-            console.log(data);
+            if (error) {
+                console.error(error);
+            } else {
+                data.forEach(function(tw) {
+                    timelineController.add(tw);
+                });
+            }
         });
     };
 
@@ -116,6 +149,20 @@ var timeline = timeline || {};
                 );
             }
         }
+
+        // We want this in reverse order, let's return the other way around
+        function compareFunc(a, b) {
+            if (a.id_str() < b.id_str()) {
+                return 1;
+            } else if (b.id_str() < a.id_str()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+
+        // Sort the Array
+        tweetList.sort(compareFunc);
 
         return tweetList.map(function(tweet) {
             var ago = moment(tweet.created_at()).fromNow();

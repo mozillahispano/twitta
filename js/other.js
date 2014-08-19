@@ -18,7 +18,7 @@
 
     var sendTwitFunc = function() {
         var textAreaElem = document.getElementById('compose-area');
-        var inputElem = document.getElementById('attachimage');
+        var inputElem = document.getElementById('addimage');
         var sendButtonElem = document.getElementById('sendbutton');
         var counterElem = document.getElementById('charsleft');
 

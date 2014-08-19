@@ -1,17 +1,22 @@
-#compose {
+section {
+    width: 100%;
+    height: 100%;
     position: absolute;
-    transition: all 0.5s ease-in 0s;
-    background-color: red;
     top: 0px;
-    transform: translateY(-50px);
+    left: 0px;
+    transition: all 0.5s ease-in 0s;
 }
 
-#compose.show {
-    top: 30px;
+section.show {
+    transform: translateY(0%);
+}
+
+section.hidden {
+    transform: translateY(-100%);
+    display: none;
 }
 
 #compose > button {
-    /*background-color: blue;*/
     background-image: url('/img/send128.png');
     background-size: cover;
     background-repeat: no-repeat;

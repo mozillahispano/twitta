@@ -18,7 +18,8 @@ var user = user || {};
         this.verified = m.prop(user.verified);
         this.profile_image_url_https = m.prop(user.profile_image_url_https);
         this.profile_background_tile = m.prop(user.profile_background_tile);
-        this.profile_background_image_url_https = m.prop(user.profile_background_image_url_https);
+        this.profile_background_image_url_https =
+            m.prop(user.profile_background_image_url_https);
         this.statuses_count = m.prop(user.statuses_count);
         this.friends_count = m.prop(user.friends_count);
         this.followers_count = m.prop(user.followers_count);
@@ -41,6 +42,7 @@ var user = user || {};
                 var el = userList[i];
                 if (el.id() === id) {
                     foundValue = el;
+                    break;
                 }
             }
             return foundValue;

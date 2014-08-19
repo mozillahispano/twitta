@@ -71,7 +71,6 @@
           rv[key] = params[key];
         }
       });
-      console.log('Filtered, ', rv);
       return rv;
     }
 
@@ -99,6 +98,7 @@
             if (xhr.status === 200) {
               callback(null, xhr.response);
             } else {
+              console.error(xhr.response);
               callback(xhr.response.errors[0].message || 'unknown error');
             }
         }
