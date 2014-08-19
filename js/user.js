@@ -1,6 +1,10 @@
+/* global UIhelpers */
+
 var user = user || {};
 (function(window) {
     'use strict';
+
+    var ELEM = document.getElementById('userprofile');
 
     // Models
     user.User = function(user) {
@@ -51,7 +55,7 @@ var user = user || {};
         this.id = m.route.param('id');
         if (this.id) {
             this.u = this.findById(this.id);
-            console.log('found', this.u.statuses_count());
+            UIhelpers.showOnlyThisSection(ELEM);
             m.render(document.getElementById('userprofile'), user.view(this));
         }
     };

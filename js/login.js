@@ -3,6 +3,8 @@ var login = login || {};
 (function(window) {
     'use strict';
 
+    var ELEM = document.getElementById('login');
+
     function parseData(data) {
         return data.match(/oauthAccessToken=(.*)&oauthAccessTokenSecret=(.*)/);
     }
@@ -14,7 +16,6 @@ var login = login || {};
 
     login.controller = function() {
         console.log('login.controller');
-        var elem = document.getElementById('login');
 
         this.lg = function() {
             // Trust me, show me the code:
@@ -38,14 +39,12 @@ var login = login || {};
                         'Please try again in a few minutes. We are sorry :(');
                 }
                 // And start again
-                elem.classList.remove('show');
-                elem.classList.add('hidden');
                 m.route('/');
             }
         }.bind(this);
-        elem.classList.remove('hidden');
-        elem.classList.add('show');
-        m.render(elem, login.view(this));
+
+        UIhelpers.showOnlyThisSection(ELEM);
+        m.render(ELEM, login.view(this));
     };
 
     login.view = function(ctrl) {

@@ -1,4 +1,4 @@
-/* global user, tuiter, moment */
+/* global user, tuiter, moment, UIhelpers */
 
 'use strict';
 
@@ -67,8 +67,7 @@ var timeline = timeline || {};
             tweetList.push(tuit);
             // Do not render if we are not on the view
             if (m.route() !== '/timeline') { return; }
-            ELEM.classList.remove('hidden');
-            ELEM.classList.add('show');
+            UIhelpers.showOnlyThisSection(ELEM);
 
             m.render(ELEM, timeline.view(this));
         }.bind(this);
