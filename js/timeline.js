@@ -103,6 +103,9 @@ var timeline = timeline || {};
     };
 
     timeline.refresh = function(forced) {
+        if (forced) {
+            console.log('timeline.refresh forced');
+        }
         var now = Date.now();
         if (!latestHomeRequestSinceEpochMs) {
             latestHomeRequestSinceEpochMs = now;

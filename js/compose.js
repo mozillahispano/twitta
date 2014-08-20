@@ -1,4 +1,4 @@
-/* global UIhelpers, tuiter, header */
+/* global UIhelpers, tuiter, header, timeline */
 'use strict';
 
 var compose = compose || {};
@@ -25,6 +25,7 @@ var compose = compose || {};
                         window.alert(error);
                     } else {
                         that.text('');
+                        timeline.refresh(true);
                         m.route('/timeline');
                     }
                 });

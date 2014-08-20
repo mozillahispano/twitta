@@ -103,6 +103,13 @@ var mentions = mentions || {};
     };
 
     mentions.refresh = function(forced) {
+        console.log('mentions.refresh');
+
+        // Do not show user mentions on first run
+        function showNotification(tw) {
+            UIhelpers.showNotification(tw.user.screen_name, tw.text);
+        }
+
         var now = Date.now();
         if (!latestHomeRequestSinceEpochMs) {
             latestHomeRequestSinceEpochMs = now;
@@ -135,10 +142,13 @@ var mentions = mentions || {};
             } else {
                 data.forEach(function(tw) {
                     that.add(tw);
+                    if (!firstRun) {
+                        showNotification(tw);
+                    }
                 });
+                firstRun = false;
             }
         });
-        firstRun = false;
     };
 
     mentions.getLength = function() {
