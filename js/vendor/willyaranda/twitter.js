@@ -175,6 +175,29 @@
   };
 
   /**
+   * Returns the 20 most recent direct messages sent to the authenticating user.
+   * Includes detailed information about the sender and recipient user. You can
+   * request up to 200 direct messages per call, up to a maximum of 800 incoming DMs.
+   *
+   * @link https://dev.twitter.com/docs/api/1.1/get/direct_messages
+   * @param  {Object}   parms
+   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   */
+  tuiter.getDirectMessages = function(parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/direct_messages.json';
+    var method = 'GET';
+    var params = {
+      since_id: parms.since_id,
+      max_id: parms.max_id,
+      count: parms.count,
+      include_entities: parms.include_entities,
+      skip_status: parms.skip_status
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
    * Opens a connection to the specified stream, calling any callback
    * stored on listeners for the events received.
    * @param  {string} endpoint U

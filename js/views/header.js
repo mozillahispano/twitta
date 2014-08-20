@@ -13,7 +13,7 @@ var header = header || {};
             ]),
             m('div#tl', [
                 m('a', {href: '/timeline', config: m.route}, [
-                    m('img', { src: '/img/tl.png'}),
+                    m('img', { src: '/img/timeline.png'}),
                     m('span', timeline.getLength())
                 ])
             ]),
@@ -24,16 +24,18 @@ var header = header || {};
                 ])
             ]),
             m('div#direct', [
-                m('a', {href: '/dm', config: m.route}, [
+                m('a', {href: '/dms', config: m.route}, [
                     m('img', { src: '/img/direct.png'}),
-                    m('span', 7/*dms.getLength()*/) // FIXME
+                    m('span', dms.getLength()) // FIXME
                 ])
             ]),
-            m('a', {
-                href: '/compose',
-                config: m.route
-            }, [
-                m('div#send')
+            m('div#senddiv', [
+                m('a', {
+                    href: '/compose',
+                    config: m.route
+                }, [
+                    m('img#send', { src: '/img/send128.png'})
+                ])
             ])
         ]);
     };

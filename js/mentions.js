@@ -5,7 +5,6 @@
 var mentions = mentions || {};
 (function(window) {
 
-    var userController;
     var mentionsRefreshInterval;
     var latestHomeRequestSinceEpochMs;
     var eldestTweetId;
@@ -176,7 +175,6 @@ var mentions = mentions || {};
         if (tweetList.length === 0) { return rv; }
 
         // Make the timeline, if we have tweets
-
         // 1) Sort the Array
         tweetList.sort(compareFunc);
 
@@ -186,24 +184,8 @@ var mentions = mentions || {};
 
         // 3) Create the DOM
         var tl = m('div#timeline', [
-            tweetList.map(function(tweet) {
-                var ago = moment(tweet.created_at()).fromNow();
-                return m('div#' + tweet.id_str(), [
-                           m('div#img', [
-                               m('img', {src: tweet.user.profile_image_url_https()})
-                           ]),
-                           m('p#name', [
-                             tweet.user.name() + ' ',
-                             m('a',
-                               {href: '/user/' + tweet.user.id(), config: m.route },
-                               '@' + tweet.user.screen_name()
-                             )]
-                           ),
-                           m('p#text', tweet.text()),
-                           m('p#date', ago),
-                           m('p#retweeted', tweet.is_retweet()),
-                           mediaNodes(tweet)
-                ]);
+            tweetList.map(function(tw) {
+                return tweet.view(tw);
             })
         ]);
         rv.push(tl);

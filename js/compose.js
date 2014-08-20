@@ -38,25 +38,30 @@ var compose = compose || {};
     compose.view = function(controller) {
         var data = [];
         data.push(header.view());
-        data.push(m('textarea#compose-area', {
-            name: 'compose-area',
-            placeholder: 'What do you want to say?',
-            oninput: m.withAttr('value', controller.text),
-            onkeyup: controller.update
-        }));
-        data.push(m('button#sendbutton', {
-            onclick: controller.updateStatus
-        }));
-        data.push(m('span#charsleft', 140 - controller.text().length));
-        data.push(m('label', [
-            m('input#addimage', {
-                type: 'file',
-                name: 'addimage',
-                //value: 'image/*',
-                placeholder: 'Image'
+
+        var comp = m('div#comp', [
+            m('textarea#compose-area', {
+                name: 'compose-area',
+                placeholder: 'What do you want to say?',
+                oninput: m.withAttr('value', controller.text),
+                onkeyup: controller.update
             }),
-            'Add image'
-        ]));
+            m('button#sendbutton', {
+                onclick: controller.updateStatus
+            }),
+            m('span#charsleft', 140 - controller.text().length),
+            m('label', [
+                m('input#addimage', {
+                    type: 'file',
+                    name: 'addimage',
+                    //value: 'image/*',
+                    placeholder: 'Image'
+                }),
+                'Add image'
+            ])
+        ]);
+
+        data.push(comp);
         return data;
     };
 })(window);

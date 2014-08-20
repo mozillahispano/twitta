@@ -1,5 +1,3 @@
-/* global tuiter */
-
 (function(window) {
     'use strict';
 
