@@ -25,7 +25,6 @@ var compose = compose || {};
                         window.alert(error);
                     } else {
                         that.text('');
-                        timeline.refresh(true);
                         m.route('/timeline');
                     }
                 });
