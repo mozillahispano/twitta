@@ -1,4 +1,4 @@
-/* global home, timeline, login, user, compose */
+/* global home, timeline, login, user, compose, mentions */
 
 (function(window) {
     'use strict';
@@ -12,10 +12,10 @@
             '/login': login,
             // '/profile': ownProfile,
             '/compose': compose,
-            //'/mentions': mentions,
+            '/mentions': mentions,
             '/user/:id': user
             /*,
-            '/dm/:id': dm,
+            '/dm': dm,
             '/tweet/:id': tweetDetail,
             '/list/:id': listDetail,
             '/settings': settings*/

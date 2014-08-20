@@ -1,23 +1,24 @@
-/* global tweet, tuiter, UIhelpers, header */
+/* global tuiter, moment, UIhelpers, tweet, header */
 
 'use strict';
 
-var timeline = timeline || {};
+var mentions = mentions || {};
 (function(window) {
 
-    var timelineRefreshInterval;
+    var userController;
+    var mentionsRefreshInterval;
     var latestHomeRequestSinceEpochMs;
     var eldestTweetId;
     var newestTweetId;
     var firstRun = true;
 
-    var ELEM = document.getElementById('timeline');
+    var ELEM = document.getElementById('mentions');
 
     // List of tweets: timeline
     var tweetList = [];
 
     // Controller
-    timeline.controller = function() {
+    mentions.controller = function() {
         this.add = function(tw) {
             var tuit = new tweet.Tweet(tw);
 
@@ -28,11 +29,11 @@ var timeline = timeline || {};
             tweetList.push(tuit);
 
             // Do not show the section if we are not on the route
-            if (m.route() === '/timeline') {
+            if (m.route() === '/mentions') {
                 UIhelpers.showOnlyThisSection(ELEM);
             }
-            m.render(ELEM, timeline.view(this));
 
+            m.render(ELEM, mentions.view(this));
         }.bind(this);
 
         this.find = function(id) {
@@ -59,7 +60,7 @@ var timeline = timeline || {};
             if (tw) {
                 tweetList.splice(tw.index, 1);
             }
-            m.render(ELEM, timeline.view(this));
+            m.render(ELEM, mentions.view(this));
         }.bind(this);
 
         this.favorited = function(id) {
@@ -93,16 +94,16 @@ var timeline = timeline || {};
         var that = this;
         // Wait a little to load timeline
         setTimeout(function() {
-            timeline.refresh.bind(that)();
+            mentions.refresh.bind(that)();
         }, 300);
 
-        if (m.route() === '/timeline') {
+        if (m.route() === '/mentions') {
             UIhelpers.showOnlyThisSection(ELEM);
         }
-        m.render(ELEM, timeline.view(this));
+        m.render(ELEM, mentions.view(this));
     };
 
-    timeline.refresh = function(forced) {
+    mentions.refresh = function(forced) {
         var now = Date.now();
         if (!latestHomeRequestSinceEpochMs) {
             latestHomeRequestSinceEpochMs = now;
@@ -117,9 +118,9 @@ var timeline = timeline || {};
 
         var that = this;
 
-        if (!timelineRefreshInterval) {
-            timelineRefreshInterval = window.setInterval(function() {
-                timeline.refresh.bind(that)();
+        if (!mentionsRefreshInterval) {
+            mentionsRefreshInterval = window.setInterval(function() {
+                mentions.refresh.bind(that)();
             }, 60000);
         }
 
@@ -127,11 +128,11 @@ var timeline = timeline || {};
         var params = {
             since_id: newestTweetId
         };
-        tuiter.getHomeTimeline(params, function(error, data) {
+        tuiter.getMentionsTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
                 window.alert(error);
-                m.render(ELEM, timeline.view(that));
+                m.render(ELEM, mentions.view(that));
             } else {
                 data.forEach(function(tw) {
                     that.add(tw);
@@ -141,12 +142,21 @@ var timeline = timeline || {};
         firstRun = false;
     };
 
-    timeline.getLength = function() {
+    mentions.getLength = function() {
         return tweetList.length;
     };
 
     // View
-    timeline.view = function(controller) {
+    mentions.view = function(controller) {
+        function mediaNodes(tweet) {
+            if (tweet.media()) {
+                return m('a', {
+                    href: tweet.expanded_url(),
+                    target: '_blank'
+                    }, m('img', {src: tweet.media_url()})
+                );
+            }
+        }
 
         // We want this in reverse order, let's return the other way around
         function compareFunc(a, b) {
@@ -161,12 +171,12 @@ var timeline = timeline || {};
 
         // Make the header
         var rv = [];
-
         rv.push(header.view());
 
         if (tweetList.length === 0) { return rv; }
 
         // Make the timeline, if we have tweets
+
         // 1) Sort the Array
         tweetList.sort(compareFunc);
 
@@ -176,8 +186,24 @@ var timeline = timeline || {};
 
         // 3) Create the DOM
         var tl = m('div#timeline', [
-            tweetList.map(function(tw) {
-                return tweet.view(tw);
+            tweetList.map(function(tweet) {
+                var ago = moment(tweet.created_at()).fromNow();
+                return m('div#' + tweet.id_str(), [
+                           m('div#img', [
+                               m('img', {src: tweet.user.profile_image_url_https()})
+                           ]),
+                           m('p#name', [
+                             tweet.user.name() + ' ',
+                             m('a',
+                               {href: '/user/' + tweet.user.id(), config: m.route },
+                               '@' + tweet.user.screen_name()
+                             )]
+                           ),
+                           m('p#text', tweet.text()),
+                           m('p#date', ago),
+                           m('p#retweeted', tweet.is_retweet()),
+                           mediaNodes(tweet)
+                ]);
             })
         ]);
         rv.push(tl);
@@ -185,6 +211,6 @@ var timeline = timeline || {};
         return rv;
     };
 
-    m.module(ELEM, timeline);
+    m.module(ELEM, mentions);
 
 })(window);

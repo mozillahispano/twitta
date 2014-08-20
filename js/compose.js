@@ -1,4 +1,4 @@
-/* global UIhelpers, tuiter*/
+/* global UIhelpers, tuiter, header */
 'use strict';
 
 var compose = compose || {};
@@ -37,6 +37,7 @@ var compose = compose || {};
 
     compose.view = function(controller) {
         var data = [];
+        data.push(header.view());
         data.push(m('textarea#compose-area', {
             name: 'compose-area',
             placeholder: 'What do you want to say?',

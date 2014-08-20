@@ -33,3 +33,8 @@ label input[type="file"] {
     position: fixed;
     top: -1000px;
 }
+
+#timeline > div > a > img {
+    width: 100%;
+    height: 100%;
+}

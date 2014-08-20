@@ -1,4 +1,4 @@
-/* global UIhelpers */
+/* global UIhelpers, header */
 
 var user = user || {};
 (function(window) {
@@ -64,6 +64,7 @@ var user = user || {};
     user.view = function(ctrl) {
         var u = ctrl.u;
         var data = [];
+        data.push(header.view());
         if (!u) {
             return;
         }

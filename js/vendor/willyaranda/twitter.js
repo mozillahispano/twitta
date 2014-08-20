@@ -122,11 +122,33 @@
     var endpoint = 'https://api.twitter.com/1.1/statuses/home_timeline.json';
     var method = 'GET';
     var params = {
-      count: parms.count || 20,
+      count: parms.count,
       since_id: parms.since_id,
       max_id: parms.max_id,
       trim_user: parms.trim_user,
       exclude_replies: parms.exclude_replies,
+      contributor_details: parms.contributor_details,
+      include_entities: parms.include_entities
+    };
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Returns the 20 most recent mentions (tweets containing a users's @screen_name)
+   * for the authenticating user.
+   *
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
+   * @param  {Object}   params Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   */
+  tuiter.getMentionsTimeline = function(parms, cb)  {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json';
+    var method = 'GET';
+    var params = {
+      count: parms.count,
+      since_id: parms.since_id,
+      max_id: parms.max_id,
+      trim_user: parms.trim_user,
       contributor_details: parms.contributor_details,
       include_entities: parms.include_entities
     };
