@@ -17,6 +17,7 @@ var compose = compose || {};
         }.bind(this);
 
         this.updateStatus = function() {
+            var that = this;
             if (this.image()) {
                 // todo send image
             } else {
@@ -24,6 +25,7 @@ var compose = compose || {};
                     if (error) {
                         window.alert(error);
                     } else {
+                        that.text('');
                         m.route('/timeline');
                     }
                 });
@@ -39,8 +41,7 @@ var compose = compose || {};
         data.push(m('textarea#compose-area', {
             name: 'compose-area',
             placeholder: 'What do you want to say?',
-            //value: controller.text(),
-            onkeydown: m.withAttr('value', controller.text),
+            oninput: m.withAttr('value', controller.text),
             onkeyup: controller.update
         }));
         data.push(m('button#sendbutton', {
