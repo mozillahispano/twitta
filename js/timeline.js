@@ -145,6 +145,24 @@ var timeline = timeline || {};
         return tweetList.length;
     };
 
+    timeline.loadMore = function() {
+        var that = this;
+        var params = {
+            max_id: eldestTweetId
+        };
+        tuiter.getHomeTimeline(params, function(error, data) {
+            if (error) {
+                console.error(error);
+                window.alert(error);
+                m.render(ELEM, timeline.view(that));
+            } else {
+                data.forEach(function(tw) {
+                    that.add(tw);
+                });
+            }
+        });
+    };
+
     // View
     timeline.view = function(controller) {
 
@@ -181,6 +199,11 @@ var timeline = timeline || {};
             })
         ]);
         rv.push(tl);
+
+        var loadMore = m('div#loadmore', [
+            m('button', { onclick: timeline.loadMore.bind(controller)}, 'Load moar')
+        ]);
+        rv.push(loadMore);
 
         return rv;
     };
