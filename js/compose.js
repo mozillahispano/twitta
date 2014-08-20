@@ -12,7 +12,6 @@ var compose = compose || {};
         this.image = m.prop(false);
 
         this.update = function() {
-            console.log(this.text());
             m.render(ELEM, compose.view(this));
         }.bind(this);
 
@@ -21,7 +20,7 @@ var compose = compose || {};
             if (this.image()) {
                 // todo send image
             } else {
-                tuiter.updateStatus(this.text(), null, function(error, data) {
+                tuiter.updateStatus(this.text(), null, function(error) {
                     if (error) {
                         window.alert(error);
                     } else {
