@@ -56,7 +56,7 @@ var user = user || {};
         if (this.id) {
             this.u = this.findById(this.id);
             UIhelpers.showOnlyThisSection(ELEM);
-            m.render(document.getElementById('userprofile'), user.view(this));
+            m.render(ELEM, user.view(this));
         }
     };
 
@@ -82,7 +82,7 @@ var user = user || {};
         data.push(m('p', u.location()));
         if (u.url()) {
             data.push(m('p', [
-                m('a', {href: u.url()}, u.url())
+                m('a', {href: u.url(), target: '_blank'}, u.url())
             ]));
         }
         data.push(m('p', 'prot' + u.protected()));

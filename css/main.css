@@ -16,7 +16,7 @@ section.hidden {
     display: none;
 }
 
-#compose > button {
+#compose > button, #send {
     background-image: url('/img/send128.png');
     background-size: cover;
     background-repeat: no-repeat;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Twitta</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
     <link rel="stylesheet" href="css/main.css">
 
     <!-- Frameworks -->
@@ -21,10 +22,7 @@
     <!-- Routes -->
     <script src="js/app.js"></script>
 
-    <!-- Timeline resources
-    <script src="js/controller/timeline.js" async></script>
-    <script src="js/models/timeline.js" async></script>
-    <script src="js/view/timeline.js" async></script>-->
+    <!-- Timeline resources -->
     <script src="js/timeline.js" async></script>
 
     <!-- User resources -->
@@ -36,6 +34,9 @@
     <!-- Login -->
     <script src="js/login.js" async></script>
 
+    <!-- Compose -->
+    <script src="js/compose.js" async></script>
+
     <!-- MOCKS!
     <script src="js/mocks.js" async></script>-->
 
@@ -45,17 +46,7 @@
     <section id="timeline" class="hidden"></section>
     <section id="login" class="hidden"></section>
     <section id="profile" class="hidden"></section>
-    <section id="compose" class="hidden">
-        <textarea name="compose-area" placeholder="What do you want to say?"
-        id="compose-area"></textarea></br>
-        <button type="button" id="sendbutton"></button>
-        <span id="charsleft">140</span>
-        <label>
-            <input type="file" id="addimage" name="addimage" value="image/*" placeholder="Image" />
-            Add image
-        </label>
-
-    </section>
+    <section id="compose" class="hidden"></section>
     <section id="mentions" class="hidden"></section>
     <section id="userprofile" class="hidden"></section>
     <section id="dm" class="hidden"></section>

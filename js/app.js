@@ -1,4 +1,4 @@
-/* global home, timeline, login, user */
+/* global home, timeline, login, user, compose */
 
 (function(window) {
     'use strict';
@@ -10,10 +10,9 @@
             '/': home,
             '/timeline': timeline,
             '/login': login,
-            /*
-            '/profile': ownProfile,
+            // '/profile': ownProfile,
             '/compose': compose,
-            '/mentions': mentions,*/
+            //'/mentions': mentions,
             '/user/:id': user
             /*,
             '/dm/:id': dm,

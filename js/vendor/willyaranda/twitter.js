@@ -84,6 +84,7 @@
       method: method,
       parameters: filterParams(params)
     };
+
     var accessor = tuiter.getCredentials();
     OAuth.completeRequest(message, accessor);
     OAuth.SignatureMethod.sign(message, accessor);
@@ -122,12 +123,12 @@
     var method = 'GET';
     var params = {
       count: parms.count || 20,
-      since_id: parms.since_id || null,
-      max_id: parms.max_id || null,
-      trim_user: parms.trim_user || false,
-      exclude_replies: parms.exclude_replies || false,
-      contributor_details: parms.contributor_details || true,
-      include_entities: parms.include_entities || true
+      since_id: parms.since_id,
+      max_id: parms.max_id,
+      trim_user: parms.trim_user,
+      exclude_replies: parms.exclude_replies,
+      contributor_details: parms.contributor_details,
+      include_entities: parms.include_entities
     };
     tuiter._request(endpoint, method, params, cb);
   };

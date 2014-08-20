@@ -11,6 +11,7 @@ var timeline = timeline || {};
     var latestHomeRequestSinceEpochMs;
     var eldestTweetId;
     var newestTweetId;
+    var firstRun = true;
 
     var ELEM = document.getElementById('timeline');
 
@@ -74,6 +75,7 @@ var timeline = timeline || {};
 
         this.find = function(id) {
             var found = null;
+
             function findFunction(element, index) {
                 if (element.id_str() === id) {
                     found = {};
@@ -84,58 +86,93 @@ var timeline = timeline || {};
                     return false;
                 }
             }
+
             // Find the tweet
             tweetList.some(findFunction);
             return found;
-        };
+        }.bind(this);
 
         this.remove = function(id) {
             var tw = this.find(id);
             if (tw) {
                 tweetList.splice(tw.index, 1);
             }
+            m.render(ELEM, timeline.view(this));
         }.bind(this);
 
         this.favorited = function(id) {
             var tw = this.find(id);
-            tw.favorited(true);
+            if (tw.value) {
+                tw.value.favorited(true);
+            }
         }.bind(this);
 
         this.unfavorited = function(id) {
             var tw = this.find(id);
-            tw.favorited(false);
+            if (tw.value) {
+                tw.value.favorited(false);
+            }
         }.bind(this);
 
         this.retweeted = function(id) {
             var tw = this.find(id);
-            tw.retweeted(true);
+            if (tw.value) {
+                tw.value.retweeted(true);
+            }
         }.bind(this);
 
         this.unretweeted = function(id) {
             var tw = this.find(id);
-            tw.retweeted(false);
+            if (tw.value) {
+                tw.value.retweeted(false);
+            }
         }.bind(this);
 
-        if (!timelineRefreshInterval) {
-            timelineRefreshInterval = setTimeout(function() {
-                timeline.test();
-            }, 1000);
-        }
+        var that = this;
+        // Wait a little to load
+        setTimeout(function() {
+            timeline.refresh.bind(that)();
+        }, 300);
+
+        UIhelpers.showOnlyThisSection(ELEM);
+
+        m.render(ELEM, timeline.view(this));
     };
 
-    timeline.test = function() {
-        if (!timelineController) {
-            timelineController = new timeline.controller();
+    timeline.refresh = function() {
+        var now = Date.now();
+        if (!latestHomeRequestSinceEpochMs) {
+            latestHomeRequestSinceEpochMs = now;
         }
+
+        if (!firstRun && (now - latestHomeRequestSinceEpochMs < 60000)) {
+            console.log('stall', now, latestHomeRequestSinceEpochMs);
+            return;
+        } else {
+            latestHomeRequestSinceEpochMs = now;
+        }
+
+        var that = this;
+
+        if (!timelineRefreshInterval) {
+            timelineRefreshInterval = window.setInterval(function() {
+                timeline.refresh.bind(that)();
+            }, 10000);
+        }
+
+
         tuiter.getHomeTimeline({}, function(error, data) {
             if (error) {
                 console.error(error);
+                window.alert(error);
+                m.render(ELEM, timeline.view(that));
             } else {
                 data.forEach(function(tw) {
-                    timelineController.add(tw);
+                    that.add(tw);
                 });
             }
         });
+        firstRun = false;
     };
 
     // View
@@ -143,7 +180,8 @@ var timeline = timeline || {};
         function mediaNodes(tweet) {
             if (tweet.media()) {
                 return m('a', {
-                    href: tweet.expanded_url()
+                    href: tweet.expanded_url(),
+                    target: '_blank'
                     }, m('img', {src: tweet.media_url()})
                 );
             }
@@ -160,28 +198,71 @@ var timeline = timeline || {};
             }
         }
 
-        // Sort the Array
+        // Make the header
+        var rv = [];
+        var header = m('div#header', [
+            m('div#sidebar', [
+                m('img', { src: '/img/sidebar.png'}),
+                m('span', 'Sidebar')
+            ]),
+            m('div#tl', [
+                m('img', { src: '/img/tl.png'}),
+                m('span', tweetList.length)
+            ]),
+            m('div#mentions', [
+                m('img', { src: '/img/mentions.png'}),
+                m('span', 5) // FIXME: mentions.length
+            ]),
+            m('div#direct', [
+                m('img', { src: '/img/direct.png'}),
+                m('span', 8) // FIXME: dm.length
+            ]),
+            m('a', {
+                href: '/compose',
+                config: m.route
+            }, [
+                m('div#send')
+            ])
+        ]);
+
+        rv.push(header);
+
+        if (tweetList.length === 0) { return rv; }
+
+        // Make the timeline, if we have tweets
+
+        // 1) Sort the Array
         tweetList.sort(compareFunc);
 
-        return tweetList.map(function(tweet) {
-            var ago = moment(tweet.created_at()).fromNow();
-            return m('div#' + tweet.id_str(), [
-                       m('div#img', [
-                           m('img', {src: tweet.user.profile_image_url_https()})
-                       ]),
-                       m('p#name', [
-                         tweet.user.name() + ' ',
-                         m('a',
-                           {href: '/user/' + tweet.user.id(), config: m.route },
-                           '@' + tweet.user.screen_name()
-                         )]
-                       ),
-                       m('p#text', tweet.text()),
-                       m('p#date', ago),
-                       m('p#retweeted', tweet.is_retweet()),
-                       mediaNodes(tweet)
+        // 2) Save data for next queries
+        newestTweetId = tweetList[0].id_str();
+        eldestTweetId = tweetList[tweetList.length - 1].id_str();
+
+        // 3) Create the DOM
+        var tl = m('div#timeline', [
+            tweetList.map(function(tweet) {
+                var ago = moment(tweet.created_at()).fromNow();
+                return m('div#' + tweet.id_str(), [
+                           m('div#img', [
+                               m('img', {src: tweet.user.profile_image_url_https()})
+                           ]),
+                           m('p#name', [
+                             tweet.user.name() + ' ',
+                             m('a',
+                               {href: '/user/' + tweet.user.id(), config: m.route },
+                               '@' + tweet.user.screen_name()
+                             )]
+                           ),
+                           m('p#text', tweet.text()),
+                           m('p#date', ago),
+                           m('p#retweeted', tweet.is_retweet()),
+                           mediaNodes(tweet)
                 ]);
-        });
+            })
+        ]);
+        rv.push(tl);
+
+        return rv;
     };
 
 })(window);
