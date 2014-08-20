@@ -30,6 +30,7 @@ var tweet = tweet || {};
             this.orig_id = m.prop(tweet.retweeted_status.id);
             this.retweeted_by_username = m.prop(tweet.user.screen_name);
             this.orig_user = new user.User(tweet.retweeted_status.user);
+            this.text = m.prop(tweet.retweeted_status.text);
             userController.add(this.orig_user);
         }
 
@@ -61,21 +62,35 @@ var tweet = tweet || {};
         }
 
         var ago = moment(tweet.created_at()).fromNow();
-        return m('div#' + tweet.id_str(), [
-                   m('div#img', [
-                       m('img', {src: tweet.user.profile_image_url_https()})
-                   ]),
-                   m('p#name', [
-                     tweet.user.name() + ' ',
-                     m('a',
-                       {href: '/user/' + tweet.user.id(), config: m.route },
-                       '@' + tweet.user.screen_name()
-                     )]
-                   ),
-                   m('p#text', tweet.text()),
-                   m('p#date', ago),
-                   m('p#retweeted', tweet.is_retweet()),
-                   mediaNodes(tweet)
-        ]);
+        var data = [];
+        var u;
+
+        if (tweet.is_retweet()) {
+            u = tweet.orig_user;
+        } else {
+            u = tweet.user;
+        }
+
+        data.push(m('div#img', [
+            m('img', {src: u.profile_image_url_https()})
+        ]));
+        data.push(m('p#name', [
+            u.name() + ' ',
+            m('a',
+                {href: '/user/' + u.id(), config: m.route },
+                '@' + u.screen_name()
+            )]
+        ));
+
+        data.push(m('p#text', tweet.text()));
+        data.push(m('p#date', ago));
+
+        if (tweet.is_retweet()) {
+            data.push(m('p#retweeted', 'Retweeted by ' + tweet.user.screen_name()));
+        }
+
+        data.push(mediaNodes(tweet));
+
+        return m('div#' + tweet.id_str(), data);
     };
 })(window);
