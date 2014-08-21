@@ -15,8 +15,6 @@ var login = login || {};
     }
 
     login.controller = function() {
-        console.log('login.controller');
-
         this.lg = function() {
             // Trust me, show me the code:
             // https://github.com/willyaranda/twitta
@@ -48,7 +46,6 @@ var login = login || {};
     };
 
     login.view = function(ctrl) {
-        console.log('login.view');
         var data = [];
         data.push(m('h3', 'Bienvenido a twitta'));
         data.push(m('p', 'Para poder usar la aplicación, tienes que permitir' +

@@ -104,7 +104,6 @@ var dms = dms || {};
         tuiter.getDirectMessages(params, function(error, data) {
             if (error) {
                 console.error(error);
-                window.alert(error);
                 m.render(ELEM, dms.view(that));
             } else {
                 data.forEach(function(tw) {

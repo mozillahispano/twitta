@@ -8,7 +8,6 @@ var dm = dm || {};
 
     // Models
     dm.DM = function(dm) {
-        console.log('dm.DM');
         // Lazy initialize
         if (!userController) {
             userController = new user.controller();

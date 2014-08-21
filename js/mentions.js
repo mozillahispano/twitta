@@ -23,7 +23,7 @@ var mentions = mentions || {};
 
             // Check if we have this tweet, if so, do nothing.
             if (this.find(tuit.id_str())) {
-                return null;
+                return false;
             }
             tweetList.push(tuit);
             header.update();
@@ -34,6 +34,7 @@ var mentions = mentions || {};
             }
 
             m.render(ELEM, mentions.view(this));
+            return true;
         }.bind(this);
 
         this.find = function(id) {
@@ -95,6 +96,9 @@ var mentions = mentions || {};
         // Wait a little to load timeline
         setTimeout(function() {
             mentions.refresh.bind(that)();
+            if (firstRun) {
+                mentions.listenToEvents.bind(that)();
+            }
         }, 300);
 
         if (m.route() === '/mentions') {
@@ -103,14 +107,35 @@ var mentions = mentions || {};
         m.render(ELEM, mentions.view(this));
     };
 
-    mentions.refresh = function(forced) {
-        console.log('mentions.refresh');
+    function showNotification(tw) {
+        UIhelpers.showNotification(tw.user.screen_name, tw.text);
+    }
 
-        // Do not show user mentions on first run
-        function showNotification(tw) {
-            UIhelpers.showNotification(tw.user.screen_name, tw.text);
+    mentions.listenToEvents = function() {
+        function isMention(tw) {
+            var screen_name = 'willyaranda'; //config.screen_name()
+            var text = tw.text.toLowerCase();
+            if (text.indexOf(screen_name) >= 0) {
+                return true;
+            }
+            return false;
         }
 
+        var that = this;
+        tuiter.addListener('text', function(data) {
+            if (isMention(data)) {
+                var added = that.add(data);
+                if (added) {
+                    showNotification(data);
+                }
+            }
+        });
+        tuiter.addListener('delete', function(tweetId) {
+            that.remove(tweetId);
+        });
+    };
+
+    mentions.refresh = function(forced) {
         var now = Date.now();
         if (!latestHomeRequestSinceEpochMs) {
             latestHomeRequestSinceEpochMs = now;
@@ -128,7 +153,7 @@ var mentions = mentions || {};
         if (!mentionsRefreshInterval) {
             mentionsRefreshInterval = window.setInterval(function() {
                 mentions.refresh.bind(that)();
-            }, 60000);
+            }, 600000);
         }
 
         // Just get new tweets
@@ -138,7 +163,6 @@ var mentions = mentions || {};
         tuiter.getMentionsTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
-                window.alert(error);
                 m.render(ELEM, mentions.view(that));
             } else {
                 data.forEach(function(tw) {

@@ -8,7 +8,6 @@ var tweet = tweet || {};
 
     // Models
     tweet.Tweet = function(tweet) {
-        console.log('tweet.Tweet');
         // Lazy initialize
         if (!userController) {
             userController = new user.controller();

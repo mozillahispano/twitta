@@ -155,7 +155,6 @@ var timeline = timeline || {};
         tuiter.getHomeTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
-                window.alert(error);
                 m.render(ELEM, timeline.view(that));
             } else {
                 data.forEach(function(tw) {
@@ -178,7 +177,6 @@ var timeline = timeline || {};
         tuiter.getHomeTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
-                window.alert(error);
                 m.render(ELEM, timeline.view(that));
             } else {
                 data.forEach(function(tw) {

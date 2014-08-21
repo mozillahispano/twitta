@@ -298,7 +298,7 @@
   };
 
   tuiter._parseData = function(data) {
-    console.log(data);
+    console.log('Received', data);
     // Twit event
     if (data['text']) {
       tuiter._fireEvent('text', data);

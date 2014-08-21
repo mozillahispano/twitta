@@ -7,7 +7,6 @@ var compose = compose || {};
     var ELEM = document.getElementById('compose');
 
     compose.controller = function() {
-        console.log('compose.controller');
         this.text = m.prop('');
         this.image = m.prop(false);
 
