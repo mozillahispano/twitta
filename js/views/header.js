@@ -15,7 +15,7 @@ var header = header || {};
     };
 
     header.view = function(controller) {
-        return m('div#header', [
+        return m('div.inline', [
             m('div#sidebar', [
                 m('img', { src: '/img/sidebar.png'}),
                 m('span', 'Sidebar')

@@ -51,7 +51,7 @@ label input[type="file"] {
     height: 10%;
 }
 
-#header > div, #header > div > a > div {
+#header > div > div {
     display: inline;
 }
 
@@ -62,4 +62,9 @@ body {
 div > a > img {
     height: 20px;
     width: 20px;
+}
+
+#senddiv {
+    float: rigth;
+    margin: 0.3rem;
 }

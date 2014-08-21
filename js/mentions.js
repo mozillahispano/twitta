@@ -23,7 +23,7 @@ var mentions = mentions || {};
 
             // Check if we have this tweet, if so, do nothing.
             if (this.find(tuit.id_str())) {
-                return;
+                return null;
             }
             tweetList.push(tuit);
             header.update();
@@ -142,8 +142,10 @@ var mentions = mentions || {};
                 m.render(ELEM, mentions.view(that));
             } else {
                 data.forEach(function(tw) {
-                    that.add(tw);
-                    if (!firstRun) {
+                    var t = that.add(tw);
+                    // Only show notification if the tweet is added (maybe it's
+                    // added previously on streaming API)
+                    if (!firstRun && t) {
                         showNotification(tw);
                     }
                 });
