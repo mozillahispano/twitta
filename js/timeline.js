@@ -58,8 +58,8 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw) {
                 tweetList.splice(tw.index, 1);
+                m.render(ELEM, timeline.view(this));
             }
-            m.render(ELEM, timeline.view(this));
         }.bind(this);
 
         this.favorited = function(id) {
@@ -96,10 +96,24 @@ var timeline = timeline || {};
             timeline.refresh.bind(that)();
         }, 300);
 
+        // Initialize
+        timeline.listenToEvents.bind(this)();
+        tuiter.userStream();
+
         if (m.route() === '/timeline') {
             UIhelpers.showOnlyThisSection(ELEM);
         }
         m.render(ELEM, timeline.view(this));
+    };
+
+    timeline.listenToEvents = function() {
+        var that = this;
+        tuiter.addListener('text', function(data) {
+            that.add(data);
+        });
+        tuiter.addListener('delete', function(tweetId) {
+            that.remove(tweetId);
+        });
     };
 
     timeline.refresh = function(forced) {
@@ -123,7 +137,7 @@ var timeline = timeline || {};
         if (!timelineRefreshInterval) {
             timelineRefreshInterval = window.setInterval(function() {
                 timeline.refresh.bind(that)();
-            }, 60000);
+            }, 600000);
         }
 
         // Just get new tweets
@@ -140,8 +154,8 @@ var timeline = timeline || {};
                     that.add(tw);
                 });
             }
+            firstRun = false;
         });
-        firstRun = false;
     };
 
     timeline.getLength = function() {

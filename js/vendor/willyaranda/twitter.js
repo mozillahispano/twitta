@@ -13,12 +13,23 @@
   var ready = false;
 
   var listeners = {};
+  var streaming = false;
+
+  var _pendingData = '';
 
   tuiter.getCredentials = function() {
     return creds;
   };
 
-  tuiter.init = function(tokens) {
+  /**
+   * Initialize tuiter library.
+   * @param  {Object} tokens Access tokens: [`consumerKey`, `consumerSecret`,
+   * `token`, `tokenSecret`];
+   * @param  {Boolean} stream If we should start streaming right now (does not
+   * wait for events)
+   * @param  {Object} parms  If `stream` is true, posible params to start.
+   */
+  tuiter.init = function(tokens, stream, parms) {
     console.log('tuiter.init');
     var neededTokens = ['consumerKey', 'consumerSecret', 'token', 'tokenSecret'];
 
@@ -46,6 +57,11 @@
     } else {
       console.warn('Not enough tokens data. Check that you have sent a object with',
         neededTokens, '. Received ', tokens);
+    }
+
+    // Auto start stream
+    if (stream) {
+      tuiter.userStream(parms);
     }
 
     return fullConfig;
@@ -155,15 +171,7 @@
     tuiter._request(endpoint, method, params, cb);
   };
 
-  tuiter.getUserTimeline = function(id, screen_name, params, cb) {
-    if (!id || !screen_name) {
-      cb('You did not specify a id or screen_name');
-      return;
-    }
-  };
-
   tuiter.updateStatus = function(text, reply_to, cb) {
-    console.log('tuiter.updateStatus', text, reply_to);
     var endpoint = 'https://api.twitter.com/1.1/statuses/update.json';
     var method = 'POST';
     var params = {
@@ -198,40 +206,163 @@
   };
 
   /**
-   * Opens a connection to the specified stream, calling any callback
-   * stored on listeners for the events received.
-   * @param  {string} endpoint U
-   * @return {type}          [description]
+   * User Streams provide a stream of data and events specific to the authenticated user.
+   *
+   * This will call callbacks registered with the function addListener(type, cb);
+   *
+   * See link to get possible events to listen to.
+   *
+   * @link https://dev.twitter.com/docs/streaming-apis/streams/user
+   * @param  {Object} parms Extra parameters for the request, check link
    */
-  tuiter._stream = function(endpoint) {
-    var data = tuiter._parseData(length, data);
-    if (Array.isArray(listeners[data.type])) {
-        listeners[data.type].forEach(function(elem) {
-            if (typeof elem === 'function') {
-                elem(msg);
-            }
-        });
-    }
-    var stream = new XMLHttpRequest({ mozSystem: true});
-    //stream.
-  };
+  tuiter.userStream = function(parms) {
+    console.log('tuiter._stream');
+    parms = parms || {};
 
-  tuiter._parseData = function(length, data) {
-    return {
-        type: type,
-        msg: msg
+    function filterParams(params) {
+      var rv = {};
+      var keys = Object.keys(params);
+      keys.forEach(function(key) {
+        if (params[key]) {
+          rv[key] = params[key];
+        }
+      });
+      return rv;
+    }
+
+    if (streaming) {
+      console.warn('We are streaming, cancelling this request. Please, use the ' +
+        'addListener(type, cb) for listening for events');
+      return;
+    }
+
+    // Test again in 10 seconds if we are not ready
+    /*if (!ready) {
+      setTimeout(function() {
+        tuiter._stream(parms);
+      }, 10000);
+      return;
+    }*/
+
+    var endpoint = 'https://userstream.twitter.com/1.1/user.json';
+    var method = 'GET';
+    var params = {
+      delimited: parms.delimited,
+      stall_warnings: parms.stall_warnings,
+      'with': parms['with'],
+      replies: parms.replies,
+      track: parms.track,
+      locations: parms.locations,
+      stringify_friends_ids: parms.stringify_friends_ids
     };
+
+    var message = {
+      action: endpoint,
+      method: method,
+      parameters: filterParams(params)
+    };
+
+    var accessor = tuiter.getCredentials();
+    OAuth.completeRequest(message, accessor);
+    OAuth.SignatureMethod.sign(message, accessor);
+
+    var url = message.action + '?' + OAuth.formEncode(message.parameters);
+
+    var xhr = new XMLHttpRequest({mozSystem: true});
+    xhr.open(message.method, url);
+    xhr.responseType = 'moz-chunked-text';
+    xhr.onprogress = tuiter._onDataAvailable;
+    xhr.send();
   };
 
-  tuiter.listenEvents = function(listenEvent, cb) {
-    if (!Array.isArray(listeners[listenEvent])) {
-        listeners[listenEvent] = [];
+  // see http://hg.instantbird.org/instantbird/file/tip/chat/protocols/twitter/twitter.js
+  tuiter._onDataAvailable = function(aRequest) {
+    streaming = true;
+    var newText = _pendingData + aRequest.target.response;
+    var messages = newText.split(/\r\n?/); // split by twitter spec
+    _pendingData = messages.pop(); // just get all the messages except the last
+                                   // one (not fully received? Save it!)
+    messages.forEach(function(message) {
+      var json = {};
+
+      // First, remove empty messages (do not flood log)
+      if (message === '') {
+        return;
+      }
+
+      try {
+        json = JSON.parse(message);
+      } catch (e) {
+        console.error('Failing to parse', message);
+        return;
+      }
+      tuiter._parseData(json);
+    });
+  };
+
+  tuiter._parseData = function(data) {
+    console.log(data);
+    // Twit event
+    if (data['text']) {
+      tuiter._fireEvent('text', data);
     }
-    listeners[listenEvent].push(cb);
+    // Friends lists (friends)
+    else if (data['friends']) {
+      tuiter._fireEvent('friends', data['friends']);
+    }
+    // Status deletion notices
+    else if (data['delete']) {
+      tuiter._fireEvent('delete', data['delete'].status.id_str);
+    }
+    // Location deletion notices
+    else if (data['scrub_geo']) {
+      tuiter._fireEvent('scrub_geo', data);
+    }
+    //Limit notices (limit)
+    else if (data['limit']) {
+      tuiter._fireEvent('limit', data);
+    }
+    //Withheld content notices (status_withheld, user_withheld)
+    else if (data['status_withheld']) {
+      tuiter._fireEvent('status_withheld', data);
+    }
+    else if (data['user_withheld']) {
+      tuiter._fireEvent('user_withheld', data);
+    }
+    //Disconnect messages (disconnect)
+    else if (data['disconnect']) {
+      streaming = false;
+      tuiter._fireEvent('disconnect', data);
+    }
+    //Stall warnings (warning)
+    else if (data['warning']) {
+      tuiter._fireEvent('warning', data);
+    }
+    //Events (event) --> target (user), source (user), target_object, created_at
+    else if (data['event']) {
+      tuiter._fireEvent(data['event'], data['target'], data['source'], data['target_object']);
+    } else {
+      console.warn('unknown message??', data);
+    }
   };
 
-  return {
-    listenEvents: tuiter.listenEvents,
-    initialize: tuiter.initialize
+  tuiter._fireEvent = function(event, msg) {
+    console.log('Firing ' + event + ' event');
+    var toFire = listeners[event];
+    if (Array.isArray(toFire)) {
+      toFire.forEach(function(elem) {
+          if (typeof elem === 'function') {
+              elem(msg);
+          }
+      });
+    }
   };
+
+  tuiter.addListener = function(eventType, cb) {
+    if (!Array.isArray(listeners[eventType])) {
+        listeners[eventType] = [];
+    }
+    listeners[eventType].push(cb);
+  };
+
 })(window);
