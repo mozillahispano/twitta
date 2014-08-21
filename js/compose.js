@@ -36,10 +36,7 @@ var compose = compose || {};
     };
 
     compose.view = function(controller) {
-        var data = [];
-        data.push(header.view());
-
-        var comp = m('div#comp', [
+        return m('div#comp', [
             m('textarea#compose-area', {
                 name: 'compose-area',
                 placeholder: 'What do you want to say?',
@@ -54,15 +51,12 @@ var compose = compose || {};
                 m('input#addimage', {
                     type: 'file',
                     name: 'addimage',
-                    //value: 'image/*',
+                    //value: 'image\/*',
                     placeholder: 'Image'
                 }),
                 'Add image'
             ])
         ]);
-
-        data.push(comp);
-        return data;
     };
 })(window);
 

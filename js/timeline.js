@@ -11,6 +11,8 @@ var timeline = timeline || {};
     var newestTweetId;
     var firstRun = true;
 
+    var init = false;
+
     var ELEM = document.getElementById('timeline');
 
     // List of tweets: timeline
@@ -26,6 +28,7 @@ var timeline = timeline || {};
                 return;
             }
             tweetList.push(tuit);
+            header.update();
 
             // Do not show the section if we are not on the route
             if (m.route() === '/timeline') {
@@ -58,6 +61,7 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw) {
                 tweetList.splice(tw.index, 1);
+                header.update();
                 m.render(ELEM, timeline.view(this));
             }
         }.bind(this);
@@ -90,20 +94,24 @@ var timeline = timeline || {};
             }
         }.bind(this);
 
-        var that = this;
-        // Wait a little to load timeline
-        setTimeout(function() {
-            timeline.refresh.bind(that)();
-        }, 300);
+
 
         // Initialize
-        timeline.listenToEvents.bind(this)();
-        tuiter.userStream();
+        if (!init) {
+            var that = this;
+            // Wait a little to load timeline
+            setTimeout(function() {
+                timeline.refresh.bind(that)();
+            }, 300);
+            timeline.listenToEvents.bind(this)();
+            tuiter.userStream();
+        }
 
         if (m.route() === '/timeline') {
             UIhelpers.showOnlyThisSection(ELEM);
         }
         m.render(ELEM, timeline.view(this));
+        init = true;
     };
 
     timeline.listenToEvents = function() {
@@ -194,12 +202,7 @@ var timeline = timeline || {};
             }
         }
 
-        // Make the header
-        var rv = [];
-
-        rv.push(header.view());
-
-        if (tweetList.length === 0) { return rv; }
+        if (tweetList.length === 0) { return; }
 
         // Make the timeline, if we have tweets
         // 1) Sort the Array
@@ -210,11 +213,11 @@ var timeline = timeline || {};
         eldestTweetId = tweetList[tweetList.length - 1].id_str();
 
         // 3) Create the DOM
-        var tl = m('div#timeline', [
-            tweetList.map(function(tw) {
-                return tweet.view(tw);
-            })
-        ]);
+        var tl = tweetList.map(function(tw) {
+            return tweet.view(tw);
+        });
+
+        var rv = [];
         rv.push(tl);
 
         var loadMore = m('div#loadmore', [

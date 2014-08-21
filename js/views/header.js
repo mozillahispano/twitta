@@ -5,6 +5,15 @@ var header = header || {};
 
 (function(window) {
 
+    var ELEM = document.getElementById('header');
+
+    header.controller = function() {};
+
+    // Called to update the header from timeline, mentions, dm…
+    header.update = function() {
+        m.redraw();
+    };
+
     header.view = function(controller) {
         return m('div#header', [
             m('div#sidebar', [
@@ -26,7 +35,7 @@ var header = header || {};
             m('div#direct', [
                 m('a', {href: '/dms', config: m.route}, [
                     m('img', { src: '/img/direct.png'}),
-                    m('span', dms.getLength()) // FIXME
+                    m('span', dms.getLength())
                 ])
             ]),
             m('div#senddiv', [
@@ -39,4 +48,5 @@ var header = header || {};
             ])
         ]);
     };
+    m.module(ELEM, header);
 })(window);

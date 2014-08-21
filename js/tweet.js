@@ -47,7 +47,6 @@ var tweet = tweet || {};
     };
 
     tweet.controller = function() {
-
     };
 
     tweet.view = function(tweet) {

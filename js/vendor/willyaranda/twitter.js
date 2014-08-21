@@ -1,8 +1,5 @@
 /* global OAuth */
 
-/**
- * @module tuiter
- */
 (function(window) {
   'use strict';
 

@@ -26,6 +26,7 @@ var mentions = mentions || {};
                 return;
             }
             tweetList.push(tuit);
+            header.update();
 
             // Do not show the section if we are not on the route
             if (m.route() === '/mentions') {
@@ -178,11 +179,7 @@ var mentions = mentions || {};
             }
         }
 
-        // Make the header
-        var rv = [];
-        rv.push(header.view());
-
-        if (tweetList.length === 0) { return rv; }
+        if (tweetList.length === 0) { return; }
 
         // Make the timeline, if we have tweets
         // 1) Sort the Array
@@ -193,14 +190,11 @@ var mentions = mentions || {};
         eldestTweetId = tweetList[tweetList.length - 1].id_str();
 
         // 3) Create the DOM
-        var tl = m('div#timeline', [
-            tweetList.map(function(tw) {
-                return tweet.view(tw);
-            })
-        ]);
-        rv.push(tl);
+        var tl = tweetList.map(function(tw) {
+            return tweet.view(tw);
+        });
 
-        return rv;
+        return tl;
     };
 
     m.module(ELEM, mentions);

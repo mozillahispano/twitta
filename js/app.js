@@ -1,4 +1,4 @@
-/* global home, timeline, login, user, compose, mentions */
+/* global home, timeline, login, user, compose, mentions, dms */
 
 (function(window) {
     'use strict';
