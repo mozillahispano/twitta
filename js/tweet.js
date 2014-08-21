@@ -59,6 +59,12 @@ var tweet = tweet || {};
             }
         }
 
+        function textEntities(text) {
+            text = text.replace(/(^|\W)(#[a-z\d][\w-]*)/ig, '$1<hash>$2</hash>');
+            text = text.replace(/(^|\W)(@[a-z\d][\w-]*)/ig, '$1<user>$2</user>');
+            return text;
+        }
+
         var ago = moment(tweet.created_at()).fromNow();
         var data = [];
         var u;
@@ -80,7 +86,7 @@ var tweet = tweet || {};
             )]
         ));
 
-        data.push(m('p#text', tweet.text()));
+        data.push(m('p#text', textEntities(tweet.text())));
         data.push(m('p#date', ago));
 
         if (tweet.is_retweet()) {

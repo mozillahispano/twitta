@@ -303,6 +303,10 @@
     if (data['text']) {
       tuiter._fireEvent('text', data);
     }
+    // Direct message (direct_message)
+    else if (data['direct_message']) {
+      tuiter._fireEvent('direct_message', data['direct_message']);
+    }
     // Friends lists (friends)
     else if (data['friends']) {
       tuiter._fireEvent('friends', data['friends']);
