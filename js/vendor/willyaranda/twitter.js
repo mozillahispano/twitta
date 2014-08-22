@@ -164,21 +164,21 @@
     OAuth.SignatureMethod.sign(message, accessor);
     var url = message.action + '?' + OAuth.formEncode(message.parameters);
     console.log(url);
-    _streamXHR = new XMLHttpRequest({mozSystem: true});
-    _streamXHR.open(message.method, url);
-    _streamXHR.responseType = 'json';
+    var xhr = new XMLHttpRequest({mozSystem: true});
+    xhr.open(message.method, url);
+    xhr.responseType = 'json';
 
-    _streamXHR.onreadystatechange = function() {
-        if (_streamXHR.readyState === 4) {
-            if (_streamXHR.status === 200) {
-              callback(null, _streamXHR.response);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              callback(null, xhr.response);
             } else {
-              console.error(_streamXHR.response);
-              callback(_streamXHR.response.errors[0].message || 'unknown error');
+              console.error(xhr.response);
+              callback(xhr.response.errors[0].message || 'unknown error');
             }
         }
     };
-    _streamXHR.send();
+    xhr.send();
   };
 
   /**
@@ -528,11 +528,11 @@
 
     var url = message.action + '?' + OAuth.formEncode(message.parameters);
 
-    var xhr = new XMLHttpRequest({mozSystem: true});
-    xhr.open(message.method, url);
-    xhr.responseType = 'moz-chunked-text';
-    xhr.onprogress = _onDataAvailable;
-    xhr.send();
+    _streamXHR = new XMLHttpRequest({mozSystem: true});
+    _streamXHR.open(message.method, url);
+    _streamXHR.responseType = 'moz-chunked-text';
+    _streamXHR.onprogress = _onDataAvailable;
+    _streamXHR.send();
   };
 
   // see http://hg.instantbird.org/instantbird/file/tip/chat/protocols/twitter/twitter.js
