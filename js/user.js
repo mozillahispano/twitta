@@ -52,12 +52,33 @@ var user = user || {};
             return foundValue;
         };
 
-        this.id = m.route.param('id');
-        if (this.id) {
-            this.u = this.findById(this.id);
-            UIhelpers.showOnlyThisSection(ELEM);
-            m.render(ELEM, user.view(this));
+        this.findByScreenName = function(screen_name) {
+            var foundValue;
+            for (var i = 0; i < userList.length; i++) {
+                var el = userList[i];
+                if (el.screen_name() === screen_name) {
+                    foundValue = el;
+                    break;
+                }
+            }
+            return foundValue;
+        };
+
+        var id = m.route.param('id');
+        this.u = null;
+
+        if (!id) { return; }
+
+        // We have been called with screen_name
+        if (isNaN(id)) {
+            this.u = this.findByScreenName(id);
         }
+        // Called with id_str
+        else {
+            this.u = this.findById(id);
+        }
+        UIhelpers.showOnlyThisSection(ELEM);
+        m.render(ELEM, user.view(this));
     };
 
     // View

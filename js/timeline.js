@@ -102,9 +102,9 @@ var timeline = timeline || {};
             // Wait a little to load timeline
             setTimeout(function() {
                 timeline.refresh.bind(that)();
+                timeline.listenToEvents.bind(that)();
+                tuiter.userStream();
             }, 300);
-            timeline.listenToEvents.bind(this)();
-            tuiter.userStream();
         }
 
         if (m.route() === '/timeline') {
