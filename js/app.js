@@ -17,6 +17,7 @@
             /*'/tweet/:id': tweetDetail,
             '/list/:id': listDetail,
             '/settings': settings*/
+            //'/search/:id': search
         });
     });
 

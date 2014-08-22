@@ -60,8 +60,10 @@ var tweet = tweet || {};
         }
 
         function textEntities(text) {
-            text = text.replace(/(^|\W)(#[a-z\d][\w-]*)/ig, '$1<hash>$2</hash>');
-            text = text.replace(/(^|\W)(@[a-z\d][\w-]*)/ig, '$1<user>$2</user>');
+            text = text.replace(/(^|\W)(#[a-z\d][\w-]*)/ig,
+                '$1<a href="/index.html#/search/$2">$2</a>');
+            text = text.replace(/(^|\W)(@[a-z\d][\w-]*)/ig,
+                '$1<a href="/index.html#/user/$2">$2</a>');
             return text;
         }
 
@@ -86,7 +88,7 @@ var tweet = tweet || {};
             )]
         ));
 
-        data.push(m('p#text', textEntities(tweet.text())));
+        data.push(m('p#text', m.trust(textEntities(tweet.text()))));
         data.push(m('p#date', ago));
 
         if (tweet.is_retweet()) {

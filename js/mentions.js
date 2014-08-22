@@ -108,7 +108,12 @@ var mentions = mentions || {};
     };
 
     function showNotification(tw) {
-        UIhelpers.showNotification(tw.user.screen_name, tw.text);
+        var onclick = function() {
+            m.route('/mentions');
+        };
+
+        var onclose = function() {};
+        UIhelpers.showNotification(tw.user.screen_name, tw.text, onclick, onclose);
     }
 
     mentions.listenToEvents = function() {
