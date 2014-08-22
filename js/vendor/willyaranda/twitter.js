@@ -1,48 +1,91 @@
 /* global OAuth */
 
+/** @module tuiter */
+
+'use strict';
+
 (function(window) {
-  'use strict';
 
-  var tuiter = window.tuiter = function() {};
+  /**
+   * Global object
+   * @type {Object}
+   */
+  var tuiter = {};
 
+  /**
+   * Holds credentials set by `tuiter.init()` or by localStorage
+   * @type {Object}
+   */
   var creds = {};
 
+  /**
+   * Holds config from twitter (like URL shortened length…)
+   * @see https://dev.twitter.com/docs/api/1.1/get/help/configuration
+   * @type {Object}
+   */
+  var config = {};
+
+  /**
+   * Holds if the library is ready.
+   * This is set when
+   * @type {Boolean}
+   */
   var ready = false;
 
+  /**
+   * This holds a event_type - [listeners].
+   * When a event_type is received, it calls all listeners that has subscribed
+   * to this event with `tuiter.addListener`
+   * @type {Object}
+   */
   var listeners = {};
+
+  /**
+   * Holds if we are streaming from Twitter using the Streaming API.
+   * (but you can also use the REST API)
+   * @type {Boolean}
+   */
   var streaming = false;
 
+  /**
+   * Holds the stream XHR request, so it can be aborted with `abortStream()`
+   * @type XMLHttpRequest
+   */
+  var _streamXHR;
+
+  /**
+   * Holds pending data from twitter Streaming API
+   * @type {String}
+   */
   var _pendingData = '';
 
+  /**
+   * Returns the tokens used to perform requests to twitter
+   * @return {Object} With keys: [`consumerKey`, `consumerSecret`, `token`, `tokenSecret`]
+   */
   tuiter.getCredentials = function() {
     return creds;
   };
 
   /**
    * Initialize tuiter library.
+   *
+   * @function init
    * @param  {Object} tokens Access tokens: [`consumerKey`, `consumerSecret`,
-   * `token`, `tokenSecret`];
+   * `token`, `tokenSecret`]
    * @param  {Boolean} stream If we should start streaming right now (does not
    * wait for events)
    * @param  {Object} parms  If `stream` is true, posible params to start.
    */
   tuiter.init = function(tokens, stream, parms) {
     console.log('tuiter.init');
+
+    if (ready) {
+      return;
+    }
+
     var neededTokens = ['consumerKey', 'consumerSecret', 'token', 'tokenSecret'];
 
-    // If we do not receive tokens, just load from localStorage
-    if (!tokens) {
-      tokens = {};
-      neededTokens.forEach(function(token) {
-        tokens[token] = localStorage.getItem(token);
-      });
-    }
-    // If receive, just save on localStorage for next usages
-    else {
-      neededTokens.forEach(function(token) {
-        localStorage.setItem(token, tokens[token]);
-      });
-    }
     // Check if we have all data
     var fullConfig = neededTokens.every(function(el) {
       return tokens[el] ? true : false;
@@ -50,10 +93,10 @@
 
     if (fullConfig) {
       creds = tokens;
-      ready = true;
     } else {
       console.warn('Not enough tokens data. Check that you have sent a object with',
         neededTokens, '. Received ', tokens);
+      return false;
     }
 
     // Auto start stream
@@ -61,7 +104,24 @@
       tuiter.userStream(parms);
     }
 
-    return fullConfig;
+    var getConfig = function getConfig() {
+      var endpoint = 'https://api.twitter.com/1.1/help/configuration.json';
+      var method = 'GET';
+      var params = {};
+      tuiter._request(endpoint, method, params, function(error, json) {
+        if (error) {
+          setTimeout(getConfig, 10000); // Retry again later…
+        } else {
+          console.log(json);
+          config = json;
+        }
+      });
+    };
+
+    getConfig();
+    ready = true;
+
+    return true;
   };
 
   /**
@@ -69,7 +129,8 @@
    * This is a low level API. Use at your own risk, but we
    * recommend to use the High level APIs that encapsulate
    * the requests.
-   * @name _request
+   *
+   * @function _request
    * @param  {string}   endpoint URL to hit
    * @param  {string}   method   HTTP verb to use
    * @param  {Object}   params   extra params for the petition
@@ -88,7 +149,7 @@
     }
 
     if (!ready) {
-      callback('Not ready yet!');
+      callback('Not ready yet, check tuiter.init() response!');
       return;
     }
 
@@ -103,21 +164,77 @@
     OAuth.SignatureMethod.sign(message, accessor);
     var url = message.action + '?' + OAuth.formEncode(message.parameters);
     console.log(url);
-    var xhr = new XMLHttpRequest({mozSystem: true});
-    xhr.open(message.method, url);
-    xhr.responseType = 'json';
+    _streamXHR = new XMLHttpRequest({mozSystem: true});
+    _streamXHR.open(message.method, url);
+    _streamXHR.responseType = 'json';
 
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              callback(null, xhr.response);
+    _streamXHR.onreadystatechange = function() {
+        if (_streamXHR.readyState === 4) {
+            if (_streamXHR.status === 200) {
+              callback(null, _streamXHR.response);
             } else {
-              console.error(xhr.response);
-              callback(xhr.response.errors[0].message || 'unknown error');
+              console.error(_streamXHR.response);
+              callback(_streamXHR.response.errors[0].message || 'unknown error');
             }
         }
     };
-    xhr.send();
+    _streamXHR.send();
+  };
+
+  /**
+   * Returns the 20 most recent mentions (tweets containing a users's @screen_name)
+   * for the authenticating user.
+   *
+   * @function getMentionsTimeline
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the mentions returned in JSON (error, json)
+   */
+  tuiter.getMentionsTimeline = function(parms, cb)  {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json';
+    var method = 'GET';
+    var params = {
+      count: parms.count,
+      since_id: parms.since_id,
+      max_id: parms.max_id,
+      trim_user: parms.trim_user,
+      contributor_details: parms.contributor_details,
+      include_entities: parms.include_entities
+    };
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Returns a collection of the most recent Tweets posted by the user indicated
+   * by the screen_name or user_id parameters.
+   *
+   * @function getUserTimeline
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
+   * @param  {String}   user_id User id to request the timeline
+   * @param  {String}   screen_name User screen name to request the timeline
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the timeline returned in JSON (error, json)
+   */
+  tuiter.getUserTimeline = function(user_id, screen_name, parms, cb)  {
+    if (user_id && screen_name) {
+      cb('Please, set only user_id or screen_name, but NOT both');
+      return;
+    }
+
+    var endpoint = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+    var method = 'GET';
+    var params = {
+      user_id: parms.user_id,
+      screen_name: parms.screen_name,
+      since_id: parms.since_id,
+      count: parms.count,
+      max_id: parms.max_id,
+      trim_user: parms.trim_user,
+      exclude_replies: parms.exclude_replies,
+      contributor_details: parms.contributor_details,
+      include_rts: parms.include_rts
+    };
+    tuiter._request(endpoint, method, params, cb);
   };
 
   /**
@@ -127,9 +244,10 @@
    * Up to 800 Tweets are obtainable on the home timeline. It is more volatile
    * for users that follow many users or follow users who tweet frequently.
    *
+   * @function getHomeTimeline
    * @link https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
    * @param  {Object}   params Extra parameters for the query, see link
-   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   * @param  {Function} cb     Callback with the timeline in JSON (error, json)
    */
   tuiter.getHomeTimeline = function(parms, cb)  {
     var endpoint = 'https://api.twitter.com/1.1/statuses/home_timeline.json';
@@ -147,37 +265,190 @@
   };
 
   /**
-   * Returns the 20 most recent mentions (tweets containing a users's @screen_name)
-   * for the authenticating user.
+   * Returns the most recent tweets authored by the authenticating user that
+   * have been retweeted by others. This timeline is a subset of the user's
+   * GET statuses/user_timeline.
    *
-   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
-   * @param  {Object}   params Extra parameters for the query, see link
-   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   * @function getRetweetsOfMe
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/retweets_of_me
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the timeline in JSON (error, json)
    */
-  tuiter.getMentionsTimeline = function(parms, cb)  {
-    var endpoint = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json';
+  tuiter.getRetweetsOfMe = function(parms, cb)  {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/retweets_of_me.json';
     var method = 'GET';
     var params = {
       count: parms.count,
       since_id: parms.since_id,
       max_id: parms.max_id,
       trim_user: parms.trim_user,
-      contributor_details: parms.contributor_details,
-      include_entities: parms.include_entities
+      include_entities: parms.include_entities,
+      include_user_entities: parms.include_user_entities
     };
     tuiter._request(endpoint, method, params, cb);
   };
 
-  tuiter.updateStatus = function(text, reply_to, cb) {
+  /**
+   * Retweets a tweet. Returns the original tweet with retweet details embedded.
+   *
+   * @function getRetweetsOfMe
+   * @link https://dev.twitter.com/docs/api/1.1/post/statuses/retweet/%3Aid
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the timeline in JSON (error, json)
+   */
+  tuiter.retweetId = function(id, parms, cb)  {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/retweet/' + id + '.json';
+    var method = 'POST';
+    var params = {
+      trim_user: parms.trim_user
+    };
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Updates the authenticating user's current status, also known as tweeting.
+   *
+   * @function updateStatus
+   * @link https://dev.twitter.com/docs/api/1.1/post/statuses/update
+   * @param  {String}   text     The text of your status update, typically up to
+   *                             140 characters.
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb       Callback with the new Tweet returned (error, tweet)
+   */
+  tuiter.updateStatus = function(text, parms, cb) {
     var endpoint = 'https://api.twitter.com/1.1/statuses/update.json';
     var method = 'POST';
     var params = {
       status: text,
-      in_reply_to_status_id: reply_to
+      in_reply_to_status_id: parms.reply_to,
+      possibly_sensitive: parms.possibly_sensitive,
+      lat: parms.lat,
+      long: parms.long,
+      place_id: parms.place_id,
+      display_coordinates: parms.display_coordinates,
+      trim_user: parms.trim_user
     };
 
     tuiter._request(endpoint, method, params, cb);
   };
+
+  // FIXME
+  /*
+  tuiter.updateStatusWithMedia = function(text, media, parms, cb) {
+    if (Array.isArray(media)) {
+      if (media.length > config['max_media_per_upload']) {
+        cb('You wanted to send ' + media.length + ' media objects but twitter ' +
+           'only supports ' + config['max_media_per_upload'] + ' per tweet');
+      }
+    } else {
+      cb('media parameter must be a Array');
+    }
+    var endpoint = 'https://api.twitter.com/1.1/statuses/update_with_media.json';
+    var method = 'POST';
+    var mediaB64 = window.btoa(media);
+    var params = {
+      status: text,
+      media: mediaB64,
+      possibly_sensitive: parms.possibly_sensitive,
+      in_reply_to_status_id: parms.reply_to,
+      lat: parms.lat,
+      long: parms.long,
+      place_id: parms.place_id,
+      display_coordinates: parms.display_coordinates,
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };*/
+
+  /**
+   * Returns a collection of up to 100 user IDs belonging to users who have
+   * retweeted the tweet specified by the id parameter.
+   *
+   * @function getRetweetersStatus
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/retweeters/ids
+   * @param  {String}   id     Status id to get users that has RT
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   */
+  tuiter.getRetweetersStatus = function(id, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/retweeters/ids.json';
+    var method = 'GET';
+    var params = {
+      id: id,
+      cursor: parms.cursor,
+      stringify_ids: parms.stringify_ids
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Returns a collection of the 100 most recent retweets of the tweet
+   * specified by the id parameter.
+   *
+   * @function getRetweetsStatus
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/%3Aid
+   * @param  {String}   id     Status id to get retweets information
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   */
+  tuiter.getRetweetsStatus = function(id, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/retweets/' + id + '.json';
+    var method = 'GET';
+    var params = {
+      id: id,
+      count: parms.count,
+      trim_user: parms.trim_user
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Returns a single Tweet, specified by the id parameter. The Tweet's author
+   * will also be embedded within the tweet.
+   *
+   * @function getStatusShow
+   * @link https://dev.twitter.com/docs/api/1.1/get/statuses/show/%3Aid
+   * @param  {String}   id     Status id to get information
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the JSON returned (error, json)
+   */
+  tuiter.getStatusShow = function(id, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/show.json';
+    var method = 'GET';
+    var params = {
+      id: id,
+      trim_user: parms.trim_user,
+      include_my_retweet: parms.include_my_retweet,
+      include_entities: parms.include_entities
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Destroys the status specified by the required ID parameter. The
+   * authenticating user must be the author of the specified status. Returns
+   * the destroyed status if successful.
+   *
+   * @function destroyStatus
+   * @link https://dev.twitter.com/docs/api/1.1/post/statuses/destroy/%3Aid
+   * @param  {String}   id     Status id to destroy information
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the status deleted (error, deletedStatus)
+   */
+  tuiter.destroyStatus = function(id, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/statuses/destroy/' + id + '.json';
+    var method = 'POST';
+    var params = {
+      id: id,
+      trim_user: parms.trim_user
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
 
   /**
    * Returns the 20 most recent direct messages sent to the authenticating user.
@@ -213,7 +484,7 @@
    * @param  {Object} parms Extra parameters for the request, check link
    */
   tuiter.userStream = function(parms) {
-    console.log('tuiter._stream');
+    console.log('tuiter.userStream');
     parms = parms || {};
 
     function filterParams(params) {
@@ -232,14 +503,6 @@
         'addListener(type, cb) for listening for events');
       return;
     }
-
-    // Test again in 10 seconds if we are not ready
-    /*if (!ready) {
-      setTimeout(function() {
-        tuiter._stream(parms);
-      }, 10000);
-      return;
-    }*/
 
     var endpoint = 'https://userstream.twitter.com/1.1/user.json';
     var method = 'GET';
@@ -268,12 +531,12 @@
     var xhr = new XMLHttpRequest({mozSystem: true});
     xhr.open(message.method, url);
     xhr.responseType = 'moz-chunked-text';
-    xhr.onprogress = tuiter._onDataAvailable;
+    xhr.onprogress = _onDataAvailable;
     xhr.send();
   };
 
   // see http://hg.instantbird.org/instantbird/file/tip/chat/protocols/twitter/twitter.js
-  tuiter._onDataAvailable = function(aRequest) {
+  function _onDataAvailable(aRequest) {
     streaming = true;
     var newText = _pendingData + aRequest.target.response;
     var messages = newText.split(/\r\n?/); // split by twitter spec
@@ -293,61 +556,61 @@
         console.error('Failing to parse', message);
         return;
       }
-      tuiter._parseData(json);
+      _parseData(json);
     });
-  };
+  }
 
-  tuiter._parseData = function(data) {
+  function _parseData(data) {
     console.log('Received', data);
     // Twit event
     if (data['text']) {
-      tuiter._fireEvent('text', data);
+      _fireEvent('text', data);
     }
     // Direct message (direct_message)
     else if (data['direct_message']) {
-      tuiter._fireEvent('direct_message', data['direct_message']);
+      _fireEvent('direct_message', data['direct_message']);
     }
     // Friends lists (friends)
     else if (data['friends']) {
-      tuiter._fireEvent('friends', data['friends']);
+      _fireEvent('friends', data['friends']);
     }
     // Status deletion notices
     else if (data['delete']) {
-      tuiter._fireEvent('delete', data['delete'].status.id_str);
+      _fireEvent('delete', data['delete'].status.id_str);
     }
     // Location deletion notices
     else if (data['scrub_geo']) {
-      tuiter._fireEvent('scrub_geo', data);
+      _fireEvent('scrub_geo', data);
     }
     //Limit notices (limit)
     else if (data['limit']) {
-      tuiter._fireEvent('limit', data);
+      _fireEvent('limit', data);
     }
     //Withheld content notices (status_withheld, user_withheld)
     else if (data['status_withheld']) {
-      tuiter._fireEvent('status_withheld', data);
+      _fireEvent('status_withheld', data);
     }
     else if (data['user_withheld']) {
-      tuiter._fireEvent('user_withheld', data);
+      _fireEvent('user_withheld', data);
     }
     //Disconnect messages (disconnect)
     else if (data['disconnect']) {
       streaming = false;
-      tuiter._fireEvent('disconnect', data);
+      _fireEvent('disconnect', data);
     }
     //Stall warnings (warning)
     else if (data['warning']) {
-      tuiter._fireEvent('warning', data);
+      _fireEvent('warning', data);
     }
     //Events (event) --> target (user), source (user), target_object, created_at
     else if (data['event']) {
-      tuiter._fireEvent(data['event'], data['target'], data['source'], data['target_object']);
+      _fireEvent(data['event'], data['target'], data['source'], data['target_object']);
     } else {
       console.warn('unknown message??', data);
     }
-  };
+  }
 
-  tuiter._fireEvent = function(event, msg) {
+  function _fireEvent(event, msg) {
     console.log('Firing ' + event + ' event');
     var toFire = listeners[event];
     if (Array.isArray(toFire)) {
@@ -357,6 +620,14 @@
           }
       });
     }
+  }
+
+  tuiter.abortStreaming = function() {
+    _streamXHR.abort();
+  };
+
+  tuiter.removeAllListeners = function() {
+    listeners = {};
   };
 
   tuiter.addListener = function(eventType, cb) {
@@ -366,4 +637,15 @@
     listeners[eventType].push(cb);
   };
 
-})(window);
+  tuiter.removeListener = function(eventType, cb) {
+    var index = listeners[eventType].indexOf(cb);
+    if (index >= 0) {
+        listeners[eventType].splice(index, 1);
+        return true;
+    }
+    return false;
+  };
+
+  window.tuiter = tuiter;
+
+}(window));
