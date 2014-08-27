@@ -53,6 +53,11 @@ var user = user || {};
         };
 
         this.findByScreenName = function(screen_name) {
+            function normalizeScreenName(screen_name) {
+              var name = (screen_name[0] == '@') ? screen_name.slice(1) : screen_name;
+              return name;
+            }
+            screen_name = normalizeScreenName(screen_name);
             var foundValue;
             for (var i = 0; i < userList.length; i++) {
                 var el = userList[i];
