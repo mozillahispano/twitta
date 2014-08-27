@@ -93,13 +93,13 @@ var mentions = mentions || {};
         }.bind(this);
 
         var that = this;
-        // Wait a little to load timeline
+        // Wait a little to load mentions
         setTimeout(function() {
             mentions.refresh.bind(that)();
             if (firstRun) {
                 mentions.listenToEvents.bind(that)();
             }
-        }, 300);
+        }, 3000);
 
         if (m.route() === '/mentions') {
             UIhelpers.showOnlyThisSection(ELEM);
