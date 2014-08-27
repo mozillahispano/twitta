@@ -112,7 +112,18 @@ var timeline = timeline || {};
         }
         m.render(ELEM, timeline.view(this));
         init = true;
+        timeline.checkLoadMoreIsInView.bind(this)();
     };
+
+    timeline.checkLoadMoreIsInView = function() {
+        console.log('checkLoadMoreIsInView');
+        var that = this;
+        var query = '#loadmore';
+        UIhelpers.fireIfElementVisible(query, function() {
+            console.log('fired!!');
+            timeline.loadMore.bind(that)();
+        });
+    }
 
     timeline.listenToEvents = function() {
         var that = this;
