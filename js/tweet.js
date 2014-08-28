@@ -1,4 +1,4 @@
-/* global user, moment */
+/* global user, moment, twttr */
 'use strict';
 
 var tweet = tweet || {};
@@ -59,13 +59,62 @@ var tweet = tweet || {};
             }
         }
 
+
         function linkEntities(text) {
-            var indexes =
-            text = text.replace(/(^|\W)(#[a-z\d][\w-]*)/ig,
-                '$1<a href="/index.html#/search/$2">$2</a>');
-            text = text.replace(/(^|\W)(@[a-z\d][\w-]*)/ig,
-                '$1<a href="/index.html#/user/$2">$2</a>');
-            return text;
+            var entities = [];
+            // Extract entities with own's twitter library
+            entities = twttr.txt.extractEntitiesWithIndices(text);
+            if (entities.length === 0) {
+                return text;
+            }
+
+            //Sort by indice
+            entities.sort(function(a, b) {
+                return a.indices[0] > b.indices[0];
+            });
+
+
+            var entity;
+            var elements = [];
+            var index = 0;
+
+            // Generate the virtual DOM with mithril
+            while ((entity = entities.shift()) !== undefined) {
+                var tmp = text.slice(index, entity.indices[0]);
+                if (tmp.length >= 0) {
+                    elements.push(tmp);
+                }
+                if (entity.screenName) {
+                    elements.push(m('a', {
+                        href: '/user/@' + entity.screenName,
+                        config: m.route
+                    }, '@' + entity.screenName));
+                } else if (entity.hashtag) {
+                    elements.push(m('a', {
+                        href: '/search/#' + entity.hashtag,
+                        config: m.route
+                    }, '#' + entity.hashtag));
+                } else if (entity.url) {
+                     elements.push(m('a', {
+                        href: entity.url,
+                        target: '_blank'
+                    }, entity.url));
+                } else {
+                    // Cashtags
+                    // user/list
+                    // we do not care for now so just add the text
+                    elements.push(tmp);
+                }
+                index = entity.indices[1];
+            }
+
+            // Add remaining text
+            if (index < text.length) {
+                elements.push(text.slice(index));
+            }
+
+            // Return it
+            return elements;
         }
 
         var ago = moment(tweet.created_at()).fromNow();
