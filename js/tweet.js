@@ -17,6 +17,10 @@ var tweet = tweet || {};
         this.created_at = m.prop((new Date(tweet.created_at)).getTime());
         this.text = m.prop(tweet.text);
         this.user = new user.User(tweet.user);
+        this.favorite_count = m.prop(tweet.favorite_count);
+        this.retweet_count = m.prop(tweet.retweet_count);
+        this.in_reply_to_status_id_str = m.prop(tweet.in_reply_to_status_id_str);
+
         userController.add(this.user);
 
         // Placeholders
@@ -49,13 +53,12 @@ var tweet = tweet || {};
     };
 
     var showTweet = function() {
-        var nextRoute = '/tweet/' + this;
-        console.log('Routing to ' + nextRoute)
         // This is the id of the tweet
+        var nextRoute = '/tweet/' + this;
         m.route(nextRoute);
     };
 
-    tweet.view = function(tweet) {
+    tweet.view = function(tweet, extended) {
         function mediaNodes(tweet) {
             if (tweet.media()) {
                 return m('a', {
@@ -160,6 +163,14 @@ var tweet = tweet || {};
         }
 
         data.push(mediaNodes(tweet));
+
+        if (extended) {
+            var extended = [];
+            extended.push(m('div.favorite-count', tweet.favorite_count()));
+            extended.push(m('div.retweet-count', tweet.retweet_count()));
+            extended.push(m('div.own-favorite', tweet.favorited()));
+            data.push(m('div#extended-data', extended));
+        }
 
         return m('div', {
             id: tweet.id_str(),

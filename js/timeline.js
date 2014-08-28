@@ -225,11 +225,7 @@ var timeline = timeline || {};
                 timeline.loadMore.bind(controller)();
             }
         }
-
-        addEventListener('DOMContentLoaded', handler, false);
-        addEventListener('load', handler, false);
         addEventListener('scroll', handler, false);
-        addEventListener('resize', handler, false);
     };
 
     // View

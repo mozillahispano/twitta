@@ -488,15 +488,15 @@
    */
   tuiter.getUserShow = function(id_str, screen_name, parms, cb) {
     function normalizeScreenName(screen_name) {
-      var name = (screen_name[0] == '@') ? screen_name.slice(1) : screen_name;
+      var name = (screen_name[0] === '@') ? screen_name.slice(1) : screen_name;
       return name;
     }
 
-    var endpoint = 'https://api.twitter.com/1.1/users/show.json'
+    var endpoint = 'https://api.twitter.com/1.1/users/show.json';
     var method = 'GET';
     var params = {
       user_id : id_str,
-      screen_name: normalizeScreenName(screen_name),
+      screen_name: screen_name ? normalizeScreenName(screen_name) : undefined,
       include_entities: parms.include_entities
     };
 

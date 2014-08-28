@@ -1,4 +1,5 @@
-/* global home, timeline, login, user, compose, mentions, dms */
+/* global home, timeline, login, user, compose, mentions, dms,
+tweetDetail */
 
 (function(window) {
     'use strict';
@@ -14,8 +15,8 @@
             '/mentions': mentions,
             '/user/:id': user,
             '/dms': dms,
-            /*'/tweet/:id': tweetDetail,
-            '/list/:id': listDetail,
+            '/tweet/:id': tweetDetail,
+            /*'/list/:id': listDetail,
             '/settings': settings*/
             //'/search/:id': search
         });
