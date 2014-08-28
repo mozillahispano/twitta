@@ -28,6 +28,14 @@ section.hidden {
     width: 16rem;
 }
 
+#headercenter > div {
+    display: inline;
+}
+
+#senddiv {
+    float: right;
+}
+
 label input[type="file"] {
     position: fixed;
     top: -1000px;
