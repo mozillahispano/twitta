@@ -9,10 +9,12 @@ section {
 
 section.show {
     transform: translateX(0%);
+    opacity: 1;
 }
 
 section.hidden {
     transform: translateX(-100%);
+    opacity: 0;
 }
 
 #compose > button, #sendbutton {

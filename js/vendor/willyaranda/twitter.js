@@ -13,6 +13,12 @@
   var tuiter = {};
 
   /**
+   * Holds methods for getting own configuration information
+   * @type {Object}
+   */
+  tuiter.conf = {};
+
+  /**
    * Holds credentials set by `tuiter.init()` or by localStorage
    * @type {Object}
    */
@@ -24,6 +30,8 @@
    * @type {Object}
    */
   var config = {};
+
+  var userConfig = {};
 
   /**
    * Holds if the library is ready.
@@ -61,10 +69,21 @@
 
   /**
    * Returns the tokens used to perform requests to twitter
+   * @function getCredentials
    * @return {Object} With keys: [`consumerKey`, `consumerSecret`, `token`, `tokenSecret`]
    */
   tuiter.getCredentials = function() {
     return creds;
+  };
+
+  /**
+   * Returns if the library is ready, so you can call other tuiter methods
+   * after this
+   * @function isReady
+   * @return {Boolean} The readyness of the library
+   */
+  tuiter.isReady = function() {
+    return ready;
   };
 
   /**
@@ -110,18 +129,48 @@
       var params = {};
       tuiter._request(endpoint, method, params, function(error, json) {
         if (error) {
-          setTimeout(getConfig, 10000); // Retry again later…
+          setTimeout(getConfig, 2000); // Retry again later…
         } else {
-          console.log(json);
           config = json;
         }
       });
     };
 
+    var getOwnUser = function getOwnUser(parms) {
+      var endpoint = 'https://api.twitter.com/1.1/account/verify_credentials.json';
+      var method = 'GET';
+      var params = {
+        include_entities: parms.include_entities,
+        skip_status: parms.skip_status
+      };
+
+      tuiter._request(endpoint, method, params, function(error, json) {
+        if (error) {
+          setTimeout(getOwnUser.bind(this, parms), 2000); // Retry again later…
+        } else {
+          userConfig = json;
+        }
+      });
+    };
+
     getConfig();
+    getOwnUser({ skip_status: 1});
     ready = true;
 
     return true;
+  };
+
+  /**
+   * Returns the own user as send by GET account/verify_credentials
+   *
+   * @function conf.getOwnUser
+   * @param {String} param If set, returns just this variable, instead of the
+   *                       whole object
+   * @link https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
+   * @return {Object} Own user information
+   */
+  tuiter.conf.getOwnUser = function(param) {
+    return param ? userConfig[param] : userConfig;
   };
 
   /**

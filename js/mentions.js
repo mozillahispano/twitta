@@ -118,7 +118,7 @@ var mentions = mentions || {};
 
     mentions.listenToEvents = function() {
         function isMention(tw) {
-            var screen_name = 'willyaranda'; //config.screen_name()
+            var screen_name = tuiter.conf.getOwnUser('screen_name');
             var text = tw.text.toLowerCase();
             if (text.indexOf(screen_name) >= 0) {
                 return true;
