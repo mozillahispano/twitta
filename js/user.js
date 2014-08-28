@@ -53,6 +53,11 @@ var user = user || {};
         };
 
         this.findByScreenName = function(screen_name) {
+            function normalizeScreenName(screen_name) {
+              var name = (screen_name[0] == '@') ? screen_name.slice(1) : screen_name;
+              return name;
+            }
+            screen_name = normalizeScreenName(screen_name);
             var foundValue;
             for (var i = 0; i < userList.length; i++) {
                 var el = userList[i];
@@ -67,18 +72,43 @@ var user = user || {};
         var id = m.route.param('id');
         this.u = null;
 
-        if (!id) { return; }
+        if (!id) { m.route('/timeline'); return; }
+
+        var isId_str = !isNaN(id);
 
         // We have been called with screen_name
-        if (isNaN(id)) {
+        if (!isId_str) {
             this.u = this.findByScreenName(id);
         }
         // Called with id_str
         else {
             this.u = this.findById(id);
         }
-        UIhelpers.showOnlyThisSection(ELEM);
-        m.render(ELEM, user.view(this));
+        if (!this.u) {
+            var id_str;
+            var screen_name;
+            var that = this;
+            if (isId_str) {
+                id_str = id;
+            } else {
+                screen_name = id;
+            }
+            tuiter.getUserShow(id_str, screen_name, {}, function(error, data) {
+                if (error) {
+                    console.error(error);
+                    m.route('/');
+                    return;
+                }
+                var u = new user.User(data);
+                that.add(u);
+                that.u = u;
+                UIhelpers.showOnlyThisSection(ELEM);
+                m.render(ELEM, user.view(that));
+            });
+        } else {
+            UIhelpers.showOnlyThisSection(ELEM);
+            m.render(ELEM, user.view(this));
+        }
     };
 
     // View

@@ -68,7 +68,7 @@ var dms = dms || {};
         // Wait a little to load timeline
         setTimeout(function() {
             dms.refresh.bind(that)();
-        }, 300);
+        }, 6000);
 
         if (m.route() === '/dms') {
             UIhelpers.showOnlyThisSection(ELEM);

@@ -455,6 +455,7 @@
    * Includes detailed information about the sender and recipient user. You can
    * request up to 200 direct messages per call, up to a maximum of 800 incoming DMs.
    *
+   * @function getDirectMessages
    * @link https://dev.twitter.com/docs/api/1.1/get/direct_messages
    * @param  {Object}   parms
    * @param  {Function} cb     Callback with the JSON returned (error, json)
@@ -468,6 +469,35 @@
       count: parms.count,
       include_entities: parms.include_entities,
       skip_status: parms.skip_status
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Returns a variety of information about the user specified by the required user_id
+   * or screen_name parameter. The author's most recent Tweet will be returned
+   * inline when possible.
+   *
+   * @function getUserShow
+   * @link https://dev.twitter.com/docs/api/1.1/get/users/show
+   * @param  {String}   id_str      ID of the user (1134374479)
+   * @param  {String}   screen_name Screen name of the user (willyaranda)
+   * @param  {[type]}   parms       Extra parameters, check link
+   * @param  {Function} cb          Callback with the JSON returned (error, json)
+   */
+  tuiter.getUserShow = function(id_str, screen_name, parms, cb) {
+    function normalizeScreenName(screen_name) {
+      var name = (screen_name[0] == '@') ? screen_name.slice(1) : screen_name;
+      return name;
+    }
+
+    var endpoint = 'https://api.twitter.com/1.1/users/show.json'
+    var method = 'GET';
+    var params = {
+      user_id : id_str,
+      screen_name: normalizeScreenName(screen_name),
+      include_entities: parms.include_entities
     };
 
     tuiter._request(endpoint, method, params, cb);
