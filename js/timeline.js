@@ -7,6 +7,8 @@ var timeline = timeline || {};
 
     var timelineRefreshInterval;
     var latestHomeRequestSinceEpochMs;
+    var latestLoadMoreRequestSinceEpochMs;
+
     var eldestTweetId;
     var newestTweetId;
     var firstRun = true;
@@ -145,7 +147,7 @@ var timeline = timeline || {};
         }
 
         if (!firstRun && !forced && (now - latestHomeRequestSinceEpochMs < 60000)) {
-            console.log('stall', now, latestHomeRequestSinceEpochMs);
+            console.log('stall timeline.refresh', now, latestHomeRequestSinceEpochMs);
             return;
         } else {
             latestHomeRequestSinceEpochMs = now;
@@ -185,6 +187,19 @@ var timeline = timeline || {};
         var params = {
             max_id: eldestTweetId
         };
+
+        var now = Date.now();
+        if (!latestLoadMoreRequestSinceEpochMs) {
+            latestLoadMoreRequestSinceEpochMs = now;
+        }
+
+        if (now - latestLoadMoreRequestSinceEpochMs < 2000) {
+            console.log('stall timeline.loadMore', now, latestLoadMoreRequestSinceEpochMs);
+            return;
+        } else {
+            latestLoadMoreRequestSinceEpochMs = now;
+        }
+
         tuiter.getHomeTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
