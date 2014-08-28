@@ -19,6 +19,10 @@
             '/settings': settings*/
             //'/search/:id': search
         });
+        // Ugh...
+        setTimeout(function() {
+            start.parentNode.removeChild(start);
+        }, 2000);
     });
 
 })(window);
