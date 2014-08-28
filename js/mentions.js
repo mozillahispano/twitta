@@ -189,16 +189,6 @@ var mentions = mentions || {};
 
     // View
     mentions.view = function(controller) {
-        function mediaNodes(tweet) {
-            if (tweet.media()) {
-                return m('a', {
-                    href: tweet.expanded_url(),
-                    target: '_blank'
-                    }, m('img', {src: tweet.media_url()})
-                );
-            }
-        }
-
         // We want this in reverse order, let's return the other way around
         function compareFunc(a, b) {
             if (a.id_str() < b.id_str()) {

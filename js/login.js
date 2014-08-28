@@ -1,7 +1,9 @@
+/* global UIhelpers */
+
+'use strict';
 var login = login || {};
 // Controller
 (function(window) {
-    'use strict';
 
     var ELEM = document.getElementById('login');
 

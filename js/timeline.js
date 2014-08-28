@@ -194,7 +194,8 @@ var timeline = timeline || {};
         }
 
         if (now - latestLoadMoreRequestSinceEpochMs < 2000) {
-            console.log('stall timeline.loadMore', now, latestLoadMoreRequestSinceEpochMs);
+            console.log('stall timeline.loadMore', now,
+                latestLoadMoreRequestSinceEpochMs);
             return;
         } else {
             latestLoadMoreRequestSinceEpochMs = now;

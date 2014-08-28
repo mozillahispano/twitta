@@ -1,8 +1,9 @@
-/* global UIhelpers, header */
+/* global UIhelpers, tuiter */
+
+'use strict';
 
 var user = user || {};
 (function(window) {
-    'use strict';
 
     var ELEM = document.getElementById('userprofile');
 
@@ -55,7 +56,7 @@ var user = user || {};
         this.findByScreenName = function(screen_name) {
 
             function normalizeScreenName(sn) {
-              var name = (sn[0] == '@') ? sn.slice(1) : sn;
+              var name = (sn[0] === '@') ? sn.slice(1) : sn;
               return name;
             }
 

@@ -1,4 +1,5 @@
 /* global timeline, mentions, dms */
+
 'use strict';
 
 var header = header || {};
