@@ -48,6 +48,13 @@ var tweet = tweet || {};
     tweet.controller = function() {
     };
 
+    var showTweet = function() {
+        var nextRoute = '/tweet/' + this;
+        console.log('Routing to ' + nextRoute)
+        // This is the id of the tweet
+        m.route(nextRoute);
+    };
+
     tweet.view = function(tweet) {
         function mediaNodes(tweet) {
             if (tweet.media()) {
@@ -128,27 +135,36 @@ var tweet = tweet || {};
         }
 
         var headerData = [];
-        headerData.push(m('span#name', [
-            u.name() + ' (',
-            m('a',
-                {href: '/user/' + u.id(), config: m.route },
-                '@' + u.screen_name()
-            ), ')']
-        ));
-        headerData.push(m('span#date', ago));
+        headerData.push(m('span.tweet-name',  u.name()));
+        headerData.push(m('span.tweet-username', [
+            m('a', {
+                    href: '/user/' + u.id(),
+                    config: m.route
+                }, '@' + u.screen_name()),
+        ]));
+        headerData.push(m('time', {
+            datetime: (new Date(tweet.created_at())).toUTCString(),
+            class: 'tweet-time-ago'
+        }, ago));
+
         data.push(m('div.tweet-header'), headerData);
 
-        data.push(m('div#img', [
+        data.push(m('div.tweet-avatar', [
             m('img', {src: u.profile_image_url_https()})
         ]));
-        data.push(m('p#text', linkEntities(tweet.text())));
+        data.push(m('p.tweet-text', linkEntities(tweet.text())));
 
         if (tweet.is_retweet()) {
-            data.push(m('p#retweeted', 'Retweeted by ' + tweet.user.screen_name()));
+            data.push(m('p.tweet-retweeted', 'Retweeted by ' +
+                tweet.user.screen_name()));
         }
 
         data.push(mediaNodes(tweet));
 
-        return m('div#' + tweet.id_str(), data);
+        return m('div', {
+            id: tweet.id_str(),
+            class: 'tweet',
+            onclick: showTweet.bind(tweet.id_str())
+        }, data);
     };
 })(window);

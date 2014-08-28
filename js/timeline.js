@@ -114,18 +114,7 @@ var timeline = timeline || {};
         }
         m.render(ELEM, timeline.view(this));
         init = true;
-        timeline.checkLoadMoreIsInView.bind(this)();
     };
-
-    timeline.checkLoadMoreIsInView = function() {
-        console.log('checkLoadMoreIsInView');
-        var that = this;
-        var query = '#loadmore';
-        UIhelpers.fireIfElementVisible(query, function() {
-            console.log('fired!!');
-            timeline.loadMore.bind(that)();
-        });
-    }
 
     timeline.listenToEvents = function() {
         var that = this;
@@ -213,6 +202,36 @@ var timeline = timeline || {};
         });
     };
 
+    var loadMoreIfVisible = function(elem, isInitialized, context) {
+        //don't redraw if we did once already
+        if (isInitialized) {
+            return;
+        }
+
+        var controller = this;
+
+        function isElementInViewport (elem) {
+            var rect = elem.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        function handler() {
+            if (isElementInViewport(elem)) {
+                timeline.loadMore.bind(controller)();
+            }
+        }
+
+        addEventListener('DOMContentLoaded', handler, false);
+        addEventListener('load', handler, false);
+        addEventListener('scroll', handler, false);
+        addEventListener('resize', handler, false);
+    };
+
     // View
     timeline.view = function(controller) {
 
@@ -246,7 +265,10 @@ var timeline = timeline || {};
         rv.push(tl);
 
         var loadMore = m('div#loadmore', [
-            m('button', { onclick: timeline.loadMore.bind(controller)}, 'Load moar')
+            m('button', {
+                onclick: timeline.loadMore.bind(controller),
+                //config: loadMoreIfVisible.bind(controller)
+            }, 'Load moar')
         ]);
         rv.push(loadMore);
 

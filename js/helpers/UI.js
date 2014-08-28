@@ -20,37 +20,4 @@
         n.onclose = onclose;
     };
 
-    UIhelpers.fireIfElementVisible = function(query, callback) {
-
-        var elem = document.querySelector(query);
-        if (!elem) {
-            setTimeout(function() {
-                UIhelpers.fireIfElementVisible(query, callback)
-            }, 100);
-            return;
-        }
-
-        function isElementInViewport (elem) {
-            var rect = elem.getBoundingClientRect();
-
-            return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
-        }
-
-        function handler() {
-            if (isElementInViewport(elem)) {
-                callback();
-            }
-        }
-
-        addEventListener('DOMContentLoaded', handler, false);
-        addEventListener('load', handler, false);
-        addEventListener('scroll', handler, false);
-        addEventListener('resize', handler, false);
-    };
-
 })(window);
