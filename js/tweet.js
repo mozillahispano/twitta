@@ -59,7 +59,8 @@ var tweet = tweet || {};
             }
         }
 
-        function textEntities(text) {
+        function linkEntities(text) {
+            var indexes =
             text = text.replace(/(^|\W)(#[a-z\d][\w-]*)/ig,
                 '$1<a href="/index.html#/search/$2">$2</a>');
             text = text.replace(/(^|\W)(@[a-z\d][\w-]*)/ig,
@@ -77,19 +78,21 @@ var tweet = tweet || {};
             u = tweet.user;
         }
 
-        data.push(m('div#img', [
-            m('img', {src: u.profile_image_url_https()})
-        ]));
-        data.push(m('p#name', [
-            u.name() + ' ',
+        var headerData = [];
+        headerData.push(m('span#name', [
+            u.name() + ' (',
             m('a',
                 {href: '/user/' + u.id(), config: m.route },
                 '@' + u.screen_name()
-            )]
+            ), ')']
         ));
+        headerData.push(m('span#date', ago));
+        data.push(m('div.tweet-header'), headerData);
 
-        data.push(m('p#text', m.trust(textEntities(tweet.text()))));
-        data.push(m('p#date', ago));
+        data.push(m('div#img', [
+            m('img', {src: u.profile_image_url_https()})
+        ]));
+        data.push(m('p#text', linkEntities(tweet.text())));
 
         if (tweet.is_retweet()) {
             data.push(m('p#retweeted', 'Retweeted by ' + tweet.user.screen_name()));

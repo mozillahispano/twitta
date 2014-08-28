@@ -8,16 +8,15 @@ section {
 }
 
 section.show {
-    transform: translateY(0%);
+    transform: translateX(0%);
 }
 
 section.hidden {
-    transform: translateY(-100%);
-    display: none;
+    transform: translateX(-100%);
 }
 
 #compose > button, #sendbutton {
-    background-image: url('/img/send128.png');
+    background-image: url('/img/send.png');
     background-size: cover;
     background-repeat: no-repeat;
     height: 20px;
@@ -39,8 +38,8 @@ label input[type="file"] {
     height: 100%;
 }
 
-#timeline, #comp {
-    padding-top: 10%;
+#timeline, #comp, #mentions, #userprofile, #dms {
+    margin-top: 10%;
 }
 
 #header {
@@ -48,7 +47,22 @@ label input[type="file"] {
     z-index: 1;
     top: 0px;
     width: 100%;
-    height: 10%;
+    height: 2rem;
+    background-color: grey;
+}
+
+#timeline > div {
+    border-color: grey;
+    border-width: 1px;
+    border-style: solid;
+    margin-top: 0.2rem;
+    padding: 0.1rem;
+}
+
+#timeline > div > div > img {
+    float: left;
+    margin-right: 3px;
+    padding-top: 2rem;
 }
 
 #header > div > div {

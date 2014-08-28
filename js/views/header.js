@@ -43,7 +43,7 @@ var header = header || {};
                     href: '/compose',
                     config: m.route
                 }, [
-                    m('img#send', { src: '/img/send128.png'})
+                    m('img#send', { src: '/img/send.png'})
                 ])
             ])
         ]);
