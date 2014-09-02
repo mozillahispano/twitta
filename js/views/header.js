@@ -1,16 +1,24 @@
-/* global timeline, mentions, dms */
-
+/* global tuiter */
 'use strict';
 
 var header = header || {};
 
 (function(window) {
 
-    var ELEM = document.getElementById('header');
+    var ELEM = document.getElementsByTagName('header')[0];
 
     var previousRoute = '/';
 
-    header.controller = function() {};
+    var credsInterval;
+
+    header.controller = function() {
+        credsInterval = setInterval(function credsHeader() {
+            if (tuiter.ready) {
+                m.redraw();
+                clearInterval(credsInterval);
+            }
+        }, 1000);
+    };
 
     // Called to update the header from timeline, mentions, dm…
     header.update = function(back) {
@@ -18,53 +26,94 @@ var header = header || {};
         m.redraw();
     };
 
-    header.view = function(controller) {
-        var data = [];
-
-        if (previousRoute) {
-            var back = m('div#back', [
-                m('a', {
-                    href: previousRoute, config: m.route
-                }, [
-                    m('img', { src: '/img/back.png'})
-                ])
-            ]);
-            data.push(back);
+    header.toggleExtended = function() {
+        var but = document.querySelector('nav > button');
+        if (but.classList.contains('active')) {
+            but.classList.remove('active');
+        } else {
+            but.classList.add('active');
         }
 
-        var center = [];
-
-        center.push(m('div#tl', [
-            m('a', {href: '/timeline', config: m.route}, [
-                m('img', { src: '/img/timeline.png'}),
-                m('span', timeline.getLength())
-            ])
-        ]));
-        center.push(m('div#mentions', [
-            m('a', {href: '/mentions', config: m.route}, [
-                m('img', { src: '/img/mentions.png'}),
-                m('span', mentions.getLength())
-            ])
-        ]));
-        center.push(m('div#direct', [
-            m('a', {href: '/dms', config: m.route}, [
-                m('img', { src: '/img/direct.png'}),
-                m('span', dms.getLength())
-            ])
-        ]));
-
-        data.push(m('div#headercenter', center));
-
-        data.push(m('div#senddiv', [
-            m('a', {
-                href: '/compose',
-                config: m.route
-            }, [
-                m('img#send', { src: '/img/send.png'})
-            ])
-        ]));
-
-        return m('div.inline', data);
+        var nav = document.querySelector('nav > ul.dropdown_menu');
+        if (nav.classList.contains('hide')) {
+            nav.classList.remove('hide');
+        } else {
+            nav.classList.add('hide');
+        }
     };
+
+    header.view = function() {
+
+        return m('nav.horizontal_menu.clearfix', [
+            m('ul.menu.clearfix', [
+                m('li', [
+                    m('a', {
+                        class: 'home_link',
+                        href: '/timeline',
+                        config: m.route
+                    })
+                ]),
+                m('li', [
+                    m('a', {
+                        class: 'compose_link',
+                        href: '/compose',
+                        config: m.route
+                    })
+                ]),
+                m('li', [
+                    m('a', {
+                        class: 'discover_link',
+                        href: '/discover',
+                        config: m.route
+                    })
+                ]),
+                m('li', [
+                    m('a', {
+                        class: 'message_link',
+                        href: '/dms',
+                        config: m.route
+                    })
+                ]),
+                m('li', [
+                    m('a', {
+                        class: 'lists_link',
+                        href: '/lists',
+                        config: m.route
+                    })
+                ])
+            ]),
+            m('button.toggle_menu', {
+                    onclick: header.toggleExtended
+                }, [
+                    m('span.bullet'),
+                    m('span.bullet'),
+                    m('span.bullet')
+                ]
+            ),
+            m('ul.dropdown_menu.clearfix.hide', [
+                m('li.view_profile', [
+                    m('a.clearfix', [
+                        m('img', {
+                            className: 'profile_menu_photo',
+                            src: tuiter.conf.getOwnUser('profile_image_url_https')
+                        }),
+                        m('span.profile_menu_name', tuiter.conf.getOwnUser('name')),
+                        m('br'),
+                        m('span.profile_menu_user', tuiter.conf.getOwnUser('screen_name'))
+                    ])
+                ]),
+                m('li', [
+                    m('a.search_link', 'Buscar')
+                ]),
+                m('li', [
+                    m('a.notifications_link', 'Notificaciones')
+                ]),
+                m('li', [
+                    m('a.settings_link', 'Ajustes generales')
+                ])
+            ])
+        ]);
+    };
+
     m.module(ELEM, header);
 })(window);

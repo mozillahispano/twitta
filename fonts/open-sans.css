@@ -1,0 +1,54 @@
+/*@font-face {
+  font-family: "Open Sans";
+  src: url("OpenSans-Regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Open Sans Italic";
+  src: url("OpenSans-Italic-webfont.woff") format("woff");
+  font-weight: normal;
+}*/
+
+@font-face {
+  font-family: "Open Sans Light";
+  src: url("OpenSans-Light-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Open Sans Semibold";
+  src: url("OpenSans-Semibold-webfont.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Open Sans Extrabold";
+  src: url("OpenSans-Extrabold-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Open Sans Bold";
+  src: url("OpenSans-Bold-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/*@font-face {
+  font-family: "Open Sans Condensed Light";
+  src: url("open-sans-condensed-light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Open Sans Condensed Bold";
+  src: url("open-sans-condensed-bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}*/

@@ -1,3 +1,9 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 section {
     width: 100%;
     height: 100%;
@@ -5,6 +11,7 @@ section {
     top: 0px;
     left: 0px;
     transition: all 0.5s ease-in 0s;
+    margin-top: 15%;
 }
 
 section.show {
@@ -15,6 +22,10 @@ section.show {
 section.hidden {
     transform: translateX(-100%);
     opacity: 0;
+}
+
+#header.hidden {
+    display: none;
 }
 
 #compose > button, #sendbutton {
@@ -46,10 +57,6 @@ label input[type="file"] {
 #timeline > div > a > img {
     width: 100%;
     height: 100%;
-}
-
-#timeline, #comp, #mentions, #userprofile, #dms {
-    margin-top: 10%;
 }
 
 #header {
@@ -91,4 +98,302 @@ div > a > img {
 #senddiv {
     float: rigth;
     margin: 0.3rem;
+}
+
+
+/*
+** Comunes
+*/
+a {
+    outline: none;
+}
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+  line-height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+.hide {
+    display: none;
+}
+.left {
+    float: left;
+}
+.header_spacer {
+    height: 50px;
+}
+
+/*
+** Estilos para el Login
+*/
+.login_container {
+    background-color: #66B1E3;
+    min-height: 100%;
+    text-align: center;
+}
+img.login_logo {
+    margin-top: 40px;
+}
+h1.login_app_name {
+    color: #FFFFFF;
+    font-family: "Open Sans Light";
+    font-size: 60px;
+    font-weight: normal;
+    margin: 5px 0 20px;
+    text-shadow: 3px 3px 0 #528EB6;
+}
+.login_message {
+    color: #FFFFFF;
+    font-family: "Open Sans Light";
+    margin: 0 20px 30px;
+}
+.login_message span {
+    text-shadow: 1px 1px 0 #528EB6;
+}
+button.auth_app_button {
+    background-color: #528EB6;
+    border: solid 1px #66B1E3;
+    color: #FFFFFF;
+    font-family: "Open Sans Light";
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+}
+button.auth_app_button:active {
+    background-color: transparent;
+    border: solid 1px #528EB6;
+}
+
+/*
+** Estilos para el Home
+*/
+header.app_header_menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+nav.horizontal_menu {
+    background-color: #66B1E3;
+    position: relative;
+}
+nav.horizontal_menu ul.menu {
+    margin: 0;
+    padding: 0;
+    width: 90%;
+    float: left;
+}
+nav.horizontal_menu ul.menu li {
+    display: block;
+    float: left;
+    height: 50px;
+    width: 20%;
+}
+nav.horizontal_menu ul.menu li a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+a.home_link {
+    background-image: url(../img/home.png);
+}
+a.compose_link {
+    background-image: url(../img/compose.png);
+}
+a.discover_link {
+    background-image: url(../img/discover.png);
+}
+a.message_link {
+    background-image: url(../img/message.png);
+}
+a.lists_link {
+    background-image: url(../img/lists.png);
+}
+button.toggle_menu {
+    background: transparent;
+    border: none;
+    display: block;
+    float: right;
+    height: 50px;
+    width: 10%;
+}
+button.toggle_menu:active,
+button.toggle_menu.active,
+nav.horizontal_menu ul li a:hover,
+nav.horizontal_menu ul li a:active,
+nav.horizontal_menu ul li a.active {
+    background-color: #3498DB;
+}
+button.toggle_menu span.bullet {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    display: block;
+    height: 4px;
+    margin: 4px auto 0;
+    width: 4px;
+}
+ul.dropdown_menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 170px;
+    background-color: #3498DB;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+}
+ul.dropdown_menu li {
+    display: block;
+}
+ul.dropdown_menu img.profile_menu_photo {
+    display: block;
+    float: left;
+    margin: 6px;
+}
+ul.dropdown_menu li.view_profile a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+ul.dropdown_menu li a {
+    clear: both;
+    color: #FFFFFF;
+    display: block;
+    text-decoration: none;
+}
+ul.dropdown_menu li a:hover,
+ul.dropdown_menu li a:active {
+    background-color: #2383C2 !important;
+}
+ul.dropdown_menu li a span.profile_menu_name,
+ul.dropdown_menu li a span.profile_menu_user {
+    color: #FFFFFF;
+    font-family: "Open Sans Semibold";
+    font-size: 11px;
+    white-space: nowrap;
+}
+ul.dropdown_menu li a span.profile_menu_user {
+    color: #8DC6EB;
+}
+ul.dropdown_menu li a.search_link,
+ul.dropdown_menu li a.notifications_link,
+ul.dropdown_menu li a.accounts_link,
+ul.dropdown_menu li a.settings_link {
+    display: block;
+    background-position: 10px center;
+    background-repeat: no-repeat;
+    padding: 10px 10px 10px 30px;
+    font-family: "Open Sans Semibold";
+    font-size: 11px;
+}
+a.search_link {
+    background-image: url(../img/search.png);
+}
+a.notifications_link {
+    background-image: url(../img/notifications.png);
+}
+a.accounts_link {
+    background-image: url(../img/accounts.png);
+}
+a.settings_link {
+    background-image: url(../img/settings.png);
+}
+
+/*
+** Timeline items
+*/
+.timeline_items .item {
+    border-bottom: solid 1px #E3EAF0;
+    padding-bottom: 10px;
+}
+img.user_avatar {
+    margin: 10px 10px 5px;
+}
+span.post_date {
+    display: block;
+    text-align: center;
+    color: #7F8C8D;
+    font-size: 9px;
+    font-family: "Open Sans Semibold";
+    margin-top: -6px;
+}
+header.post_header {
+    padding-top: 5px;
+}
+.timeline_items .item span.author_name {
+    font-family: "Open Sans Semibold";
+    color: #2C3E50;
+    font-size: 12px;
+    margin: 10px 5px 5px 0;
+    line-height: 20px;
+}
+.timeline_items .item span.author_alias {
+    font-family: "Open Sans Light";
+    color: #3498DB;
+    font-size: 11px;
+    font-weight: normal;
+    margin: 10px 5px 5px 0;
+}
+.timeline_items .item p.post_content {
+    font-family: "Open Sans Light";
+    color: #000000;
+    margin: 0 10px 0 70px;
+    font-size: 11px;
+}
+.timeline_items .item p.post_content img {
+    max-width: 100%;
+    display: block;
+    margin: 8px 0;
+}
+.timeline_items .item .post_options {
+    text-align: right;
+    padding-right: 12px;
+}
+.timeline_items .item .post_options a {
+    background-image: url(../img/options.png);
+    line-height: 12px;
+    background-repeat: no-repeat;
+    font-family: "Open Sans Extrabold";
+    font-size: 9px;
+    text-decoration: none;
+    color: #A9BBCE;
+}
+.timeline_items .item .post_options a.reply {
+    background-position: 0 -27px;
+    padding-left: 20px;
+    margin-right: 10px;
+}
+.timeline_items .item .post_options a.retweet {
+    background-position: 0 2px;
+    padding-left: 20px;
+    margin-right: 10px;
+}
+.timeline_items .item .post_options a.favorite {
+    background-position: 0 -42px;
+    padding-left: 17px;
+}
+.timeline_items .item .post_options a.favorite.active {
+    background-position: 0 -59px;
+    color: #F1C40F;
+}
+.timeline_items .item .post_options a.retweet.active {
+    background-position: 0 -12px;
+    color: #3498DB;
+}
+.retweeted {
+    font-family: "Open Sans Extrabold";
+    font-size: 8px;
+    color: #7F7F7F;
+    margin-left: 50px;
+}
+.retweeted img {
+    margin-right: 8px;
 }

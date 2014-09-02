@@ -43,21 +43,26 @@ var login = login || {};
             }
         }.bind(this);
 
+        UIhelpers.hideHeader();
         UIhelpers.showOnlyThisSection(ELEM);
         m.render(ELEM, login.view(this));
     };
 
     login.view = function(ctrl) {
         var data = [];
-        data.push(m('h3', 'Bienvenido a twitta'));
-        data.push(m('p', 'Para poder usar la aplicación, tienes que permitir' +
-            ' a esta aplicación registrarse en Twitter.'));
-        data.push(m('p', 'Por favor, pulsa en "Conectarme a Twitter"'));
+        data.push(m('img', {
+            class: 'login_logo',
+            src: 'img/home-logo.png'
+        }));
+        data.push(m('h1.login_app_name', 'twitta'));
+        var msg = 'Para comenzar a utilizar <span>twitta</span> debes ' +
+            ' autorizar la aplicación en tu cuenta de Twitter.';
+        data.push(m('p.login_message', m.trust(msg)));
         data.push(m('button', {
+            class: 'auth_app_button',
             onclick: ctrl.lg
-        }, 'Conectarme'));
-        data.push(m('p', 'willyaranda / Mozilla Hispano, 2014'));
-        return m('div', data);
+        }, 'Autorizar'));
+        return m('div.login_container', data);
     };
 
 })(window);

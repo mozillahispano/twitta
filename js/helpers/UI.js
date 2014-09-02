@@ -14,6 +14,12 @@
         element.classList.remove('hidden');
     };
 
+    UIhelpers.hideHeader = function() {
+        var el = document.getElementById('header');
+        el.classList.add('show');
+        el.classList.remove('hidden');
+    };
+
     UIhelpers.showNotification = function(title, body, onclick, onclose) {
         var n = new Notification(title, {body: body});
         n.onclick = onclick;
