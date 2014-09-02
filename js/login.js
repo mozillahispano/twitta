@@ -50,7 +50,7 @@ var login = login || {};
     login.view = function(ctrl) {
         var data = [];
         data.push(m('img', {
-            class: 'login_logo',
+            className: 'login_logo',
             src: 'img/home-logo.png'
         }));
         data.push(m('h1.login_app_name', 'twitta'));
@@ -58,7 +58,7 @@ var login = login || {};
             ' autorizar la aplicación en tu cuenta de Twitter.';
         data.push(m('p.login_message', m.trust(msg)));
         data.push(m('button', {
-            class: 'auth_app_button',
+            className: 'auth_app_button',
             onclick: ctrl.lg
         }, 'Autorizar'));
         return m('div.login_container', data);

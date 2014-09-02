@@ -26,7 +26,6 @@ var mentions = mentions || {};
                 return false;
             }
             tweetList.push(tuit);
-            header.update();
 
             // Do not show the section if we are not on the route
             if (m.route() === '/mentions') {

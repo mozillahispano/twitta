@@ -69,7 +69,6 @@ var tweet = tweet || {};
             }
         }
 
-
         function linkEntities(text) {
             var entities = [];
             // Extract entities with own's twitter library
@@ -147,7 +146,7 @@ var tweet = tweet || {};
         ]));
         headerData.push(m('time', {
             datetime: (new Date(tweet.created_at())).toUTCString(),
-            class: 'tweet-time-ago'
+            className: 'tweet-time-ago'
         }, ago));
 
         data.push(m('div.tweet-header'), headerData);
@@ -165,16 +164,16 @@ var tweet = tweet || {};
         data.push(mediaNodes(tweet));
 
         if (extended) {
-            var extended = [];
-            extended.push(m('div.favorite-count', tweet.favorite_count()));
-            extended.push(m('div.retweet-count', tweet.retweet_count()));
-            extended.push(m('div.own-favorite', tweet.favorited()));
-            data.push(m('div#extended-data', extended));
+            var ext = [];
+            ext.push(m('div.favorite-count', tweet.favorite_count()));
+            ext.push(m('div.retweet-count', tweet.retweet_count()));
+            ext.push(m('div.own-favorite', tweet.favorited()));
+            data.push(m('div#extended-data', ext));
         }
 
         return m('div', {
             id: tweet.id_str(),
-            class: 'tweet',
+            className: 'tweet',
             onclick: showTweet.bind(tweet.id_str())
         }, data);
     };

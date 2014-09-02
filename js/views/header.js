@@ -7,7 +7,6 @@ var header = header || {};
 
     var ELEM = document.getElementsByTagName('header')[0];
 
-    var previousRoute = '/';
 
     var credsInterval;
 
@@ -18,12 +17,6 @@ var header = header || {};
                 clearInterval(credsInterval);
             }
         }, 1000);
-    };
-
-    // Called to update the header from timeline, mentions, dm…
-    header.update = function(back) {
-        previousRoute = back || previousRoute;
-        m.redraw();
     };
 
     header.toggleExtended = function() {
@@ -48,35 +41,35 @@ var header = header || {};
             m('ul.menu.clearfix', [
                 m('li', [
                     m('a', {
-                        class: 'home_link',
+                        className: 'home_link',
                         href: '/timeline',
                         config: m.route
                     })
                 ]),
                 m('li', [
                     m('a', {
-                        class: 'compose_link',
+                        className: 'compose_link',
                         href: '/compose',
                         config: m.route
                     })
                 ]),
                 m('li', [
                     m('a', {
-                        class: 'discover_link',
+                        className: 'discover_link',
                         href: '/discover',
                         config: m.route
                     })
                 ]),
                 m('li', [
                     m('a', {
-                        class: 'message_link',
+                        className: 'message_link',
                         href: '/dms',
                         config: m.route
                     })
                 ]),
                 m('li', [
                     m('a', {
-                        class: 'lists_link',
+                        className: 'lists_link',
                         href: '/lists',
                         config: m.route
                     })
@@ -99,7 +92,8 @@ var header = header || {};
                         }),
                         m('span.profile_menu_name', tuiter.conf.getOwnUser('name')),
                         m('br'),
-                        m('span.profile_menu_user', tuiter.conf.getOwnUser('screen_name'))
+                        m('span.profile_menu_user', '@' +
+                            tuiter.conf.getOwnUser('screen_name'))
                     ])
                 ]),
                 m('li', [

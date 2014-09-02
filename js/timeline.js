@@ -30,7 +30,6 @@ var timeline = timeline || {};
                 return;
             }
             tweetList.push(tuit);
-            header.update();
 
             // Do not show the section if we are not on the route
             if (m.route() === '/timeline') {
@@ -63,7 +62,6 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw) {
                 tweetList.splice(tw.index, 1);
-                header.update();
                 m.render(ELEM, timeline.view(this));
             }
         }.bind(this);

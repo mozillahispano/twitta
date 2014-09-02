@@ -1,4 +1,4 @@
-/* global UIhelpers, tuiter, header, timeline */
+/* global UIhelpers, tuiter */
 'use strict';
 
 var compose = compose || {};

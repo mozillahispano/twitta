@@ -26,7 +26,6 @@ var dms = dms || {};
                 return;
             }
             dmList.push(dm_obj);
-            header.update();
 
             // Do not show the section if we are not on the route
             if (m.route() === '/dms') {
@@ -59,7 +58,6 @@ var dms = dms || {};
             var tw = this.find(id);
             if (tw) {
                 dmList.splice(tw.index, 1);
-                header.update();
             }
             m.render(ELEM, dms.view(this));
         }.bind(this);
