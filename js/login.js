@@ -43,8 +43,7 @@ var login = login || {};
             }
         }.bind(this);
 
-        UIhelpers.hideHeader();
-        UIhelpers.showOnlyThisSection(ELEM);
+        UIhelpers.showOnlyThisSection(ELEM, true);
         m.render(ELEM, login.view(this));
     };
 
