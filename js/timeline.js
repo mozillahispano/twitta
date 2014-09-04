@@ -208,7 +208,7 @@ var timeline = timeline || {};
 
         var controller = this;
 
-        function isElementInViewport (elem) {
+        function isElementInViewport(elem) {
             var rect = elem.getBoundingClientRect();
             return (
                 rect.top >= 0 &&
@@ -255,16 +255,15 @@ var timeline = timeline || {};
             return tweet.view(tw);
         });
 
-        var rv = [];
-        rv.push(tl);
+        var rv = m('div.timeline_items', tl);
 
-        var loadMore = m('div#loadmore', [
+        /*var loadMore = m('div#loadmore', [
             m('button', {
                 onclick: timeline.loadMore.bind(controller),
                 //config: loadMoreIfVisible.bind(controller)
             }, 'Load moar')
         ]);
-        rv.push(loadMore);
+        rv.push(loadMore);*/
 
         return rv;
     };

@@ -58,13 +58,25 @@ var tweet = tweet || {};
         m.route(nextRoute);
     };
 
-    tweet.view = function(tweet, extended) {
-        function mediaNodes(tweet) {
-            if (tweet.media()) {
+    tweet.getTopInfo = function(tw) {
+        return m('div.post_top_info', [
+            m('span.retweeted', [
+                m('img', {
+                    align: 'absmiddle',
+                    src: 'img/retweeted.png'
+                }),
+                tw.user.name() || tw.user.screen_name()
+            ])
+        ]);
+    };
+
+    tweet.view = function(tw, extended) {
+        function mediaNodes(tw) {
+            if (tw.media()) {
                 return m('a', {
-                    href: tweet.expanded_url(),
+                    href: tw.expanded_url(),
                     target: '_blank'
-                    }, m('img', {src: tweet.media_url()})
+                    }, m('img', {src: tw.media_url()})
                 );
             }
         }
@@ -126,16 +138,57 @@ var tweet = tweet || {};
             return elements;
         }
 
-        var ago = moment(tweet.created_at()).fromNow();
-        var data = [];
+        var ago = moment(tw.created_at()).fromNow();
         var u;
+        var is_retweet = false;
 
-        if (tweet.is_retweet()) {
-            u = tweet.orig_user;
+        if (tw.is_retweet()) {
+            u = tw.orig_user;
+            is_retweet = true;
         } else {
-            u = tweet.user;
+            u = tw.user;
         }
 
+        function getTopInfo() {
+            if (is_retweet) {
+                return tweet.getTopInfo(tw);
+            }
+        }
+
+        return m('div', {
+                className: 'item clearfix',
+                id: tw.id_str()
+            }, [
+            getTopInfo(),
+            m('div.left', [
+                m('img', {
+                    className: 'user_avatar',
+                    src: u.profile_image_url_https()
+                }),
+                m('span.post_date', ago)
+            ]),
+            m('header.post_header', [
+                m('span.author_name', u.name()),
+                m('span.author_alias', '@' + u.screen_name())
+            ]),
+            m('p.post_content.clearfix', linkEntities(tw.text())),
+            m('div.post_options', [
+                m('a', {
+                    className: 'reply',
+                    onclick: function() {}
+                }),
+                m('a', {
+                    className: 'retweet active',
+                    onclick: function() {}
+                }, tw.retweet_count()),
+                m('a', {
+                    className: 'favorite active',
+                    onclick: function() {}
+                }, tw.favorite_count())
+            ])
+        ]);
+
+        /*
         var headerData = [];
         headerData.push(m('span.tweet-name',  u.name()));
         headerData.push(m('span.tweet-username', [
@@ -176,5 +229,6 @@ var tweet = tweet || {};
             className: 'tweet',
             onclick: showTweet.bind(tweet.id_str())
         }, data);
+        */
     };
 })(window);
