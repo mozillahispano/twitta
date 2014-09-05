@@ -29,7 +29,17 @@ var timeline = timeline || {};
             if (this.find(tuit.id_str())) {
                 return;
             }
-            tweetList.push(tuit);
+            // If it is a RT and we can find it, set the retweet attr to true
+            else if (tuit.is_retweet()) {
+                var t = this.find(tuit.orig_id_str());
+                if (!t) {
+                    tweetList.push(tuit);
+                    return;
+                }
+                tweet.changeRTInternal(t, true);
+            } else {
+                tweetList.push(tuit);
+            }
 
             // Do not show the section if we are not on the route
             if (m.route() === '/timeline') {
@@ -39,11 +49,11 @@ var timeline = timeline || {};
 
         }.bind(this);
 
-        this.find = function(id) {
+        this.find = function(id_str) {
             var found = null;
 
             function findFunction(element, index) {
-                if (element.id_str() === id) {
+                if (element.id_str() === id_str) {
                     found = {};
                     found.value = element;
                     found.index = index;
@@ -68,33 +78,33 @@ var timeline = timeline || {};
 
         this.favorited = function(id) {
             var tw = this.find(id);
-            if (tw.value) {
+            if (tw && tw.value) {
                 tw.value.favorited(true);
+                m.render(ELEM, timeline.view(this));
             }
         }.bind(this);
 
         this.unfavorited = function(id) {
             var tw = this.find(id);
-            if (tw.value) {
+            if (tw && tw.value) {
                 tw.value.favorited(false);
+                m.render(ELEM, timeline.view(this));
             }
         }.bind(this);
 
         this.retweeted = function(id) {
             var tw = this.find(id);
-            if (tw.value) {
+            if (tw && tw.value) {
                 tw.value.retweeted(true);
             }
         }.bind(this);
 
         this.unretweeted = function(id) {
             var tw = this.find(id);
-            if (tw.value) {
+            if (tw && tw.value) {
                 tw.value.retweeted(false);
             }
         }.bind(this);
-
-
 
         // Initialize
         if (!init) {
@@ -121,6 +131,12 @@ var timeline = timeline || {};
         });
         tuiter.addListener('delete', function(tweetId) {
             that.remove(tweetId);
+        });
+        tuiter.addListener('favorite', function(a, b, tw) {
+            that.favorited(tw.id_str);
+        });
+        tuiter.addListener('unfavorite', function(a, b, tw) {
+            that.unfavorited(tw.id_str);
         });
     };
 
@@ -251,11 +267,13 @@ var timeline = timeline || {};
         eldestTweetId = tweetList[tweetList.length - 1].id_str();
 
         // 3) Create the DOM
-        var tl = tweetList.map(function(tw) {
+        var tl = [];
+        tl.push(m('div.header_spacer'));
+        var map = tweetList.map(function(tw) {
             return tweet.view(tw);
         });
 
-        var rv = m('div.timeline_items', tl);
+        var rv = m('div.timeline_items', tl.concat(map));
 
         /*var loadMore = m('div#loadmore', [
             m('button', {

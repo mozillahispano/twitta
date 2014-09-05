@@ -5,6 +5,11 @@ body {
 	padding: 0;
 }
 
+section.hidden {
+	display: none;
+	opacity: 0;
+}
+
 /*
 ** Comunes
 */
@@ -31,10 +36,6 @@ a {
 }
 .header_spacer {
 	height: 50px;
-}
-
-section:not(#login) {
-	margin-top: 50px;
 }
 
 /*

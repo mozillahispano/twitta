@@ -1,4 +1,4 @@
-/* global user, moment, twttr */
+/* global user, moment, twttr, tuiter */
 'use strict';
 
 var tweet = tweet || {};
@@ -30,8 +30,7 @@ var tweet = tweet || {};
         // this is a RT
         if (tweet.retweeted_status) {
             this.is_retweet = m.prop(true);
-            this.orig_id = m.prop(tweet.retweeted_status.id);
-            this.retweeted_by_username = m.prop(tweet.user.screen_name);
+            this.orig_id_str = m.prop(tweet.retweeted_status.id_str);
             this.orig_user = new user.User(tweet.retweeted_status.user);
             this.text = m.prop(tweet.retweeted_status.text);
             userController.add(this.orig_user);
@@ -70,8 +69,121 @@ var tweet = tweet || {};
         ]);
     };
 
-    tweet.view = function(tw, extended) {
-        function mediaNodes(tw) {
+    tweet.toggleRT = function(tw) {
+        if (tw.retweeted()) {
+            //TODO
+        } else {
+            tuiter.retweetId(tw.id_str(), { trim_user: 1 }, function(err, d) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                tweet.changeRTInternal(tw, true);
+                m.redraw();
+           });
+        }
+    };
+
+    tweet.toggleFAV = function(tw) {
+        if (tw.favorited()) {
+            tuiter.favoritesDestroy(tw.id_str(), {}, function(err, d) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                tweet.changeFAVInternal(tw, false);
+                m.redraw();
+            });
+        } else {
+            tuiter.favoritesCreate(tw.id_str(), {}, function(err, d) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                tweet.changeFAVInternal(tw, true);
+                m.redraw();
+            });
+        }
+    };
+
+    tweet.answerTo = function(tw) {
+        window.alert('I am going to reply to ' + tw.id_str());
+    };
+
+    tweet.changeRTInternal = function(tw, isRetweeted) {
+        tw.retweeted = m.prop(isRetweeted);
+        var count = tw.retweet_count();
+        var future = isRetweeted ? (count + 1) : (count - 1);
+        tw.retweet_count(future);
+    };
+
+    tweet.changeFAVInternal = function(tw, isFavorited) {
+        tw.favorited(isFavorited);
+        var count = tw.favorite_count();
+        var future = isFavorited ? (count + 1) : (count - 1);
+        tw.favorite_count(future);
+    };
+
+    tweet.linkEntities = function(text) {
+        var entities = [];
+        // Extract entities with own's twitter library
+        entities = twttr.txt.extractEntitiesWithIndices(text);
+        if (entities.length === 0) {
+            return text;
+        }
+
+        //Sort by indice
+        entities.sort(function(a, b) {
+            return a.indices[0] > b.indices[0];
+        });
+
+
+        var entity;
+        var elements = [];
+        var index = 0;
+
+        // Generate the virtual DOM with mithril
+        while ((entity = entities.shift()) !== undefined) {
+            var tmp = text.slice(index, entity.indices[0]);
+            if (tmp.length >= 0) {
+                elements.push(tmp);
+            }
+            if (entity.screenName) {
+                elements.push(m('a', {
+                    href: '/user/@' + entity.screenName,
+                    config: m.route
+                }, '@' + entity.screenName));
+            } else if (entity.hashtag) {
+                elements.push(m('a', {
+                    href: '/search/#' + entity.hashtag,
+                    config: m.route
+                }, '#' + entity.hashtag));
+            } else if (entity.url) {
+                 elements.push(m('a', {
+                    href: entity.url,
+                    target: '_blank'
+                }, entity.url));
+            } else {
+                // Cashtags
+                // user/list
+                // we do not care for now so just add the text
+                elements.push(tmp);
+            }
+            index = entity.indices[1];
+        }
+
+        // Add remaining text
+        if (index < text.length) {
+            elements.push(text.slice(index));
+        }
+
+        // Return it
+        return elements;
+    };
+
+    tweet.view = function(tw) {
+
+        /*function mediaNodes(tw) {
             if (tw.media()) {
                 return m('a', {
                     href: tw.expanded_url(),
@@ -79,85 +191,21 @@ var tweet = tweet || {};
                     }, m('img', {src: tw.media_url()})
                 );
             }
-        }
-
-        function linkEntities(text) {
-            var entities = [];
-            // Extract entities with own's twitter library
-            entities = twttr.txt.extractEntitiesWithIndices(text);
-            if (entities.length === 0) {
-                return text;
-            }
-
-            //Sort by indice
-            entities.sort(function(a, b) {
-                return a.indices[0] > b.indices[0];
-            });
-
-
-            var entity;
-            var elements = [];
-            var index = 0;
-
-            // Generate the virtual DOM with mithril
-            while ((entity = entities.shift()) !== undefined) {
-                var tmp = text.slice(index, entity.indices[0]);
-                if (tmp.length >= 0) {
-                    elements.push(tmp);
-                }
-                if (entity.screenName) {
-                    elements.push(m('a', {
-                        href: '/user/@' + entity.screenName,
-                        config: m.route
-                    }, '@' + entity.screenName));
-                } else if (entity.hashtag) {
-                    elements.push(m('a', {
-                        href: '/search/#' + entity.hashtag,
-                        config: m.route
-                    }, '#' + entity.hashtag));
-                } else if (entity.url) {
-                     elements.push(m('a', {
-                        href: entity.url,
-                        target: '_blank'
-                    }, entity.url));
-                } else {
-                    // Cashtags
-                    // user/list
-                    // we do not care for now so just add the text
-                    elements.push(tmp);
-                }
-                index = entity.indices[1];
-            }
-
-            // Add remaining text
-            if (index < text.length) {
-                elements.push(text.slice(index));
-            }
-
-            // Return it
-            return elements;
-        }
+        }*/
 
         var ago = moment(tw.created_at()).fromNow();
-        var u;
-        var is_retweet = false;
-
-        if (tw.is_retweet()) {
-            u = tw.orig_user;
-            is_retweet = true;
-        } else {
-            u = tw.user;
-        }
+        var u = tw.orig_user || tw.user;
 
         function getTopInfo() {
-            if (is_retweet) {
+            if (tw.is_retweet()) {
                 return tweet.getTopInfo(tw);
             }
         }
 
         return m('div', {
                 className: 'item clearfix',
-                id: tw.id_str()
+                id: tw.id_str(),
+                onclick: showTweet.bind(tw.id_str())
             }, [
             getTopInfo(),
             m('div.left', [
@@ -171,64 +219,21 @@ var tweet = tweet || {};
                 m('span.author_name', u.name()),
                 m('span.author_alias', '@' + u.screen_name())
             ]),
-            m('p.post_content.clearfix', linkEntities(tw.text())),
+            m('p.post_content.clearfix', tweet.linkEntities(tw.text())),
             m('div.post_options', [
                 m('a', {
                     className: 'reply',
-                    onclick: function() {}
+                    onclick: function(evt) { evt.stopPropagation(); tweet.answerTo(tw); }
                 }),
                 m('a', {
-                    className: 'retweet active',
-                    onclick: function() {}
+                    className: 'retweet' + (tw.retweeted() ? ' active' : ''),
+                    onclick: function(evt) { evt.stopPropagation(); tweet.toggleRT(tw); }
                 }, tw.retweet_count()),
                 m('a', {
-                    className: 'favorite active',
-                    onclick: function() {}
+                    className: 'favorite' + (tw.favorited() ? ' active' : ''),
+                    onclick: function(evt) { evt.stopPropagation(); tweet.toggleFAV(tw); }
                 }, tw.favorite_count())
             ])
         ]);
-
-        /*
-        var headerData = [];
-        headerData.push(m('span.tweet-name',  u.name()));
-        headerData.push(m('span.tweet-username', [
-            m('a', {
-                    href: '/user/' + u.id(),
-                    config: m.route
-                }, '@' + u.screen_name()),
-        ]));
-        headerData.push(m('time', {
-            datetime: (new Date(tweet.created_at())).toUTCString(),
-            className: 'tweet-time-ago'
-        }, ago));
-
-        data.push(m('div.tweet-header'), headerData);
-
-        data.push(m('div.tweet-avatar', [
-            m('img', {src: u.profile_image_url_https()})
-        ]));
-        data.push(m('p.tweet-text', linkEntities(tweet.text())));
-
-        if (tweet.is_retweet()) {
-            data.push(m('p.tweet-retweeted', 'Retweeted by ' +
-                tweet.user.screen_name()));
-        }
-
-        data.push(mediaNodes(tweet));
-
-        if (extended) {
-            var ext = [];
-            ext.push(m('div.favorite-count', tweet.favorite_count()));
-            ext.push(m('div.retweet-count', tweet.retweet_count()));
-            ext.push(m('div.own-favorite', tweet.favorited()));
-            data.push(m('div#extended-data', ext));
-        }
-
-        return m('div', {
-            id: tweet.id_str(),
-            className: 'tweet',
-            onclick: showTweet.bind(tweet.id_str())
-        }, data);
-        */
     };
 })(window);

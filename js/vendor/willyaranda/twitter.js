@@ -33,6 +33,8 @@
 
   var userConfig = {};
 
+  var friends = [];
+
   /**
    * Holds if the library is ready.
    * This is set when
@@ -66,6 +68,16 @@
    * @type {String}
    */
   var _pendingData = '';
+
+  /**
+   * Normalize screen name. Removes leading @ if it is sent
+   * @param  {String} screen_name The screen_name of the user to normalize
+   * @return {String} The normalized screen_name
+   */
+  function normalizeScreenName(screen_name) {
+    var name = (screen_name[0] === '@') ? screen_name.slice(1) : screen_name;
+    return name;
+  }
 
   /**
    * Returns the tokens used to perform requests to twitter
@@ -118,11 +130,6 @@
       return false;
     }
 
-    // Auto start stream
-    if (stream) {
-      tuiter.userStream(parms);
-    }
-
     var getConfig = function getConfig() {
       var endpoint = 'https://api.twitter.com/1.1/help/configuration.json';
       var method = 'GET';
@@ -149,12 +156,39 @@
           setTimeout(getOwnUser.bind(this, parms), 2000); // Retry again later…
         } else {
           userConfig = json;
+          // Caching friends when not in streaming mode
+          if (!stream) {
+            tuiter.getFriendsIds(null, userConfig['screen_name'], {},
+              function(error, data) {
+                if (error) {
+                  console.error(error);
+                  return;
+                }
+                friends = data['ids'];
+            });
+          }
         }
       });
     };
 
-    getConfig();
-    getOwnUser({ skip_status: 1});
+    // Auto start stream
+    if (stream) {
+      tuiter.userStream(parms);
+      tuiter.addListener('friends', function(friendList) {
+        friends = friendList;
+      });
+    }
+
+    // Get Initial data for both streaming or REST
+    setTimeout(function() {
+      getConfig();
+    }, 100);
+
+    setTimeout(function() {
+      getOwnUser({ skip_status: 1});
+    }, 300);
+
+
     ready = true;
 
     return true;
@@ -184,7 +218,7 @@
    * @param  {string}   method   HTTP verb to use
    * @param  {Object}   params   extra params for the petition
    */
-  tuiter._request = function(endpoint, method, params, callback) {
+  tuiter._request = function(endpoint, method, params, callback, data) {
 
     function filterParams(params) {
       var rv = {};
@@ -227,7 +261,7 @@
             }
         }
     };
-    xhr.send();
+    xhr.send(data);
   };
 
   /**
@@ -355,6 +389,46 @@
   };
 
   /**
+   * Favorites the status specified in the ID parameter as the authenticating user.
+   * Returns the favorite status when successful.
+   *
+   * @function favoritesCreate
+   * @link  https://api.twitter.com/1.1/favorites/create.json
+   * @param  {Stting}   id    The numerical ID of the desired status.
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the resulted status
+   */
+  tuiter.favoritesCreate = function(id, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/favorites/create.json';
+    var method = 'POST';
+    var params = {
+      id: id,
+      include_entities: parms.include_entities
+    };
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Un-favorites the status specified in the ID parameter as the authenticating user.
+   * Returns the un-favorited status in the requested format when successful.
+   *
+   * @function favoritesDestroy
+   * @link https://dev.twitter.com/docs/api/1.1/post/favorites/destroy
+   * @param  {String}   id    The numerical ID of the desired status.
+   * @param  {Object}   parms Extra parameters for the query, see link
+   * @param  {Function} cb     Callback with the resulted status
+   */
+  tuiter.favoritesDestroy = function(id, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/favorites/destroy.json';
+    var method = 'POST';
+    var params = {
+      id: id,
+      include_entities: parms.include_entities
+    };
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
    * Updates the authenticating user's current status, also known as tweeting.
    *
    * @function updateStatus
@@ -381,8 +455,6 @@
     tuiter._request(endpoint, method, params, cb);
   };
 
-  // FIXME
-  /*
   tuiter.updateStatusWithMedia = function(text, media, parms, cb) {
     if (Array.isArray(media)) {
       if (media.length > config['max_media_per_upload']) {
@@ -394,10 +466,9 @@
     }
     var endpoint = 'https://api.twitter.com/1.1/statuses/update_with_media.json';
     var method = 'POST';
-    var mediaB64 = window.btoa(media);
     var params = {
       status: text,
-      media: mediaB64,
+      media: media,
       possibly_sensitive: parms.possibly_sensitive,
       in_reply_to_status_id: parms.reply_to,
       lat: parms.lat,
@@ -406,8 +477,11 @@
       display_coordinates: parms.display_coordinates,
     };
 
-    tuiter._request(endpoint, method, params, cb);
-  };*/
+    var fd = new FormData();
+    fd.append('media[]', media[0]);
+
+    tuiter._request(endpoint, method, params, cb, fd);
+  };
 
   /**
    * Returns a collection of up to 100 user IDs belonging to users who have
@@ -524,6 +598,33 @@
   };
 
   /**
+   * Returns a cursored collection of user IDs for every user the specified user
+   * is following (otherwise known as their "friends").
+   *
+   * @function getFriendsIds
+   * @link https://dev.twitter.com/docs/api/1.1/get/friends/ids
+   * @param  {String}   id_str      The ID of the user for whom to return results
+   *                                for.
+   * @param  {String}   screen_name The screen name of the user for whom to return
+   *                                results for.
+   * @param  {Object}   parms       Extra parameters, check link
+   * @param  {Function} cb          Callback with the JSON returned (error, json)
+   */
+  tuiter.getFriendsIds = function(id_str, screen_name, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/friends/ids.json';
+    var method = 'GET';
+    var params = {
+      user_id: id_str,
+      screen_name: screen_name ? normalizeScreenName(screen_name) : undefined,
+      cursor: parms.cursor,
+      stringify_ids: parms.stringify_ids,
+      count: parms.count
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
    * Returns a variety of information about the user specified by the required user_id
    * or screen_name parameter. The author's most recent Tweet will be returned
    * inline when possible.
@@ -532,19 +633,14 @@
    * @link https://dev.twitter.com/docs/api/1.1/get/users/show
    * @param  {String}   id_str      ID of the user (1134374479)
    * @param  {String}   screen_name Screen name of the user (willyaranda)
-   * @param  {[type]}   parms       Extra parameters, check link
+   * @param  {Object}   parms       Extra parameters, check link
    * @param  {Function} cb          Callback with the JSON returned (error, json)
    */
   tuiter.getUserShow = function(id_str, screen_name, parms, cb) {
-    function normalizeScreenName(screen_name) {
-      var name = (screen_name[0] === '@') ? screen_name.slice(1) : screen_name;
-      return name;
-    }
-
     var endpoint = 'https://api.twitter.com/1.1/users/show.json';
     var method = 'GET';
     var params = {
-      user_id : id_str,
+      user_id: id_str,
       screen_name: screen_name ? normalizeScreenName(screen_name) : undefined,
       include_entities: parms.include_entities
     };
@@ -689,13 +785,13 @@
     }
   }
 
-  function _fireEvent(event, msg) {
+  function _fireEvent(event, ...msg) {
     console.log('Firing ' + event + ' event');
     var toFire = listeners[event];
     if (Array.isArray(toFire)) {
       toFire.forEach(function(elem) {
           if (typeof elem === 'function') {
-              elem(msg);
+              elem(...msg);
           }
       });
     }

@@ -7,7 +7,6 @@ var header = header || {};
 
     var ELEM = document.getElementsByTagName('header')[0];
 
-
     var credsInterval;
 
     header.controller = function() {
