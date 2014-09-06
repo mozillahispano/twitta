@@ -1,4 +1,4 @@
-/* global UIhelpers, tuiter */
+/* global UIhelpers, tuiter, tweet */
 
 'use strict';
 
@@ -7,9 +7,13 @@ var user = user || {};
 
     var ELEM = document.getElementById('userprofile');
 
+    function changeToBigger(profile_url) {
+        return profile_url.replace('_normal', '_bigger');
+    }
+
     // Models
     user.User = function(user) {
-        this.id = m.prop(user.id_str);
+        this.id_str = m.prop(user.id_str);
         this.description = m.prop(user.description);
         this.location = m.prop(user.location);
         this.name = m.prop(user.name); //long name: Guillermo López
@@ -22,7 +26,8 @@ var user = user || {};
         }
         this.verified = m.prop(user.verified);
         this.profile_image_url_https = m.prop(user.profile_image_url_https);
-        this.profile_background_tile = m.prop(user.profile_background_tile);
+        //this.profile_background_tile = m.prop(user.profile_background_tile);
+        this.profile_banner_url = m.prop(user.profile_banner_url + '/mobile');
         this.profile_background_image_url_https =
             m.prop(user.profile_background_image_url_https);
         this.statuses_count = m.prop(user.statuses_count);
@@ -37,7 +42,7 @@ var user = user || {};
     // Controller
     user.controller = function() {
         this.add = function(u) {
-            if (this.findById(u.id())) { return; }
+            if (this.findById(u.id_str())) { return; }
             userList.push(u);
         }.bind(this);
 
@@ -45,7 +50,7 @@ var user = user || {};
             var foundValue;
             for (var i = 0; i < userList.length; i++) {
                 var el = userList[i];
-                if (el.id() === id) {
+                if (el.id_str() === id) {
                     foundValue = el;
                     break;
                 }
@@ -75,7 +80,10 @@ var user = user || {};
         var id = m.route.param('id');
         this.u = null;
 
-        if (!id) { m.route('/timeline'); return; }
+        if (!id) {
+            m.route('/timeline');
+            return;
+        }
 
         var isId_str = !isNaN(id);
 
@@ -117,34 +125,57 @@ var user = user || {};
     // View
     user.view = function(ctrl) {
         var u = ctrl.u;
-        var data = [];
         if (!u) {
             return;
         }
-        if (u.profile_background_tile()) {
-            data.push(m('img', {
-                src: ctrl.u.profile_background_image_url_https()
-            }));
-        }
-        data.push(m('img', {
-            src: u.profile_image_url_https()
-        }));
-        data.push(m('span', 'ver' + u.verified()));
-        data.push(m('p', '@' + u.screen_name()));
-        data.push(m('p', u.name()));
-        data.push(m('p', u.description()));
-        data.push(m('p', u.location()));
-        if (u.url()) {
-            data.push(m('p', [
-                m('a', {href: u.url(), target: '_blank'}, u.url())
-            ]));
-        }
-        data.push(m('p', 'prot' + u.protected()));
-        data.push(m('p', 'fol?' + u.following()));
-        data.push(m('p', 'tw' + u.statuses_count()));
-        data.push(m('p', 'fr' + u.friends_count()));
-        data.push(m('p', 'foll' + u.followers_count()));
-        return m('div', data);
+
+        return m('div.profile_container', [
+            m('div.header_spacer'),
+            m('header.profile_image_header.clearfix', [
+                m('img', {
+                    className: 'profile_image',
+                    src: u.profile_banner_url()
+                }),
+                m('img', {
+                    className: 'profile_user_avatar',
+                    src: changeToBigger(u.profile_image_url_https())
+                })
+            ]),
+            m('div.user_stats.clearfix', [
+                m('a.user_stat_item', [
+                    m('span.stat_text', 'Tweets'),
+                    m('span.stat_number', u.statuses_count())
+                ]),
+                m('a.user_stat_item', [
+                    m('span.stat_text', 'Siguiendo'),
+                    m('span.stat_number', u.friends_count())
+                ]),
+                m('a.user_stat_item', [
+                    m('span.stat_text', 'Seguidores'),
+                    m('span.stat_number', u.followers_count())
+                ])
+            ]),
+            m('div.user_info.clearfix', [
+                m('div.name_nick.clearfix', [
+                    m('span.name', u.name()),
+                    m('span.nickname', '@' + u.screen_name())
+                ]),
+                m('button', {
+                    className: 'follow_user ' + (u.following() ? 'unfollow' : 'follow'),
+                    onclick: function() {}
+                })
+            ]),
+            m('div.user_bio', [
+                m('p', tweet.linkEntities(u.description())),
+                m('p', u.location() + u.url() ? (' · ' + u.url()) : '')
+            ]),
+            m('a.tweets', [
+                m('div.user_followers', [
+                    m('span', 'Seguido por este y el otro'),
+                ])
+            ]),
+            m('h3.profile_tweets_header', 'Tweets')
+        ]);
     };
 
 })(window);

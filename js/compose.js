@@ -42,7 +42,7 @@ var compose = compose || {};
             }
             // Just plain text
             else {
-                tuiter.updateStatus(this.text(), null, function(error) {
+                tuiter.updateStatus(this.text(), {}, function(error) {
                     if (error) {
                         window.alert(error);
                     } else {
@@ -57,27 +57,49 @@ var compose = compose || {};
         m.render(ELEM, compose.view(this));
     };
 
+    var backToHome = function() {
+        m.route('/timeline');
+    };
+
     compose.view = function(controller) {
-        return m('div#comp', [
-            m('textarea#compose-area', {
-                name: 'compose-area',
-                placeholder: 'What do you want to say?',
-                oninput: m.withAttr('value', controller.text),
-                onkeyup: controller.update
-            }),
-            m('button#sendbutton', {
-                onclick: controller.updateStatus
-            }),
-            m('span#charsleft', allowedLength - controller.text().length),
-            m('label', [
-                m('input#addimage', {
-                    type: 'file',
-                    name: 'addimage',
-                    accept: 'image/*',
-                    placeholder: 'Image',
-                    onchange: controller.update
-                }),
-                'Add image'
+        return m('div.compose_container', [
+            m('div.header_spacer'),
+            m('header.app_header_menu.clearfix', [
+                m('button', {
+                    className: 'back',
+                    onclick: backToHome
+                }, [
+                    m('span', '‹')
+                ]),
+                m('span.window_title', 'Redactar Tweet'),
+                m('button', {
+                    className: 'send_tweet',
+                    onclick: controller.updateStatus
+                }, 'Twittear')
+            ]),
+            m('div.char_count_images_cont', [
+                m('label.camera', [
+                    m('input', {
+                        type: 'file',
+                        name: 'addimage',
+                        accept: 'image/*',
+                        placeholder: 'Image',
+                        onchange: controller.update
+                    })
+                ]),
+                m('span', {
+                    className: 'char_count'
+                }, allowedLength - controller.text().length)
+            ]),
+            m('div.text_container', [
+                m('textarea', {
+                    name: 'compose-area',
+                    className: 'tweet_text',
+                    placeholder: 'What do you want to say?',
+                    autofocus: true,
+                    oninput: m.withAttr('value', controller.text),
+                    onkeyup: controller.update
+                })
             ])
         ]);
     };

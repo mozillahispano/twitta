@@ -147,6 +147,6 @@ var dms = dms || {};
         return tl;
     };
 
-    m.module(ELEM, dms);
+    //m.module(ELEM, dms);
 
 })(window);

@@ -18,9 +18,8 @@
     };
 
     UIhelpers.hideHeader = function() {
-        var el = document.getElementById('header');
-        el.classList.add('show');
-        el.classList.remove('hidden');
+        var el = document.getElementsByTagName('header')[0];
+        el.classList.toggle('hidden');
     };
 
     UIhelpers.showNotification = function(title, body, onclick, onclose) {

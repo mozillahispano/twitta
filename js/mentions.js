@@ -217,6 +217,6 @@ var mentions = mentions || {};
         return tl;
     };
 
-    m.module(ELEM, mentions);
+    //m.module(ELEM, mentions);
 
 })(window);

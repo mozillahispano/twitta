@@ -31,7 +31,7 @@ var dm = dm || {};
             m('p#name', [
                 controller.sender.name() + ' ',
                 m('a',
-                    {href: '/user/' + controller.sender.id(), config: m.route },
+                    {href: '/user/' + controller.sender.id_str(), config: m.route },
                     '@' + controller.sender.screen_name()
                 )]
             ),

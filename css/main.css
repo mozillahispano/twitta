@@ -7,7 +7,6 @@ body {
 
 section.hidden {
 	display: none;
-	opacity: 0;
 }
 
 /*
@@ -90,8 +89,8 @@ header.app_header_menu {
 	width: 100%;
 	height: 50px;
 	background-color: #66B1E3;
+	z-index: 2;
 }
-
 nav.horizontal_menu {
 	background-color: #66B1E3;
 	position: relative;
@@ -131,7 +130,8 @@ a.lists_link {
 	background-image: url(../img/lists.png);
 }
 button.toggle_menu {
-	background: transparent;
+	background-color: transparent;
+	background-image: none;
 	border: none;
 	display: block;
 	float: right;
@@ -244,22 +244,22 @@ header.post_header {
 .timeline_items .item span.author_name {
 	font-family: "Open Sans Semibold";
 	color: #2C3E50;
-	font-size: 12px;
+	font-size: 14px;
 	margin: 10px 5px 5px 0;
 	line-height: 20px;
 }
 .timeline_items .item span.author_alias {
 	font-family: "Open Sans Light";
 	color: #3498DB;
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: normal;
 	margin: 10px 5px 5px 0;
 }
 .timeline_items .item p.post_content {
-	font-family: "Open Sans Light";
+	font-family: "Open Sans";
 	color: #000000;
 	margin: 0 10px 0 70px;
-	font-size: 11px;
+	font-size: 12px;
 }
 .timeline_items .item p.post_content img {
 	max-width: 100%;
@@ -273,11 +273,13 @@ header.post_header {
 }
 .tweet_container .post_options {
 	text-align: center;
+	margin-top: 10px;
+	padding-right: 0;
 }
 .timeline_items .item .post_options a,
 .tweet_container .post_options a {
 	background-image: url(../img/options.png);
-	line-height: 12px;
+	line-height: 0;
 	background-repeat: no-repeat;
 	font-family: "Open Sans Extrabold";
 	font-size: 9px;
@@ -286,20 +288,20 @@ header.post_header {
 }
 .timeline_items .item .post_options a.reply,
 .tweet_container .post_options a.reply {
-	background-position: 0 -27px;
-	padding-left: 20px;
-	margin-right: 10px;
+	background-position: 0 -31px;
+  margin-right: 10px;
+  padding-left: 20px;
 }
 .timeline_items .item .post_options a.retweet,
 .tweet_container .post_options a.retweet {
-	background-position: 0 2px;
-	padding-left: 20px;
-	margin-right: 10px;
+	background-position: 0 0;
+  margin-right: 10px;
+  padding-left: 25px;
 }
 .timeline_items .item .post_options a.favorite,
 .tweet_container .post_options a.favorite {
-	background-position: 0 -42px;
-	padding-left: 17px;
+	background-position: 0 -47px;
+  padding-left: 18px;
 }
 .tweet_container .post_options a.share {
 	background-image: url(../img/share.png);
@@ -308,19 +310,19 @@ header.post_header {
 }
 .timeline_items .item .post_options a.favorite.active,
 .tweet_container .post_options a.favorite.active {
-	background-position: 0 -59px;
+	background-position: 0 -64px;
 	color: #F1C40F;
 }
 .timeline_items .item .post_options a.retweet.active,
 .tweet_container .post_options a.retweet.active {
-	background-position: 0 -12px;
+	background-position: 0 -15px;
 	color: #3498DB;
 }
 .retweeted {
-	font-family: "Open Sans Extrabold";
-	font-size: 8px;
-	color: #7F7F7F;
-	margin-left: 50px;
+	color: #7f7f7f;
+  font-family: "Open Sans Semibold";
+  font-size: 11px;
+  margin-left: 48px;
 }
 .retweeted img {
 	margin-right: 8px;
@@ -337,6 +339,7 @@ button.back {
 	border: none;
 	color: #FFFFFF;
 	background-color: transparent;
+	background-image: none;
 	font-family: "Open Sans Light";
   font-size: 43px;
   line-height: 0;
@@ -348,7 +351,7 @@ button.back span {
 }
 span.window_title {
 	color: #ffffff;
-  font-family: "Open Sans Light";
+  font-family: "Open Sans";
   font-size: 18px;
   line-height: 50px;
 }
@@ -377,7 +380,7 @@ button.back:active {
 }
 .tweet_container span.tweet_author,
 .tweet_container span.tweet_author_nick {
-	font-family: "Open Sans Light";
+	font-family: "Open Sans";
 	font-size: 16px;
 	display: block;
 }
@@ -387,7 +390,8 @@ button.back:active {
 .tweet_container span.tweet_author_nick {
 	color: #BABABA;
 }
-.tweet_container button.follow_user {
+.tweet_container button.follow_user,
+.profile_container button.follow_user {
 	width: 40px;
 	height: 40px;
 	background-color: #66B1E3;
@@ -399,22 +403,26 @@ button.back:active {
 	margin-right: 10px;
 	margin-top: 10px;
 }
-.tweet_container button.follow_user.follow {
+.tweet_container button.follow_user.follow,
+.profile_container button.follow_user.follow {
 	background-image: url(../img/follow.png);
 }
-.tweet_container button.follow_user.unfollow {
+.tweet_container button.follow_user.unfollow,
+.profile_container button.follow_user.unfollow {
 	background-color: #E74C3C;
 	background-image: url(../img/unfollow.png);
 }
-.tweet_container button.follow_user.unfollow:active {
+.tweet_container button.follow_user.unfollow:active,
+.profile_container button.follow_user.unfollow:active {
 	background-color: #C0392B;
 }
-.tweet_container button.follow_user.follow:active {
+.tweet_container button.follow_user.follow:active,
+.profile_container button.follow_user.follow:active {
 	background-color: #3498DB;
 }
 .tweet_container p.tweet_text {
 	font-size: 16px;
-	font-family: "Open Sans Light";
+	font-family: "Open Sans";
 	color: #333333;
 	margin: 5px 10px 10px;
 	padding: 0;
@@ -438,7 +446,7 @@ button.back:active {
 .tweet_container .tweet_stats .stat_items .retweets span.text {
 	color: #8899A6;
 	text-transform: uppercase;
-	font-family: "Open Sans Light";
+	font-family: "Open Sans";
 	font-size: 10px;
 	display: block;
 	padding-top: 5px;
@@ -508,4 +516,189 @@ ul.tweet_overlay_options li a {
 }
 ul.tweet_overlay_options li:last-child a {
 	border-bottom: none;
+}
+
+/*
+** Redactar Tweet
+*/
+.compose_container .header_spacer {
+	height: 88px;
+}
+.compose_container button.send_tweet {
+	color: #FFFFFF;
+	font-family: "Open Sans";
+	line-height: 50px;
+	display: block;
+	float: right;
+	padding: 0 20px;
+	background-color: transparent;
+	background-image: none;
+	border: none;
+	height: 50px;
+}
+.compose_container button.send_tweet:active {
+	background-color: #2383C2;
+}
+.compose_container .char_count_images_cont {
+	background-color: #EEEEEE;
+	height: 38px;
+	position: fixed;
+	width: 100%;
+	z-index: 2;
+	top: 50px;
+}
+.compose_container .char_count_images_cont span.char_count {
+	display: block;
+	float: left;
+	line-height: 38px;
+	font-family: "Open Sans";
+	color: #999999;
+	font-size: 14px;
+	padding-left: 15px;
+}
+.compose_container .char_count_images_cont label.camera,
+.compose_container .char_count_images_cont button.picture {
+	background-image: url(../img/camera.png);
+	display: block;
+	float: right;
+	width: 38px;
+	height: 38px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: transparent;
+	border: none;
+}
+.compose_container .char_count_images_cont button.picture {
+	background-image: url(../img/picture.png);
+	margin-right: 15px;
+}
+.compose_container .char_count_images_cont button.picture:active {
+	background-image: url(../img/picture-hover.png);
+	background-color: #66B1E3;
+}
+.compose_container .char_count_images_cont label.camera:active {
+	background-image: url(../img/camera-hover.png);
+	background-color: #66B1E3;
+}
+.compose_container .char_count_images_cont label.camera input {
+	display: none;
+}
+.text_container {
+	height: 50vh;
+	position: relative;
+}
+.compose_container textarea.tweet_text {
+	border: none;
+	display: block;
+  box-sizing: border-box;
+	width: 94%;
+	max-width: 94%;
+	min-width: 94%;
+	margin: 10px auto;
+	font-family: "Open Sans";
+	font-size: 14px;
+	resize: none;
+	height: 100%;
+	background-image: none;
+	background-color: #FFFFFF;
+}
+
+/*
+** Estilos del Profile
+*/
+.profile_container .profile_image_header {
+	position: relative;
+}
+.profile_container .profile_image_header img.profile_image {
+	width: 100%;
+}
+.profile_container .profile_image_header img.profile_user_avatar {
+	display: block;
+	position: absolute;
+	border-radius: 5px;
+	border: solid 5px #FFFFFF;
+	bottom: -37px;
+	left: 5px;
+}
+.profile_container .user_stats {
+	border-bottom: solid 1px #EEEEEE;
+	height: 40px;
+	padding-left: 100px;
+}
+.profile_container .user_stats a.user_stat_item {
+	float: left;
+	margin-right: 15px;
+	text-decoration: none;
+}
+.profile_container .user_stats a.user_stat_item span.stat_text,
+.profile_container .user_stats a.user_stat_item span.stat_number {
+	display: block;
+	font-family: "Open Sans";
+	text-transform: uppercase;
+}
+.profile_container .user_stats a.user_stat_item span.stat_text {
+	font-size: 10px;
+	color: #333333;
+}
+.profile_container .user_stats a.user_stat_item span.stat_number {
+	color: #66B1E3;
+}
+.profile_container .user_info {
+	border-bottom: solid 1px #EEEEEE;
+}
+.profile_container .user_info .name_nick {
+	float: left;
+	margin-left: 10px;
+}
+.profile_container .user_info .name_nick span.name,
+.profile_container .user_info .name_nick span.nickname {
+	display: block;
+	font-family: "Open Sans";
+}
+.profile_container .user_info button.follow_user {
+	border-radius: 20px;
+	margin-bottom: 8px;
+	margin-top: 8px;
+}
+.profile_container .user_info .name_nick span.name {
+	font-size: 17px;
+	margin-top: 6px;
+}
+.profile_container .user_info .name_nick span.nickname {
+	color: #666666;
+	font-size: 14px;
+}
+.profile_container .user_bio {
+	padding: 10px;
+	font-family: "Open Sans";
+	font-size: 14px;
+}
+.profile_container .user_bio p {
+	margin-bottom: 10px;
+	margin-top: 0;
+}
+.profile_container .user_bio p a {
+	color: #5999CC;
+	text-decoration: none;
+}
+.profile_container .user_bio p a:active {
+	color: #FF5C26;
+}
+.profile_container .user_followers {
+	background-color: #E4F1FA;
+	font-family: "Open Sans";
+	font-size: 12px;
+	padding: 10px;
+}
+.profile_container .user_followers a {
+	color: #5999cc;
+	text-decoration: none;
+}
+.profile_container h3.profile_tweets_header {
+	font-family: "Open Sans";
+	font-weight: normal;
+	margin: 10px 10px 0;
+	text-transform: uppercase;
+	color: #AAAAAA;
+	font-size: 12px;
 }

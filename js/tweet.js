@@ -150,18 +150,30 @@ var tweet = tweet || {};
             }
             if (entity.screenName) {
                 elements.push(m('a', {
-                    href: '/user/@' + entity.screenName,
-                    config: m.route
+                    'data-link': entity.screenName,
+                    onclick: function(evt) {
+                        evt.stopPropagation();
+                        m.route('/user/@' + evt.target.dataset.link);
+                    },
+                    href: '#'
                 }, '@' + entity.screenName));
             } else if (entity.hashtag) {
                 elements.push(m('a', {
-                    href: '/search/#' + entity.hashtag,
-                    config: m.route
+                    'data-link': entity.hashtag,
+                    onclick: function(evt) {
+                        evt.stopPropagation();
+                        m.route('/search/#' + evt.target.dataset.link);
+                    },
+                    href: '#'
                 }, '#' + entity.hashtag));
             } else if (entity.url) {
                  elements.push(m('a', {
-                    href: entity.url,
-                    target: '_blank'
+                    'data-link': entity.url,
+                    onclick: function(evt) {
+                        evt.stopPropagation();
+                        window.open(evt.target.dataset.link);
+                    },
+                    href: '#'
                 }, entity.url));
             } else {
                 // Cashtags
@@ -211,7 +223,11 @@ var tweet = tweet || {};
             m('div.left', [
                 m('img', {
                     className: 'user_avatar',
-                    src: u.profile_image_url_https()
+                    src: u.profile_image_url_https(),
+                    onclick: function(evt) {
+                        evt.stopPropagation();
+                        m.route('/user/' + u.id_str());
+                    }
                 }),
                 m('span.post_date', ago)
             ]),

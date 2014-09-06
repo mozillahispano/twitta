@@ -28,7 +28,7 @@ var tweetDetail = tweetDetail || {};
 
     var backToHome = function() {
         m.route('/timeline');
-    }
+    };
 
     tweetDetail.view = function(tw) {
         var u = tw.orig_user || tw.user;
@@ -72,22 +72,16 @@ var tweetDetail = tweetDetail || {};
                     m('button.follow_user.follow'),
                     m('img', {
                         className: 'user_avatar',
-                        src: u.profile_image_url_https()
+                        src: u.profile_image_url_https(),
+                        onclick: function(evt) {
+                            evt.stopPropagation();
+                            m.route('/user/' + u.id_str);
+                        }
                     }),
                     m('span.tweet_author', u.name()),
-                    m('tweet_author_nick', '@' + u.screen_name())
+                    m('span.tweet_author_nick', '@' + u.screen_name())
                 ]),
                 m('p.tweet_text', tweet.linkEntities(tw.text())),
-                m('div.post_options.clearfix', [
-                    m('a.reply'),
-                    m('a', {
-                        className: 'retweet' + (tw.retweeted() ? ' active' : ''),
-                    }, tw.favorite_count()),
-                    m('a', {
-                        className: 'favorite' + (tw.favorited() ? ' active' : ''),
-                    }, tw.retweet_count()),
-                    m('a.share')
-                ]),
                 m('div.tweet_stats.clearfix', [
                     m('div.stat_items', [
                         m('div.retweets', [
@@ -98,21 +92,27 @@ var tweetDetail = tweetDetail || {};
                             m('span.text', 'Favorites'),
                             m('span.number', tw.favorite_count()),
                         ])
-                    ],
+                    ]),
                     m('div.tweet_stats_photos', [
-                        m('img', {
-                            src: 'img/demo_content/user1.jpg'
-                        }),
-                        m('img', {
-                            src: 'img/demo_content/user1.jpg'
-                        }),
-                        m('img', {
-                            src: 'img/demo_content/user1.jpg'
-                        }),
-                        m('img', {
-                            src: 'img/demo_content/user1.jpg'
-                        })
-                    ]))
+                        m('div.post_options.clearfix', [
+                            m('a', {
+                                className: 'reply',
+                                onclick: function() {}
+                            }),
+                            m('a', {
+                                className: 'retweet' + (tw.retweeted() ? ' active' : ''),
+                                onclick: tweet.toggleRT.bind(null, tw)
+                            }),
+                            m('a', {
+                                className: 'favorite' + (tw.favorited() ? ' active' : ''),
+                                onclick: tweet.toggleFAV.bind(null, tw)
+                            }),
+                            m('a', {
+                                className: 'share',
+                                onclick: function() {}
+                            }),
+                        ])
+                    ])
                 ]),
                 m('div.tweet_date', ago)
             ])

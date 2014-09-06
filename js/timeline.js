@@ -286,6 +286,6 @@ var timeline = timeline || {};
         return rv;
     };
 
-    m.module(ELEM, timeline);
+    //m.module(ELEM, timeline);
 
 })(window);
