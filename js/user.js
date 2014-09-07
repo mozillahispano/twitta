@@ -15,7 +15,7 @@ var user = user || {};
     user.User = function(user) {
         this.id_str = m.prop(user.id_str);
         this.description = m.prop(user.description);
-        this.location = m.prop(user.location);
+        this.loc = m.prop(user['location']);
         this.name = m.prop(user.name); //long name: Guillermo López
         this.screen_name = m.prop(user.screen_name); // username: willyaranda
         this.url = m.prop(false);
@@ -27,7 +27,7 @@ var user = user || {};
         this.verified = m.prop(user.verified);
         this.profile_image_url_https = m.prop(user.profile_image_url_https);
         //this.profile_background_tile = m.prop(user.profile_background_tile);
-        this.profile_banner_url = m.prop(user.profile_banner_url + '/mobile');
+        this.profile_banner_url = m.prop(user.profile_banner_url);
         this.profile_background_image_url_https =
             m.prop(user.profile_background_image_url_https);
         this.statuses_count = m.prop(user.statuses_count);
@@ -129,13 +129,32 @@ var user = user || {};
             return;
         }
 
+        function showHeader() {
+            var rv = '';
+            if (u.profile_banner_url()) {
+                rv = m('img', {
+                    className: 'profile_image',
+                    src: u.profile_banner_url() + '/mobile'
+                });
+            }
+            return rv;
+        }
+
+        function showUserWebsite() {
+            var rv = '';
+            if (u.url()) {
+                rv = m('a', {
+                    onclick: window.open.bind(null, u.url())
+                }, u.url());
+            }
+            return rv;
+
+        }
+
         return m('div.profile_container', [
             m('div.header_spacer'),
             m('header.profile_image_header.clearfix', [
-                m('img', {
-                    className: 'profile_image',
-                    src: u.profile_banner_url()
-                }),
+                showHeader(),
                 m('img', {
                     className: 'profile_user_avatar',
                     src: changeToBigger(u.profile_image_url_https())
@@ -167,7 +186,11 @@ var user = user || {};
             ]),
             m('div.user_bio', [
                 m('p', tweet.linkEntities(u.description())),
-                m('p', u.location() + u.url() ? (' · ' + u.url()) : '')
+                m('p', [
+                    m('span', u.loc() ? u.loc() : '(Sin ubicación)'),
+                    m('span', ' · '),
+                    showUserWebsite()
+                ])
             ]),
             m('a.tweets', [
                 m('div.user_followers', [

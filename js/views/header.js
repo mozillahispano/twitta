@@ -20,18 +20,10 @@ var header = header || {};
 
     header.toggleExtended = function() {
         var but = document.querySelector('nav > button');
-        if (but.classList.contains('active')) {
-            but.classList.remove('active');
-        } else {
-            but.classList.add('active');
-        }
+        but.classList.toggle('active');
 
         var nav = document.querySelector('nav > ul.dropdown_menu');
-        if (nav.classList.contains('hide')) {
-            nav.classList.remove('hide');
-        } else {
-            nav.classList.add('hide');
-        }
+        nav.classList.toggle('hide');
     };
 
     var routeToSelfUser = function() {
