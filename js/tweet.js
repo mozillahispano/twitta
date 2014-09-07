@@ -79,7 +79,6 @@ var tweet = tweet || {};
                     return;
                 }
                 tweet.changeRTInternal(tw, true);
-                m.redraw();
            });
         }
     };
@@ -92,7 +91,6 @@ var tweet = tweet || {};
                     return;
                 }
                 tweet.changeFAVInternal(tw, false);
-                m.redraw();
             });
         } else {
             tuiter.favoritesCreate(tw.id_str(), {}, function(err, d) {
@@ -101,17 +99,18 @@ var tweet = tweet || {};
                     return;
                 }
                 tweet.changeFAVInternal(tw, true);
-                m.redraw();
             });
         }
     };
 
     tweet.answerTo = function(tw) {
-        window.alert('I am going to reply to ' + tw.id_str());
+        m.route('/compose/' + tw.id_str() + '/' +
+            (tw.orig_user && ('@' + tw.orig_user.screen_name())) ||
+            (tw.user && ('@' + tw.user.screen_name())));
     };
 
     tweet.changeRTInternal = function(tw, isRetweeted) {
-        tw.retweeted = m.prop(isRetweeted);
+        tw.retweeted(isRetweeted);
         var count = tw.retweet_count();
         var future = isRetweeted ? (count + 1) : (count - 1);
         tw.retweet_count(future);

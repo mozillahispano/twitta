@@ -11,6 +11,13 @@ var compose = compose || {};
     compose.controller = function() {
         this.text = m.prop('');
 
+        this.reply_to = m.route.param('reply_to_id_str');
+
+        var text = m.route.param('reply_text');
+        if (text) {
+            this.text(text + ' ');
+        }
+
         this.update = function() {
             var el = document.getElementById('addimage');
             if (el && el.files && el.files[0]) {
@@ -42,7 +49,10 @@ var compose = compose || {};
             }
             // Just plain text
             else {
-                tuiter.updateStatus(this.text(), {}, function(error) {
+                var obj = {
+                    in_reply_to_status_id: this.reply_to
+                };
+                tuiter.updateStatus(this.text(), obj, function(error) {
                     if (error) {
                         window.alert(error);
                     } else {
@@ -98,8 +108,9 @@ var compose = compose || {};
                     placeholder: 'What do you want to say?',
                     autofocus: true,
                     oninput: m.withAttr('value', controller.text),
-                    onkeyup: controller.update
-                })
+                    onkeyup: controller.update,
+                    value: controller.text()
+                }, controller.text())
             ])
         ]);
     };

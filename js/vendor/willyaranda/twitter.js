@@ -443,7 +443,7 @@
     var method = 'POST';
     var params = {
       status: text,
-      in_reply_to_status_id: parms.reply_to,
+      in_reply_to_status_id: parms.in_reply_to_status_id,
       possibly_sensitive: parms.possibly_sensitive,
       lat: parms.lat,
       long: parms.long,
@@ -649,6 +649,48 @@
   };
 
   /**
+   * Allows the authenticating users to follow the user specified in the ID parameter.
+   *
+   * @function friendshipsCreate
+   * @link https://dev.twitter.com/docs/api/1.1/post/friendships/create
+   * @param  {String}   user_id     The ID of the user for whom to befriend.
+   * @param  {String}   screen_name The screen name of the user for whom to befriend.
+   * @param  {Boolean}   follow      Enable notifications for the target user.
+   * @param  {Function} cb          Callback with the JSON returned (error, json)
+   */
+  tuiter.friendshipsCreate = function(user_id, screen_name, follow, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/friendships/create.json';
+    var method = 'POST';
+    var params = {
+      user_id: user_id,
+      screen_name: screen_name,
+      follow: follow || true
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
+   * Allows the authenticating user to unfollow the user specified in the ID parameter.
+   *
+   * @function friendshipsDestroy
+   * @link https://dev.twitter.com/docs/api/1.1/post/friendships/destroy
+   * @param  {String}   user_id     The ID of the user for whom to unfollow.
+   * @param  {String}   screen_name The screen name of the user for whom to unfollow.
+   * @param  {Function} cb          Callback with the JSON returned (error, json)
+   */
+  tuiter.friendshipsDestroy = function(user_id, screen_name, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/friendships/destroy.json';
+    var method = 'POST';
+    var params = {
+      user_id: user_id,
+      screen_name: screen_name
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+  };
+
+  /**
    * User Streams provide a stream of data and events specific to the authenticated user.
    *
    * This will call callbacks registered with the function addListener(type, cb);
@@ -736,7 +778,6 @@
   }
 
   function _parseData(data) {
-    console.log('Received', data);
     // Twit event
     if (data['text']) {
       _fireEvent('text', data);

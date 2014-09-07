@@ -12,6 +12,7 @@ tweetDetail */
             '/timeline': timeline,
             '/login': login,
             '/compose': compose,
+            '/compose/:reply_to_id_str/:reply_text': compose,
             '/mentions': mentions,
             '/user/:id': user,
             '/dms': dms,

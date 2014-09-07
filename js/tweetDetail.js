@@ -1,4 +1,4 @@
-/* global UIhelpers, tuiter, tweet, moment */
+/* global UIhelpers, tuiter, tweet, moment, user */
 'use strict';
 
 var tweetDetail = tweetDetail || {};
@@ -8,14 +8,15 @@ var tweetDetail = tweetDetail || {};
 
     tweetDetail.controller = function() {
         var id = m.route.param('id');
+        var that = this;
         tuiter.getStatusShow(id, {}, function(error, json) {
             if (error) {
                 console.error(error);
                 return;
             }
-            var tw = new tweet.Tweet(json);
+            that.tw = new tweet.Tweet(json);
             UIhelpers.showOnlyThisSection(ELEM);
-            m.render(ELEM, tweetDetail.view(tw));
+            m.render(ELEM, tweetDetail.view(that));
         });
     };
 
@@ -30,7 +31,12 @@ var tweetDetail = tweetDetail || {};
         m.route('/timeline');
     };
 
-    tweetDetail.view = function(tw) {
+    tweetDetail.view = function(controller) {
+        var tw = controller.tw;
+        // This is sync call of view, wait for async (after getStatusShow)
+        if (!tw) {
+            return;
+        }
         var u = tw.orig_user || tw.user;
         var ago = moment(tw.created_at()).fromNow();
         return m('div', [
@@ -69,7 +75,11 @@ var tweetDetail = tweetDetail || {};
                     })
                 ]),
                 m('header.tweet_header.clearfix', [
-                    m('button.follow_user.follow'),
+                    m('button', {
+                        className: 'follow_user ' + (u.following() ?
+                            ' unfollow' : 'follow'),
+                        onclick: user.toggleFollow.bind(controller)
+                    }),
                     m('img', {
                         className: 'user_avatar',
                         src: u.profile_image_url_https(),
@@ -97,7 +107,10 @@ var tweetDetail = tweetDetail || {};
                         m('div.post_options.clearfix', [
                             m('a', {
                                 className: 'reply',
-                                onclick: function() {}
+                                onclick: function(evt) {
+                                    evt.stopPropagation();
+                                    tweet.answerTo(tw);
+                                }
                             }),
                             m('a', {
                                 className: 'retweet' + (tw.retweeted() ? ' active' : ''),

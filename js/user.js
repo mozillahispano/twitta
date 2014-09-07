@@ -112,7 +112,6 @@ var user = user || {};
                 }
                 var u = new user.User(data);
                 that.add(u);
-                that.u = u;
                 UIhelpers.showOnlyThisSection(ELEM);
                 m.render(ELEM, user.view(that));
             });
@@ -122,12 +121,39 @@ var user = user || {};
         }
     };
 
-    // View
-    user.view = function(ctrl) {
-        var u = ctrl.u;
-        if (!u) {
-            return;
+    user.toggleFollow = function() {
+        var u;
+        if (this.tw) {
+            if (this.tw.orig_user) {
+                u = this.tw.orig_user;
+            } else {
+                u = this.tw.user;
+            }
+        } else if (this.u) {
+            u = this.u;
         }
+        if (u.following()) {
+            tuiter.friendshipsDestroy(u.id_str(), null, function(err, data) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                u.following(false);
+            });
+        } else {
+            tuiter.friendshipsCreate(u.id_str(), null, false, function(err, data) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                u.following(true);
+            });
+        }
+    };
+
+    // View
+    user.view = function(controller) {
+        var u = controller.u;
 
         function showHeader() {
             var rv = '';
@@ -148,7 +174,6 @@ var user = user || {};
                 }, u.url());
             }
             return rv;
-
         }
 
         return m('div.profile_container', [
@@ -181,7 +206,7 @@ var user = user || {};
                 ]),
                 m('button', {
                     className: 'follow_user ' + (u.following() ? 'unfollow' : 'follow'),
-                    onclick: function() {}
+                    onclick: user.toggleFollow.bind(controller)
                 })
             ]),
             m('div.user_bio', [
