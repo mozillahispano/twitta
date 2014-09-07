@@ -34,6 +34,10 @@ var header = header || {};
         }
     };
 
+    var routeToSelfUser = function() {
+        m.route('/user/' + tuiter.conf.getOwnUser('id_str'));
+    };
+
     header.view = function() {
 
         return m('nav.horizontal_menu.clearfix', [
@@ -84,7 +88,10 @@ var header = header || {};
             ),
             m('ul.dropdown_menu.clearfix.hide', [
                 m('li.view_profile', [
-                    m('a.clearfix', [
+                    m('a', {
+                        className: 'clearfix',
+                        onclick: routeToSelfUser
+                    }, [
                         m('img', {
                             className: 'profile_menu_photo',
                             src: tuiter.conf.getOwnUser('profile_image_url_https')
