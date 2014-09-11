@@ -32,7 +32,7 @@ var compose = compose || {};
             // We have media
             if (el && el.files && (file = el.files[0])) {
                 if (file.size > tuiter.conf.getOwnUser('photo_size_limit')) {
-                    window.alert('Imagen demasiado grande, elige otra');
+                    window.alert(navigator.mozL10n.get('image-too-big'));
                     return;
                 }
                 tuiter.updateStatusWithMedia(this.text(), el.files, {},
@@ -68,6 +68,8 @@ var compose = compose || {};
 
     compose.view = function(controller) {
 
+        var tweetPlaceholder = navigator.mozL10n.get('tweet-placeholder');
+
         return [header.view(), m('div.compose_container', [
             m('div.header_spacer'),
             m('header.app_header_menu.clearfix', [
@@ -77,11 +79,15 @@ var compose = compose || {};
                 }, [
                     m('span', '‹')
                 ]),
-                m('span.window_title', 'Redactar Tweet'),
+                m('span', {
+                    className: 'window_title',
+                    'data-l10n-id': 'compose-tweet'
+                }, 'CoMpOsE Twe3t'),
                 m('button', {
                     className: 'send_tweet',
+                    'data-l10n-id': 'send-tweet',
                     onclick: controller.updateStatus
-                }, 'Twittear')
+                }, 'Twe3t')
             ]),
             m('div.char_count_images_cont', [
                 m('label.camera', [
@@ -101,7 +107,7 @@ var compose = compose || {};
                 m('textarea', {
                     name: 'compose-area',
                     className: 'tweet_text',
-                    placeholder: 'What do you want to say?',
+                    placeholder: tweetPlaceholder,
                     autofocus: true,
                     oninput: m.withAttr('value', controller.text),
                     onkeyup: controller.update,

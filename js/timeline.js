@@ -1,11 +1,9 @@
-/* global tweet, tuiter, UIhelpers, header */
+/* global tweet, tuiter, header */
 
 'use strict';
 
 var timeline = timeline || {};
 (function(window) {
-
-    var controller;
 
     var timelineRefreshInterval;
     var latestHomeRequestSinceEpochMs;
@@ -31,18 +29,11 @@ var timeline = timeline || {};
         this.add = function(tw) {
             var tuit = new tweet.Tweet(tw);
 
-            // Check if we have this tweet, if so, do nothing.
-            if (this.find(tuit.id_str())) {
-                return;
-            }
+            var foundEl = this.find(tuit.id_str());
             // If it is a RT and we can find it, set the retweet attr to true
-            else if (tuit.is_retweet()) {
-                var t = this.find(tuit.orig_id_str());
-                if (!t) {
-                    tweetList.push(tuit);
-                    return;
-                }
-                tweet.changeRTInternal(t, true);
+
+            if (foundEl) {
+                tweetList[foundEl.index] = tuit;
             } else {
                 tweetList.push(tuit);
             }
@@ -118,8 +109,7 @@ var timeline = timeline || {};
             // Wait a little to load timeline
             setTimeout(function() {
                 timeline.refresh.bind(that)();
-                timeline.listenToEvents.bind(that)();
-                tuiter.userStream();
+                timeline.checkNetworkAndStartListening();
             }, 300);
         }
 
@@ -127,19 +117,40 @@ var timeline = timeline || {};
         init = true;
     };
 
+    timeline.checkNetworkAndStartListening = function() {
+        timeline.listenToEvents();
+
+        if (!navigator.connection) {
+            tuiter.userStream();
+            return;
+        }
+
+        var connection = navigator.connection;
+
+        function updateConnectionStatus() {
+            if (connection.type === 'wifi') {
+                tuiter.userStream();
+            } else {
+                tuiter.abortStream();
+            }
+        }
+
+        connection.addEventListener('typechange', updateConnectionStatus);
+    };
+
     timeline.listenToEvents = function() {
-        var that = this;
+        var controller = new timeline.controller();
         tuiter.addListener('text', function(data) {
-            that.add(data);
+            controller.add(data);
         });
         tuiter.addListener('delete', function(tweetId) {
-            that.remove(tweetId);
+            controller.remove(tweetId);
         });
         tuiter.addListener('favorite', function(a, b, tw) {
-            that.favorited(tw.id_str);
+            controller.favorited(tw.id_str);
         });
         tuiter.addListener('unfavorite', function(a, b, tw) {
-            that.unfavorited(tw.id_str);
+            controller.unfavorited(tw.id_str);
         });
     };
 
@@ -240,7 +251,6 @@ var timeline = timeline || {};
     };
 
     timeline.view = function(controller, timelineToShow) {
-
         function compareFunc(a, b) {
             if (a.id_str() < b.id_str()) {
                 return 1;
@@ -253,7 +263,13 @@ var timeline = timeline || {};
 
         var list = timelineToShow ? timelineToShow : tweetList;
 
-        if (list.length === 0) { return; }
+        if (list.length === 0) {
+            return [header.view(), m('div.header_spacer'),
+                    m('div', {
+                        className: 'timeline_items loading',
+                        'data-l10n-id': 'loading'
+                    }, 'L04d1nG')];
+        }
 
         // Make the timeline, if we have tweets
         // 1) Sort the Array
@@ -280,7 +296,8 @@ var timeline = timeline || {};
             m('button', {
                 onclick: timeline.loadMore,
                 //config: loadMoreIfVisible
-            }, 'Load moar')
+                'data-l10n-id': 'load-more'
+            }, 'L04d m0r3')
         ]);
 
         return [header.view(), rv, loadMore];

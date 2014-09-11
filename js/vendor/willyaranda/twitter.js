@@ -246,7 +246,7 @@
     OAuth.completeRequest(message, accessor);
     OAuth.SignatureMethod.sign(message, accessor);
     var url = message.action + '?' + OAuth.formEncode(message.parameters);
-    console.log(url);
+    //console.log(url);
     var xhr = new XMLHttpRequest({mozSystem: true});
     xhr.open(message.method, url);
     xhr.responseType = 'json';
@@ -701,7 +701,7 @@
    * @param  {Object} parms Extra parameters for the request, check link
    */
   tuiter.userStream = function(parms) {
-    console.log('tuiter.userStream');
+    //console.log('tuiter.userStream');
     parms = parms || {};
 
     function filterParams(params) {

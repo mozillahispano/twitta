@@ -14,32 +14,33 @@ var login = login || {};
         localStorage.setItem('tokenSecret', tokens[2]);
     }
 
-    login.controller = function() {
-        this.lg = function() {
-            // Trust me, show me the code:
-            // https://github.com/willyaranda/twitta
-            // See server.js, that is what is running on my server.
-            // Please file any issues you might encounter. Thanks!
-            var w = window.open('https://twitta.pijusmagnificus.com/sessions/connect');
-            window.addEventListener('message', receiveMessage, false);
+    function authorizeWithTwitter() {
+        // Trust me, show me the code:
+        // https://github.com/willyaranda/twitta
+        // See server.js, that is what is running on my server.
+        // Please file any issues you might encounter. Thanks!
+        var w = window.open('https://twitta.pijusmagnificus.com/sessions/connect');
+        window.addEventListener('message', receiveMessage, false);
 
-            function receiveMessage(event) {
-                if (event.origin !== 'https://twitta.pijusmagnificus.com') {
-                    return;
-                }
-
-                var tokens = parseData(event.data);
-                w.close();
-                if (tokens && tokens[1] && tokens[2]) {
-                    saveTokens(tokens);
-                } else {
-                    window.alert('We did not receive expected data from Twitter. ' +
-                        'Please try again in a few minutes. We are sorry :(');
-                }
-                // And start again
-                m.route('/');
+        function receiveMessage(event) {
+            if (event.origin !== 'https://twitta.pijusmagnificus.com') {
+                return;
             }
-        }.bind(this);
+
+            var tokens = parseData(event.data);
+            w.close();
+            if (tokens && tokens[1] && tokens[2]) {
+                saveTokens(tokens);
+            } else {
+                var msg = navigator.mozL10n.get('data-error');
+                window.alert(msg);
+            }
+            // And start again
+            m.route('/');
+        }
+    }
+
+    login.controller = function() {
     };
 
     login.view = function(ctrl) {
@@ -49,13 +50,13 @@ var login = login || {};
             src: 'img/home-logo.png'
         }));
         data.push(m('h1.login_app_name', 'twitta'));
-        var msg = 'Para comenzar a utilizar <span>twitta</span> debes ' +
-            ' autorizar la aplicación en tu cuenta de Twitter.';
+        var msg = navigator.mozL10n.get('login-message');
         data.push(m('p.login_message', m.trust(msg)));
         data.push(m('button', {
             className: 'auth_app_button',
-            onclick: ctrl.lg
-        }, 'Autorizar'));
+            onclick: authorizeWithTwitter,
+            'data-l10n-id': 'authorize'
+        }, 'AuTh0r1z3'));
         return m('div.login_container', data);
     };
 

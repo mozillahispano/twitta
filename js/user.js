@@ -107,7 +107,7 @@ var user = user || {};
             tuiter.getUserShow(id_str, screen_name, {}, function(error, data) {
                 if (error) {
                     console.error(error);
-                    m.route('/');
+                    m.route('/timeline');
                     return;
                 }
                 that.u = new user.User(data);
@@ -122,29 +122,18 @@ var user = user || {};
                 });
             });
         } else {
-            m.render(document.body, user.view(this));
-
             // And request tweets
             user.getRecentTweets(this.u.id_str()).then(function(tl) {
                 that.tl = tl;
                 m.render(document.body, user.view(that));
             });
         }
+        m.render(document.body, user.view(this));
     };
 
     user.toggleFollow = function() {
-        var u = null;
-        if (this.tw) {
-            if (this.tw.orig_user) {
-                u = this.tw.orig_user;
-            } else {
-                u = this.tw.user;
-            }
-        } else if (this.u) {
-            u = this.u;
-        } else {
-            u = this;
-        }
+        var u = this.u;
+        var that = this;
 
         if (!u) {
             console.error('toggleFollow there is no user, strange');
@@ -157,7 +146,7 @@ var user = user || {};
                     return;
                 }
                 u.following(false);
-                m.redraw();
+                m.render(document.body, user.view(that));
             });
         } else {
             tuiter.friendshipsCreate(u.id_str(), null, false, function(err, data) {
@@ -166,7 +155,7 @@ var user = user || {};
                     return;
                 }
                 u.following(true);
-                m.redraw();
+                m.render(document.body, user.view(that));
             });
         }
     };
@@ -200,7 +189,7 @@ var user = user || {};
 
         // Sync call, we might not have the user yet.
         if (!u) {
-            return;
+            return m('br');
         }
 
         function showHeader() {
@@ -235,15 +224,24 @@ var user = user || {};
             ]),
             m('div.user_stats.clearfix', [
                 m('a.user_stat_item', [
-                    m('span.stat_text', 'Tweets'),
+                    m('span', {
+                        className: 'stat_text',
+                        'data-l10n-id': 'tweets'
+                    }, 'Tw33tS'),
                     m('span.stat_number', u.statuses_count())
                 ]),
                 m('a.user_stat_item', [
-                    m('span.stat_text', 'Siguiendo'),
+                    m('span.stat_text', {
+                        className: 'stat_text',
+                        'data-l10n-id': 'following'
+                    }, 'F0llow1nG'),
                     m('span.stat_number', u.friends_count())
                 ]),
                 m('a.user_stat_item', [
-                    m('span.stat_text', 'Seguidores'),
+                    m('span.stat_text', {
+                        className: 'stat_text',
+                        'data-l10n-id': 'followers'
+                    }, 'SeGuIdOrEs'),
                     m('span.stat_number', u.followers_count())
                 ])
             ]),
@@ -270,7 +268,10 @@ var user = user || {};
                     m('span', 'Seguido por este y el otro'),
                 ])
             ]),*/
-            m('h3.profile_tweets_header', 'Tweets'),
+            m('h3', {
+                className: 'profile_tweets_header',
+                'data-l10n-id': 'tweets'
+            }, 'Tw33tS'),
             timeline.view(null, controller.tl, true)
         ])];
     };

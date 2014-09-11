@@ -1,4 +1,4 @@
-/* global header, tuiter, tweet, moment, user */
+/* global header, tuiter, tweet, moment, user, timeline */
 'use strict';
 
 var tweetDetail = tweetDetail || {};
@@ -7,19 +7,20 @@ var tweetDetail = tweetDetail || {};
 
     tweetDetail.controller = function() {
         var id = m.route.param('id');
-        this.tw = {};
         var that = this;
-        setTimeout(function() {tuiter.getStatusShow(id, {}, function(error, json) {
+        tuiter.getStatusShow(id, {}, function(error, json) {
             if (error) {
                 console.error(error);
                 return;
             }
             that.tw = new tweet.Tweet(json);
             m.redraw();
-        })}, 1000);
+        });
         var ctrl = new timeline.controller();
-        this.tw = ctrl.find(id).value;
-        tweetDetail.view(this)
+        var found = ctrl.find(id);
+        if (found) {
+            this.tw = found.value;
+        }
     };
 
     var toggleTweetOptions = function() {
@@ -33,10 +34,6 @@ var tweetDetail = tweetDetail || {};
         m.route('/timeline');
     };
 
-    tweetDetail.redraw = function() {
-        m.render(document.body, tweetDetail.view(this));
-    }
-
     tweetDetail.view = function(controller) {
         var tw = controller.tw;
         // This is sync call of view, wait for async (after getStatusShow)
@@ -45,6 +42,8 @@ var tweetDetail = tweetDetail || {};
         }
         var u = tw.orig_user || tw.user;
         var ago = moment(tw.created_at()).fromNow();
+        var silentMessage = navigator.mozL10n.get('silent-user',
+            {user: '@' + u.screen_name});
         return [header.view(), m('div', [
             m('div.overlay_options', {
                 className: 'hide',
@@ -54,15 +53,13 @@ var tweetDetail = tweetDetail || {};
                     m('li', [
                         m('a', {
                            href: '#silenciar'
-                        }, [
-                            'Silenciar a',
-                            m('span.user_nick', '@' + u.screen_name())
-                        ])
+                        }, silentMessage)
                     ]),
                     m('li', [
                         m('a', {
-                            href: '#bloquear'
-                        }, 'Bloquear o reportar')
+                            href: '#bloquear',
+                            'data-l10n-id': 'report-or-block-user'
+                        }, 'B10ck 0r Rep0rt')
                     ])
                 ])
             ]),
@@ -75,7 +72,10 @@ var tweetDetail = tweetDetail || {};
                     }, [
                         m('span', '‹')
                     ]),
-                    m('span.window_title', 'Tweet'),
+                    m('span', {
+                        className: 'window_title',
+                        'data-l10n-id': 'tweet'
+                    }, 'Tw33t'),
                     m('button.toggle_tweet_options', {
                         onclick: toggleTweetOptions
                     })
@@ -101,11 +101,17 @@ var tweetDetail = tweetDetail || {};
                 m('div.tweet_stats.clearfix', [
                     m('div.stat_items', [
                         m('div.retweets', [
-                            m('span.text', 'Retweets'),
+                            m('span', {
+                                className: 'text',
+                                'data-l10n-id': 'retweets'
+                            }, 'R3tw33ts'),
                             m('span.number', tw.retweet_count()),
                         ]),
                         m('div.favorites', [
-                            m('span.text', 'Favorites'),
+                            m('span', {
+                                className: 'text',
+                                'data-l10n-id': 'favorites'
+                            }, 'F4vor1t3s'),
                             m('span.number', tweet.normalizeFavCount(tw)),
                         ])
                     ]),
@@ -126,10 +132,11 @@ var tweetDetail = tweetDetail || {};
                                 className: 'favorite' + (tw.favorited() ? ' active' : ''),
                                 onclick: tweet.toggleFAV.bind(null, tw)
                             }),
-                            m('a', {
+                            // There are no activities that we know to share  data :/
+                            /*m('a', {
                                 className: 'share',
                                 onclick: function() {}
-                            }),
+                            }),*/
                         ])
                     ])
                 ]),

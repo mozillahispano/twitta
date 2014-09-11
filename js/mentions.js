@@ -20,7 +20,7 @@ var mentions = mentions || {};
             if (m.route() === '/mentions') {
                 m.redraw();
             }
-        }
+        };
 
         this.add = function(tw) {
             var tuit = new tweet.Tweet(tw);
