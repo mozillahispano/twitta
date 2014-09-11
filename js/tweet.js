@@ -104,9 +104,16 @@ var tweet = tweet || {};
     };
 
     tweet.answerTo = function(tw) {
-        m.route('/compose/' + tw.id_str() + '/' +
-            (tw.orig_user && ('@' + tw.orig_user.screen_name())) ||
-            (tw.user && ('@' + tw.user.screen_name())));
+        var user = (function() {
+            if (tw.orig_user) {
+                return '@' + tw.orig_user.screen_name() + ' @' + tw.user.screen_name();
+            } else {
+                return '@' + tw.user.screen_name();
+            }
+        })();
+
+        var route = '/compose/' + user + '/' + tw.id_str();
+        m.route(route);
     };
 
     tweet.changeRTInternal = function(tw, isRetweeted) {
@@ -114,6 +121,7 @@ var tweet = tweet || {};
         var count = tw.retweet_count();
         var future = isRetweeted ? (count + 1) : (count - 1);
         tw.retweet_count(future);
+        m.redraw();
     };
 
     tweet.changeFAVInternal = function(tw, isFavorited) {
@@ -121,6 +129,7 @@ var tweet = tweet || {};
         var count = tw.favorite_count();
         var future = isFavorited ? (count + 1) : (count - 1);
         tw.favorite_count(future);
+        m.redraw();
     };
 
     tweet.linkEntities = function(text) {
@@ -159,9 +168,13 @@ var tweet = tweet || {};
             } else if (entity.hashtag) {
                 elements.push(m('a', {
                     'data-link': entity.hashtag,
+                    // TODO: create an internal view of this.
+                    // Since we were authenticated on the login step, we should be able
+                    // to do stuff on twitter website.
                     onclick: function(evt) {
                         evt.stopPropagation();
-                        m.route('/search/#' + evt.target.dataset.link);
+                        window.open('https://twitter.com/hashtag/' + evt.target.dataset.link);
+                        //m.route('/search/#' + evt.target.dataset.link);
                     },
                     href: '#'
                 }, '#' + entity.hashtag));
@@ -191,6 +204,23 @@ var tweet = tweet || {};
         // Return it
         return elements;
     };
+
+    tweet.normalizeFavCount = function(tw) {
+        // twitter may send a count of 0, but we have FAV. Return 1, at least.
+        if ((tw.favorite_count() === 0) &&
+             tw.favorited()) {
+            return 1;
+        }
+
+        // We may deFAV but have a favorite_count of 0 (check previous comment)
+        // so let's return 0;
+        if(tw.favorite_count() < 0) {
+            return 0;
+        }
+
+        // If we are not in a corner case, return the fav count from twitter.
+        return tw.favorite_count();
+    }
 
     tweet.view = function(tw) {
 
@@ -247,7 +277,7 @@ var tweet = tweet || {};
                 m('a', {
                     className: 'favorite' + (tw.favorited() ? ' active' : ''),
                     onclick: function(evt) { evt.stopPropagation(); tweet.toggleFAV(tw); }
-                }, tw.favorite_count())
+                }, tweet.normalizeFavCount(tw))
             ])
         ]);
     };

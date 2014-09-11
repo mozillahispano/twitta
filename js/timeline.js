@@ -5,6 +5,8 @@
 var timeline = timeline || {};
 (function(window) {
 
+    var controller;
+
     var timelineRefreshInterval;
     var latestHomeRequestSinceEpochMs;
     var latestLoadMoreRequestSinceEpochMs;
@@ -15,13 +17,17 @@ var timeline = timeline || {};
 
     var init = false;
 
-    var ELEM = document.getElementById('timeline');
-
     // List of tweets: timeline
     var tweetList = [];
 
     // Controller
     timeline.controller = function() {
+        this.redraw = function() {
+            if (m.route() === '/timeline') {
+                m.redraw();
+            }
+        };
+
         this.add = function(tw) {
             var tuit = new tweet.Tweet(tw);
 
@@ -43,10 +49,8 @@ var timeline = timeline || {};
 
             // Do not show the section if we are not on the route
             if (m.route() === '/timeline') {
-                UIhelpers.showOnlyThisSection(ELEM);
+                this.redraw();
             }
-            m.render(ELEM, timeline.view(this));
-
         }.bind(this);
 
         this.find = function(id_str) {
@@ -72,7 +76,7 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw) {
                 tweetList.splice(tw.index, 1);
-                m.render(ELEM, timeline.view(this));
+                this.redraw();
             }
         }.bind(this);
 
@@ -80,7 +84,7 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw && tw.value) {
                 tw.value.favorited(true);
-                m.render(ELEM, timeline.view(this));
+                this.redraw();
             }
         }.bind(this);
 
@@ -88,7 +92,7 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw && tw.value) {
                 tw.value.favorited(false);
-                m.render(ELEM, timeline.view(this));
+                this.redraw();
             }
         }.bind(this);
 
@@ -96,6 +100,7 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw && tw.value) {
                 tw.value.retweeted(true);
+                this.redraw();
             }
         }.bind(this);
 
@@ -103,6 +108,7 @@ var timeline = timeline || {};
             var tw = this.find(id);
             if (tw && tw.value) {
                 tw.value.retweeted(false);
+                this.redraw();
             }
         }.bind(this);
 
@@ -117,10 +123,7 @@ var timeline = timeline || {};
             }, 300);
         }
 
-        if (m.route() === '/timeline') {
-            UIhelpers.showOnlyThisSection(ELEM);
-        }
-        m.render(ELEM, timeline.view(this));
+        this.redraw();
         init = true;
     };
 
@@ -171,7 +174,7 @@ var timeline = timeline || {};
         tuiter.getHomeTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
-                m.render(ELEM, timeline.view(that));
+                m.redraw();
             } else {
                 data.forEach(function(tw) {
                     that.add(tw);
@@ -181,12 +184,7 @@ var timeline = timeline || {};
         });
     };
 
-    timeline.getLength = function() {
-        return tweetList.length;
-    };
-
     timeline.loadMore = function() {
-        var that = this;
         var params = {
             max_id: eldestTweetId
         };
@@ -207,10 +205,10 @@ var timeline = timeline || {};
         tuiter.getHomeTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
-                m.render(ELEM, timeline.view(that));
             } else {
+                var ctrl = new timeline.controller();
                 data.forEach(function(tw) {
-                    that.add(tw);
+                    ctrl.add(tw);
                 });
             }
         });
@@ -222,10 +220,9 @@ var timeline = timeline || {};
             return;
         }
 
-        var controller = this;
-
         function isElementInViewport(elem) {
             var rect = elem.getBoundingClientRect();
+            return false;
             return (
                 rect.top >= 0 &&
                 rect.left >= 0 &&
@@ -236,16 +233,14 @@ var timeline = timeline || {};
 
         function handler() {
             if (isElementInViewport(elem)) {
-                timeline.loadMore.bind(controller)();
+                timeline.loadMore();
             }
         }
         addEventListener('scroll', handler, false);
     };
 
-    // View
-    timeline.view = function(controller) {
+    timeline.view = function(controller, timelineToShow) {
 
-        // We want this in reverse order, let's return the other way around
         function compareFunc(a, b) {
             if (a.id_str() < b.id_str()) {
                 return 1;
@@ -256,36 +251,39 @@ var timeline = timeline || {};
             }
         }
 
-        if (tweetList.length === 0) { return; }
+        var list = timelineToShow ? timelineToShow : tweetList;
+
+        if (list.length === 0) { return; }
 
         // Make the timeline, if we have tweets
         // 1) Sort the Array
-        tweetList.sort(compareFunc);
+        list.sort(compareFunc);
 
         // 2) Save data for next queries
-        newestTweetId = tweetList[0].id_str();
-        eldestTweetId = tweetList[tweetList.length - 1].id_str();
+        newestTweetId = list[0].id_str();
+        eldestTweetId = list[list.length - 1].id_str();
 
         // 3) Create the DOM
         var tl = [];
-        tl.push(m('div.header_spacer'));
-        var map = tweetList.map(function(tw) {
+        // Think that we do not have the spacer when we sending a list,
+        // just the render of the timeline
+        if (!timelineToShow) {
+            tl.push(m('div.header_spacer'));
+        }
+        var map = list.map(function(tw) {
             return tweet.view(tw);
         });
 
         var rv = m('div.timeline_items', tl.concat(map));
 
-        /*var loadMore = m('div#loadmore', [
+        var loadMore = m('div#loadmore', [
             m('button', {
-                onclick: timeline.loadMore.bind(controller),
-                //config: loadMoreIfVisible.bind(controller)
+                onclick: timeline.loadMore,
+                //config: loadMoreIfVisible
             }, 'Load moar')
         ]);
-        rv.push(loadMore);*/
 
-        return rv;
+        return [header.view(), rv, loadMore];
     };
-
-    //m.module(ELEM, timeline);
 
 })(window);

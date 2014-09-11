@@ -5,8 +5,6 @@ var login = login || {};
 // Controller
 (function(window) {
 
-    var ELEM = document.getElementById('login');
-
     function parseData(data) {
         return data.match(/oauthAccessToken=(.*)&oauthAccessTokenSecret=(.*)/);
     }
@@ -42,9 +40,6 @@ var login = login || {};
                 m.route('/');
             }
         }.bind(this);
-
-        UIhelpers.showOnlyThisSection(ELEM, true);
-        m.render(ELEM, login.view(this));
     };
 
     login.view = function(ctrl) {

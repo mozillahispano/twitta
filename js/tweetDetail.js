@@ -1,23 +1,25 @@
-/* global UIhelpers, tuiter, tweet, moment, user */
+/* global header, tuiter, tweet, moment, user */
 'use strict';
 
 var tweetDetail = tweetDetail || {};
 
 (function(window) {
-    var ELEM = document.getElementById('tweetdetail');
 
     tweetDetail.controller = function() {
         var id = m.route.param('id');
+        this.tw = {};
         var that = this;
-        tuiter.getStatusShow(id, {}, function(error, json) {
+        setTimeout(function() {tuiter.getStatusShow(id, {}, function(error, json) {
             if (error) {
                 console.error(error);
                 return;
             }
             that.tw = new tweet.Tweet(json);
-            UIhelpers.showOnlyThisSection(ELEM);
-            m.render(ELEM, tweetDetail.view(that));
-        });
+            m.redraw();
+        })}, 1000);
+        var ctrl = new timeline.controller();
+        this.tw = ctrl.find(id).value;
+        tweetDetail.view(this)
     };
 
     var toggleTweetOptions = function() {
@@ -31,6 +33,10 @@ var tweetDetail = tweetDetail || {};
         m.route('/timeline');
     };
 
+    tweetDetail.redraw = function() {
+        m.render(document.body, tweetDetail.view(this));
+    }
+
     tweetDetail.view = function(controller) {
         var tw = controller.tw;
         // This is sync call of view, wait for async (after getStatusShow)
@@ -39,7 +45,7 @@ var tweetDetail = tweetDetail || {};
         }
         var u = tw.orig_user || tw.user;
         var ago = moment(tw.created_at()).fromNow();
-        return m('div', [
+        return [header.view(), m('div', [
             m('div.overlay_options', {
                 className: 'hide',
                 onclick: toggleTweetOptions
@@ -78,7 +84,7 @@ var tweetDetail = tweetDetail || {};
                     m('button', {
                         className: 'follow_user ' + (u.following() ?
                             ' unfollow' : 'follow'),
-                        onclick: user.toggleFollow.bind(controller)
+                        onclick: user.toggleFollow.bind(u)
                     }),
                     m('img', {
                         className: 'user_avatar',
@@ -100,7 +106,7 @@ var tweetDetail = tweetDetail || {};
                         ]),
                         m('div.favorites', [
                             m('span.text', 'Favorites'),
-                            m('span.number', tw.favorite_count()),
+                            m('span.number', tweet.normalizeFavCount(tw)),
                         ])
                     ]),
                     m('div.tweet_stats_photos', [
@@ -129,6 +135,6 @@ var tweetDetail = tweetDetail || {};
                 ]),
                 m('div.tweet_date', ago)
             ])
-        ]);
+        ])];
     };
 })(window);

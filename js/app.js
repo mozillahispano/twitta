@@ -6,13 +6,12 @@ tweetDetail */
 
     window.addEventListener('load', function() {
         m.route.mode = 'hash';
-        var start = document.getElementById('routing');
-        m.route(start, '/', {
+        m.route(document.body, '/', {
             '/': home,
             '/timeline': timeline,
             '/login': login,
             '/compose': compose,
-            '/compose/:reply_to_id_str/:reply_text': compose,
+            '/compose/:reply_text/:reply_to_id_str': compose,
             '/mentions': mentions,
             '/user/:id': user,
             '/dms': dms,
@@ -21,10 +20,6 @@ tweetDetail */
             '/settings': settings*/
             //'/search/:id': search
         });
-        // Ugh...
-        setTimeout(function() {
-            start.parentNode.removeChild(start);
-        }, 2000);
     });
 
 })(window);

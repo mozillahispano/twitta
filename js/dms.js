@@ -11,8 +11,6 @@ var dms = dms || {};
     var newestDmId;
     var firstRun = true;
 
-    var ELEM = document.getElementById('dms');
-
     // List of tweets: timeline
     var dmList = [];
 
@@ -29,10 +27,10 @@ var dms = dms || {};
 
             // Do not show the section if we are not on the route
             if (m.route() === '/dms') {
-                UIhelpers.showOnlyThisSection(ELEM);
+                //UIhelpers.showOnlyThisSection(ELEM);
             }
 
-            m.render(ELEM, dms.view(this));
+            m.render(document.body, dms.view(this));
         }.bind(this);
 
         this.find = function(id) {
@@ -59,7 +57,7 @@ var dms = dms || {};
             if (tw) {
                 dmList.splice(tw.index, 1);
             }
-            m.render(ELEM, dms.view(this));
+            m.render(document.body, dms.view(this));
         }.bind(this);
 
         var that = this;
@@ -69,9 +67,9 @@ var dms = dms || {};
         }, 6000);
 
         if (m.route() === '/dms') {
-            UIhelpers.showOnlyThisSection(ELEM);
+            //UIhelpers.showOnlyThisSection(ELEM);
         }
-        m.render(ELEM, dms.view(this));
+        m.render(document.body, dms.view(this));
     };
 
     dms.refresh = function(forced) {
@@ -102,7 +100,7 @@ var dms = dms || {};
         tuiter.getDirectMessages(params, function(error, data) {
             if (error) {
                 console.error(error);
-                m.render(ELEM, dms.view(that));
+                m.render(document.body, dms.view(that));
             } else {
                 data.forEach(function(tw) {
                     that.add(tw);
@@ -144,9 +142,7 @@ var dms = dms || {};
             return dm.view(d);
         });
 
-        return tl;
+        return [header.view(), tl];
     };
-
-    //m.module(ELEM, dms);
 
 })(window);

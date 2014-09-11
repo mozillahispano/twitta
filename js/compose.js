@@ -1,10 +1,8 @@
-/* global UIhelpers, tuiter */
+/* global header, tuiter */
 'use strict';
 
 var compose = compose || {};
 (function(window) {
-
-    var ELEM = document.getElementById('compose');
 
     var allowedLength = 140;
 
@@ -24,7 +22,7 @@ var compose = compose || {};
                 allowedLength = 140 -
                     tuiter.conf.getOwnUser('characters_reserved_per_media');
             }
-            m.render(ELEM, compose.view(this));
+            m.redraw();
         }.bind(this);
 
         this.updateStatus = function() {
@@ -62,9 +60,6 @@ var compose = compose || {};
                 });
             }
         }.bind(this);
-
-        UIhelpers.showOnlyThisSection(ELEM);
-        m.render(ELEM, compose.view(this));
     };
 
     var backToHome = function() {
@@ -72,7 +67,8 @@ var compose = compose || {};
     };
 
     compose.view = function(controller) {
-        return m('div.compose_container', [
+
+        return [header.view(), m('div.compose_container', [
             m('div.header_spacer'),
             m('header.app_header_menu.clearfix', [
                 m('button', {
@@ -112,7 +108,8 @@ var compose = compose || {};
                     value: controller.text()
                 }, controller.text())
             ])
-        ]);
+        ])];
     };
+
 })(window);
 

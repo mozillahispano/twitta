@@ -307,8 +307,8 @@
     var endpoint = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
     var method = 'GET';
     var params = {
-      user_id: parms.user_id,
-      screen_name: parms.screen_name,
+      user_id: user_id,
+      screen_name: screen_name,
       since_id: parms.since_id,
       count: parms.count,
       max_id: parms.max_id,

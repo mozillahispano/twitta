@@ -11,13 +11,17 @@ var mentions = mentions || {};
     var newestTweetId;
     var firstRun = true;
 
-    var ELEM = document.getElementById('mentions');
-
     // List of tweets: timeline
     var tweetList = [];
 
     // Controller
     mentions.controller = function() {
+        this.redraw = function() {
+            if (m.route() === '/mentions') {
+                m.redraw();
+            }
+        }
+
         this.add = function(tw) {
             var tuit = new tweet.Tweet(tw);
 
@@ -29,10 +33,10 @@ var mentions = mentions || {};
 
             // Do not show the section if we are not on the route
             if (m.route() === '/mentions') {
-                UIhelpers.showOnlyThisSection(ELEM);
+                //UIhelpers.showOnlyThisSection(ELEM);
             }
 
-            m.render(ELEM, mentions.view(this));
+            this.redraw();
             return true;
         }.bind(this);
 
@@ -60,7 +64,7 @@ var mentions = mentions || {};
             if (tw) {
                 tweetList.splice(tw.index, 1);
             }
-            m.render(ELEM, mentions.view(this));
+            this.redraw();
         }.bind(this);
 
         this.favorited = function(id) {
@@ -68,6 +72,7 @@ var mentions = mentions || {};
             if (tw.value) {
                 tw.value.favorited(true);
             }
+            this.redraw();
         }.bind(this);
 
         this.unfavorited = function(id) {
@@ -75,6 +80,7 @@ var mentions = mentions || {};
             if (tw.value) {
                 tw.value.favorited(false);
             }
+            this.redraw();
         }.bind(this);
 
         this.retweeted = function(id) {
@@ -82,6 +88,7 @@ var mentions = mentions || {};
             if (tw.value) {
                 tw.value.retweeted(true);
             }
+            this.redraw();
         }.bind(this);
 
         this.unretweeted = function(id) {
@@ -89,6 +96,7 @@ var mentions = mentions || {};
             if (tw.value) {
                 tw.value.retweeted(false);
             }
+            this.redraw();
         }.bind(this);
 
         var that = this;
@@ -100,10 +108,7 @@ var mentions = mentions || {};
             }
         }, 3000);
 
-        if (m.route() === '/mentions') {
-            UIhelpers.showOnlyThisSection(ELEM);
-        }
-        m.render(ELEM, mentions.view(this));
+        this.redraw();
     };
 
     function showNotification(tw) {
@@ -167,7 +172,7 @@ var mentions = mentions || {};
         tuiter.getMentionsTimeline(params, function(error, data) {
             if (error) {
                 console.error(error);
-                m.render(ELEM, mentions.view(that));
+                m.render(document.body, mentions.view(that));
             } else {
                 data.forEach(function(tw) {
                     var t = that.add(tw);
@@ -216,7 +221,5 @@ var mentions = mentions || {};
 
         return tl;
     };
-
-    //m.module(ELEM, mentions);
 
 })(window);

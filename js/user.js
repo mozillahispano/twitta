@@ -1,11 +1,9 @@
-/* global UIhelpers, tuiter, tweet */
+/* global header, tuiter, tweet, timeline */
 
 'use strict';
 
 var user = user || {};
 (function(window) {
-
-    var ELEM = document.getElementById('userprofile');
 
     function changeToBigger(profile_url) {
         return profile_url.replace('_normal', '_bigger');
@@ -77,15 +75,16 @@ var user = user || {};
             return foundValue;
         };
 
+        // Check needed things
         var id = m.route.param('id');
-        this.u = null;
 
         if (!id) {
-            m.route('/timeline');
             return;
         }
 
         var isId_str = !isNaN(id);
+        this.u = null;
+        this.tl = [];
 
         // We have been called with screen_name
         if (!isId_str) {
@@ -95,10 +94,11 @@ var user = user || {};
         else {
             this.u = this.findById(id);
         }
+
+        var that = this;
         if (!this.u) {
             var id_str;
             var screen_name;
-            var that = this;
             if (isId_str) {
                 id_str = id;
             } else {
@@ -110,19 +110,30 @@ var user = user || {};
                     m.route('/');
                     return;
                 }
-                var u = new user.User(data);
-                that.add(u);
-                UIhelpers.showOnlyThisSection(ELEM);
-                m.render(ELEM, user.view(that));
+                that.u = new user.User(data);
+                that.add(that.u);
+
+                m.render(document.body, user.view(that));
+
+                // And request tweets
+                user.getRecentTweets(data.id_str).then(function(tl) {
+                    that.tl = tl;
+                    m.render(document.body, user.view(that));
+                });
             });
         } else {
-            UIhelpers.showOnlyThisSection(ELEM);
-            m.render(ELEM, user.view(this));
+            m.render(document.body, user.view(this));
+
+            // And request tweets
+            user.getRecentTweets(this.u.id_str()).then(function(tl) {
+                that.tl = tl;
+                m.render(document.body, user.view(that));
+            });
         }
     };
 
     user.toggleFollow = function() {
-        var u;
+        var u = null;
         if (this.tw) {
             if (this.tw.orig_user) {
                 u = this.tw.orig_user;
@@ -131,7 +142,14 @@ var user = user || {};
             }
         } else if (this.u) {
             u = this.u;
+        } else {
+            u = this;
         }
+
+        if (!u) {
+            console.error('toggleFollow there is no user, strange');
+        }
+
         if (u.following()) {
             tuiter.friendshipsDestroy(u.id_str(), null, function(err, data) {
                 if (err) {
@@ -139,6 +157,7 @@ var user = user || {};
                     return;
                 }
                 u.following(false);
+                m.redraw();
             });
         } else {
             tuiter.friendshipsCreate(u.id_str(), null, false, function(err, data) {
@@ -147,13 +166,42 @@ var user = user || {};
                     return;
                 }
                 u.following(true);
+                m.redraw();
             });
         }
+    };
+
+    user.getRecentTweets = function(id_str) {
+        var deferred = m.deferred();
+        var parms = {
+            //since_id: 0,
+            //max_id: 999999999999999999,
+            count: 20
+        };
+        tuiter.getUserTimeline(id_str, null, parms, function(err, data) {
+            if (err) {
+                console.error(err);
+                deferred.reject(err);
+                return;
+            }
+            var tl = [];
+            data.forEach(function(tw) {
+                var t = new tweet.Tweet(tw);
+                tl.push(t);
+            });
+            deferred.resolve(tl);
+        });
+        return deferred.promise;
     };
 
     // View
     user.view = function(controller) {
         var u = controller.u;
+
+        // Sync call, we might not have the user yet.
+        if (!u) {
+            return;
+        }
 
         function showHeader() {
             var rv = '';
@@ -176,7 +224,7 @@ var user = user || {};
             return rv;
         }
 
-        return m('div.profile_container', [
+        return [header.view(), m('div.profile_container', [
             m('div.header_spacer'),
             m('header.profile_image_header.clearfix', [
                 showHeader(),
@@ -217,13 +265,14 @@ var user = user || {};
                     showUserWebsite()
                 ])
             ]),
-            m('a.tweets', [
+            /*m('a.tweets', [
                 m('div.user_followers', [
                     m('span', 'Seguido por este y el otro'),
                 ])
-            ]),
-            m('h3.profile_tweets_header', 'Tweets')
-        ]);
+            ]),*/
+            m('h3.profile_tweets_header', 'Tweets'),
+            timeline.view(null, controller.tl, true)
+        ])];
     };
 
 })(window);
