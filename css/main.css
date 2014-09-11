@@ -34,7 +34,7 @@ a {
 	float: left;
 }
 .header_spacer {
-	height: 50px;
+	height: 3.125rem;
 }
 
 /*
@@ -46,37 +46,37 @@ a {
 	text-align: center;
 }
 img.login_logo {
-	margin-top: 40px;
+	margin-top: 2.5rem;
 }
 h1.login_app_name {
 	color: #FFFFFF;
 	font-family: "Open Sans Light";
-	font-size: 60px;
+	font-size: 3.75rem;
 	font-weight: normal;
-	margin: 5px 0 20px;
-	text-shadow: 3px 3px 0 #528EB6;
+	margin: 0.3125rem 0 1.25rem;
+	text-shadow: 0.1875rem 0.1875rem 0 #528EB6;
 }
 .login_message {
 	color: #FFFFFF;
 	font-family: "Open Sans Light";
-	margin: 0 20px 30px;
+	margin: 0 1.25rem 1.875rem;
 }
 .login_message span {
-	text-shadow: 1px 1px 0 #528EB6;
+	text-shadow: 0.0625rem 0.0625rem 0 #528EB6;
 }
 button.auth_app_button {
 	background-color: #528EB6;
 	background-image: none;
-	border: solid 1px #66B1E3;
+	border: solid 0.0625rem #66B1E3;
 	color: #FFFFFF;
 	font-family: "Open Sans Light";
-	margin-bottom: 20px;
-	padding: 10px 20px;
+	margin-bottom: 1.25rem;
+	padding: 0.625rem 1.25rem;
 	text-transform: uppercase;
 }
 button.auth_app_button:active {
 	background-color: transparent;
-	border: solid 1px #528EB6;
+	border: solid 0.0625rem #528EB6;
 }
 
 /*
@@ -87,7 +87,7 @@ header.app_header_menu {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 50px;
+	height: 3.125rem;
 	background-color: #66B1E3;
 	z-index: 2;
 }
@@ -104,7 +104,7 @@ nav.horizontal_menu ul.menu {
 nav.horizontal_menu ul.menu li {
 	display: block;
 	float: left;
-	height: 50px;
+	height: 3.125rem;
 	width: 20%;
 }
 nav.horizontal_menu ul.menu li a {
@@ -135,7 +135,7 @@ button.toggle_menu {
 	border: none;
 	display: block;
 	float: right;
-	height: 50px;
+	height: 3.125rem;
 	width: 10%;
 }
 button.toggle_menu:active,
@@ -147,17 +147,17 @@ nav.horizontal_menu ul li a.active {
 }
 button.toggle_menu span.bullet {
 	background-color: #FFFFFF;
-	border-radius: 5px;
+	border-radius: 0.3125rem;
 	display: block;
-	height: 4px;
-	margin: 4px auto 0;
-	width: 4px;
+	height: 0.25rem;
+	margin: 0.25rem auto 0;
+	width: 0.25rem;
 }
 ul.dropdown_menu {
 	position: absolute;
-	top: 50px;
+	top: 3.125rem;
 	right: 0;
-	width: 170px;
+	width: 10.625rem;
 	background-color: #3498DB;
 	margin: 0;
 	padding: 0;
@@ -169,7 +169,7 @@ ul.dropdown_menu li {
 ul.dropdown_menu img.profile_menu_photo {
 	display: block;
 	float: left;
-	margin: 6px;
+	margin: 0.375rem;
 }
 ul.dropdown_menu li.view_profile a {
 	overflow: hidden;
@@ -190,7 +190,7 @@ ul.dropdown_menu li a span.profile_menu_name,
 ul.dropdown_menu li a span.profile_menu_user {
 	color: #FFFFFF;
 	font-family: "Open Sans Semibold";
-	font-size: 11px;
+	font-size: 0.6875rem;
 	white-space: nowrap;
 }
 ul.dropdown_menu li a span.profile_menu_user {
@@ -201,11 +201,11 @@ ul.dropdown_menu li a.notifications_link,
 ul.dropdown_menu li a.accounts_link,
 ul.dropdown_menu li a.settings_link {
 	display: block;
-	background-position: 10px center;
+	background-position: 0.625rem center;
 	background-repeat: no-repeat;
-	padding: 10px 10px 10px 30px;
+	padding: 0.625rem 0.625rem 0.625rem 1.875rem;
 	font-family: "Open Sans Semibold";
-	font-size: 11px;
+	font-size: 0.6875rem;
 }
 a.search_link {
 	background-image: url(../img/search.png);
@@ -224,56 +224,56 @@ a.settings_link {
 ** Timeline items
 */
 .timeline_items .item {
-	border-bottom: solid 1px #E3EAF0;
-	padding-bottom: 10px;
+	border-bottom: solid 0.0625rem #E3EAF0;
+	padding-bottom: 0.625rem;
 }
 img.user_avatar {
-	margin: 10px 10px 5px;
+	margin: 0.625rem 0.625rem 0.3125rem;
 }
 span.post_date {
 	display: block;
 	text-align: center;
 	color: #7F8C8D;
-	font-size: 9px;
+	font-size: 0.5625rem;
 	font-family: "Open Sans Semibold";
-	margin-top: -6px;
+	margin-top: -0.375rem;
 }
 header.post_header {
-	padding-top: 5px;
+	padding-top: 0.3125rem;
 }
 .timeline_items .item span.author_name {
 	font-family: "Open Sans Semibold";
 	color: #2C3E50;
-	font-size: 14px;
-	margin: 10px 5px 5px 0;
-	line-height: 20px;
+	font-size: 0.875rem;
+	margin: 0.625rem 0.3125rem 0.3125rem 0;
+	line-height: 1.25rem;
 }
 .timeline_items .item span.author_alias {
 	font-family: "Open Sans Light";
 	color: #3498DB;
-	font-size: 13px;
+	font-size: 0.8125rem;
 	font-weight: normal;
-	margin: 10px 5px 5px 0;
+	margin: 0.625rem 0.3125rem 0.3125rem 0;
 }
 .timeline_items .item p.post_content {
 	font-family: "Open Sans";
 	color: #000000;
-	margin: 0 10px 0 70px;
-	font-size: 12px;
+	margin: 0 0.625rem 0 4.375rem;
+	font-size: 0.75rem;
 }
 .timeline_items .item p.post_content img {
 	max-width: 100%;
 	display: block;
-	margin: 8px 0;
+	margin: 0.5rem 0;
 }
 .timeline_items .item .post_options,
 .tweet_container .post_options {
 	text-align: right;
-	padding-right: 12px;
+	padding-right: 0.75rem;
 }
 .tweet_container .post_options {
 	text-align: center;
-	margin-top: 10px;
+	margin-top: 0.625rem;
 	padding-right: 0;
 }
 .timeline_items .item .post_options a,
@@ -282,50 +282,50 @@ header.post_header {
 	line-height: 0;
 	background-repeat: no-repeat;
 	font-family: "Open Sans Extrabold";
-	font-size: 9px;
+	font-size: 0.5625rem;
 	text-decoration: none;
 	color: #A9BBCE;
 }
 .timeline_items .item .post_options a.reply,
 .tweet_container .post_options a.reply {
-	background-position: 0 -31px;
-  margin-right: 10px;
-  padding-left: 20px;
+	background-position: 0 -1.9375rem;
+  margin-right: 0.625rem;
+  padding-left: 1.25rem;
 }
 .timeline_items .item .post_options a.retweet,
 .tweet_container .post_options a.retweet {
 	background-position: 0 0;
-  margin-right: 10px;
-  padding-left: 25px;
+  margin-right: 0.625rem;
+  padding-left: 1.5625rem;
 }
 .timeline_items .item .post_options a.favorite,
 .tweet_container .post_options a.favorite {
-	background-position: 0 -47px;
-  padding-left: 18px;
+	background-position: 0 -2.9375rem;
+  padding-left: 1.125rem;
 }
 .tweet_container .post_options a.share {
 	background-image: url(../img/share.png);
-	padding-left: 17px;
-	margin-left: 15px;
+	padding-left: 1.0625rem;
+	margin-left: 0.9375rem;
 }
 .timeline_items .item .post_options a.favorite.active,
 .tweet_container .post_options a.favorite.active {
-	background-position: 0 -64px;
+	background-position: 0 -4rem;
 	color: #F1C40F;
 }
 .timeline_items .item .post_options a.retweet.active,
 .tweet_container .post_options a.retweet.active {
-	background-position: 0 -15px;
+	background-position: 0 -0.9375rem;
 	color: #3498DB;
 }
 .retweeted {
 	color: #7f7f7f;
   font-family: "Open Sans Semibold";
-  font-size: 11px;
-  margin-left: 48px;
+  font-size: 0.6875rem;
+  margin-left: 3rem;
 }
 .retweeted img {
-	margin-right: 8px;
+	margin-right: 0.5rem;
 }
 
 /*
@@ -334,26 +334,26 @@ header.post_header {
 button.back {
 	float: left;
 	display: block;
-	width: 50px;
-	height: 50px;
+	width: 3.125rem;
+	height: 3.125rem;
 	border: none;
 	color: #FFFFFF;
 	background-color: transparent;
 	background-image: none;
 	font-family: "Open Sans Light";
-  font-size: 43px;
+  font-size: 2.6875rem;
   line-height: 0;
 }
 button.back span {
 	display: block;
-  margin-left: -7px;
-  margin-top: -6px;
+  margin-left: -0.4375rem;
+  margin-top: -0.375rem;
 }
 span.window_title {
 	color: #ffffff;
   font-family: "Open Sans";
-  font-size: 18px;
-  line-height: 50px;
+  font-size: 1.125rem;
+  line-height: 3.125rem;
 }
 
 /*
@@ -366,42 +366,42 @@ button.toggle_tweet_options {
 	background-repeat: no-repeat;
 	border: none;
 	display: block;
-	height: 50px;
+	height: 3.125rem;
 	float: right;
-	width: 50px;
+	width: 3.125rem;
 }
 button.toggle_tweet_options:active,
 button.back:active {
 	background-color: #2383C2 !important;
 }
 .tweet_container img.user_avatar {
-	border-radius: 5px;
+	border-radius: 0.3125rem;
 	float: left;
 }
 .tweet_container span.tweet_author,
 .tweet_container span.tweet_author_nick {
 	font-family: "Open Sans";
-	font-size: 16px;
+	font-size: 1rem;
 	display: block;
 }
 .tweet_container span.tweet_author {
-	margin-top: 10px;
+	margin-top: 0.625rem;
 }
 .tweet_container span.tweet_author_nick {
 	color: #BABABA;
 }
 .tweet_container button.follow_user,
 .profile_container button.follow_user {
-	width: 40px;
-	height: 40px;
+	width: 2.5rem;
+	height: 2.5rem;
 	background-color: #66B1E3;
 	background-position: center center;
 	background-repeat: no-repeat;
 	border: none;
-	border-radius: 4px;
+	border-radius: 0.25rem;
 	float: right;
-	margin-right: 10px;
-	margin-top: 10px;
+	margin-right: 0.625rem;
+	margin-top: 0.625rem;
 }
 .tweet_container button.follow_user.follow,
 .profile_container button.follow_user.follow {
@@ -421,25 +421,25 @@ button.back:active {
 	background-color: #3498DB;
 }
 .tweet_container p.tweet_text {
-	font-size: 16px;
+	font-size: 1rem;
 	font-family: "Open Sans";
 	color: #333333;
-	margin: 5px 10px 10px;
+	margin: 0.3125rem 0.625rem 0.625rem;
 	padding: 0;
 }
 .tweet_container .tweet_stats {
-	border-width: 1px;
+	border-width: 0.0625rem;
 	border-color: #E1E8ED;
 	border-style: solid none solid none;
-	margin: 12px 10px 10px;
+	margin: 0.75rem 0.625rem 0.625rem;
 }
 .tweet_container .tweet_stats .stat_items {
-	border-right: solid 1px #E1E8ED;
+	border-right: solid 0.0625rem #E1E8ED;
 	float: left;
 }
 .tweet_container .tweet_stats .stat_items .retweets,
 .tweet_container .tweet_stats .stat_items .favorites {
-	padding-right: 20px;
+	padding-right: 1.25rem;
 	float: left;
 }
 .tweet_container .tweet_stats .stat_items .favorites span.text,
@@ -447,46 +447,46 @@ button.back:active {
 	color: #8899A6;
 	text-transform: uppercase;
 	font-family: "Open Sans";
-	font-size: 10px;
+	font-size: 0.625rem;
 	display: block;
-	padding-top: 5px;
+	padding-top: 0.3125rem;
 }
 .tweet_container .tweet_stats .stat_items .favorites span.number,
 .tweet_container .tweet_stats .stat_items .retweets span.number {
 	font-family: "Open Sans Semibold";
 	color: #666666;
-	padding-bottom: 5px;
+	padding-bottom: 0.3125rem;
 	display: block;
 }
 .tweet_container .tweet_stats .tweet_stats_photos {
-	height: 46px;
+	height: 2.875rem;
   overflow: hidden;
 }
 .tweet_container .tweet_stats .tweet_stats_photos img:nth-of-type(1) {
-	margin-left: 10px;
+	margin-left: 0.625rem;
 }
 .tweet_container .tweet_stats .tweet_stats_photos img {
-	border-radius: 4px;
-	margin-top: 10px;
+	border-radius: 0.25rem;
+	margin-top: 0.625rem;
 }
 .tweet_container .tweet_date {
 	color: #a9bbce;
   font-family: "Open Sans Semibold";
-  font-size: 10px;
-  padding-left: 10px;
+  font-size: 0.625rem;
+  padding-left: 0.625rem;
 }
 .tweet_container .replies {
 	background-color: #EDF5FC;
-	margin: 10px;
+	margin: 0.625rem;
 }
 .tweet_container .replies span.post_date {
 	margin-top: 0;
 }
 .tweet_container .replies .timeline_items .item p.post_content {
-	margin-left: 50px;
+	margin-left: 3.125rem;
 }
 .tweet_container .replies .timeline_items .item .retweeted {
-	margin-left: 30px;
+	margin-left: 1.875rem;
 }
 .overlay_options {
 	width: 100%;
@@ -497,9 +497,9 @@ button.back:active {
 }
 ul.tweet_overlay_options {
 	background-color: #FFFFFF;
-	width: 150px;
-	border-radius: 5px;
-	margin: 100px auto 0;
+	width: 9.375rem;
+	border-radius: 0.3125rem;
+	margin: 6.25rem auto 0;
 	padding: 0;
 }
 ul.tweet_overlay_options li {
@@ -510,9 +510,9 @@ ul.tweet_overlay_options li a {
 	display: block;
 	color: #555555;
 	font-family: "Open Sans Light";
-	font-size: 12px;
-	padding: 10px;
-	border-bottom: solid 1px #CFCFCF;
+	font-size: 0.75rem;
+	padding: 0.625rem;
+	border-bottom: solid 0.0625rem #CFCFCF;
 }
 ul.tweet_overlay_options li:last-child a {
 	border-bottom: none;
@@ -522,47 +522,47 @@ ul.tweet_overlay_options li:last-child a {
 ** Redactar Tweet
 */
 .compose_container .header_spacer {
-	height: 88px;
+	height: 5.5rem;
 }
 .compose_container button.send_tweet {
 	color: #FFFFFF;
 	font-family: "Open Sans";
-	line-height: 50px;
+	line-height: 3.125rem;
 	display: block;
 	float: right;
-	padding: 0 20px;
+	padding: 0 1.25rem;
 	background-color: transparent;
 	background-image: none;
 	border: none;
-	height: 50px;
+	height: 3.125rem;
 }
 .compose_container button.send_tweet:active {
 	background-color: #2383C2;
 }
 .compose_container .char_count_images_cont {
 	background-color: #EEEEEE;
-	height: 38px;
+	height: 2.375rem;
 	position: fixed;
 	width: 100%;
 	z-index: 2;
-	top: 50px;
+	top: 3.125rem;
 }
 .compose_container .char_count_images_cont span.char_count {
 	display: block;
 	float: left;
-	line-height: 38px;
+	line-height: 2.375rem;
 	font-family: "Open Sans";
 	color: #999999;
-	font-size: 14px;
-	padding-left: 15px;
+	font-size: 0.875rem;
+	padding-left: 0.9375rem;
 }
 .compose_container .char_count_images_cont label.camera,
 .compose_container .char_count_images_cont button.picture {
 	background-image: url(../img/camera.png);
 	display: block;
 	float: right;
-	width: 38px;
-	height: 38px;
+	width: 2.375rem;
+	height: 2.375rem;
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-color: transparent;
@@ -570,7 +570,7 @@ ul.tweet_overlay_options li:last-child a {
 }
 .compose_container .char_count_images_cont button.picture {
 	background-image: url(../img/picture.png);
-	margin-right: 15px;
+	margin-right: 0.9375rem;
 }
 .compose_container .char_count_images_cont button.picture:active {
 	background-image: url(../img/picture-hover.png);
@@ -594,9 +594,9 @@ ul.tweet_overlay_options li:last-child a {
 	width: 94%;
 	max-width: 94%;
 	min-width: 94%;
-	margin: 10px auto;
+	margin: 0.625rem auto;
 	font-family: "Open Sans";
-	font-size: 14px;
+	font-size: 0.875rem;
 	resize: none;
 	height: 100%;
 	background-image: none;
@@ -615,19 +615,19 @@ ul.tweet_overlay_options li:last-child a {
 .profile_container .profile_image_header img.profile_user_avatar {
 	display: block;
 	position: absolute;
-	border-radius: 5px;
-	border: solid 5px #FFFFFF;
-	bottom: -37px;
-	left: 5px;
+	border-radius: 0.3125rem;
+	border: solid 0.3125rem #FFFFFF;
+	bottom: -2.3125rem;
+	left: 0.3125rem;
 }
 .profile_container .user_stats {
-	border-bottom: solid 1px #EEEEEE;
-	height: 40px;
-	padding-left: 100px;
+	border-bottom: solid 0.0625rem #EEEEEE;
+	height: 2.5rem;
+	padding-left: 6.25rem;
 }
 .profile_container .user_stats a.user_stat_item {
 	float: left;
-	margin-right: 15px;
+	margin-right: 0.9375rem;
 	text-decoration: none;
 }
 .profile_container .user_stats a.user_stat_item span.stat_text,
@@ -637,18 +637,18 @@ ul.tweet_overlay_options li:last-child a {
 	text-transform: uppercase;
 }
 .profile_container .user_stats a.user_stat_item span.stat_text {
-	font-size: 10px;
+	font-size: 0.625rem;
 	color: #333333;
 }
 .profile_container .user_stats a.user_stat_item span.stat_number {
 	color: #66B1E3;
 }
 .profile_container .user_info {
-	border-bottom: solid 1px #EEEEEE;
+	border-bottom: solid 0.0625rem #EEEEEE;
 }
 .profile_container .user_info .name_nick {
 	float: left;
-	margin-left: 10px;
+	margin-left: 0.625rem;
 }
 .profile_container .user_info .name_nick span.name,
 .profile_container .user_info .name_nick span.nickname {
@@ -656,25 +656,25 @@ ul.tweet_overlay_options li:last-child a {
 	font-family: "Open Sans";
 }
 .profile_container .user_info button.follow_user {
-	border-radius: 20px;
-	margin-bottom: 8px;
-	margin-top: 8px;
+	border-radius: 1.25rem;
+	margin-bottom: 0.5rem;
+	margin-top: 0.5rem;
 }
 .profile_container .user_info .name_nick span.name {
-	font-size: 17px;
-	margin-top: 6px;
+	font-size: 1.0625rem;
+	margin-top: 0.375rem;
 }
 .profile_container .user_info .name_nick span.nickname {
 	color: #666666;
-	font-size: 14px;
+	font-size: 0.875rem;
 }
 .profile_container .user_bio {
-	padding: 10px;
+	padding: 0.625rem;
 	font-family: "Open Sans";
-	font-size: 14px;
+	font-size: 0.875rem;
 }
 .profile_container .user_bio p {
-	margin-bottom: 10px;
+	margin-bottom: 0.625rem;
 	margin-top: 0;
 }
 .profile_container .user_bio p a {
@@ -687,8 +687,8 @@ ul.tweet_overlay_options li:last-child a {
 .profile_container .user_followers {
 	background-color: #E4F1FA;
 	font-family: "Open Sans";
-	font-size: 12px;
-	padding: 10px;
+	font-size: 0.75rem;
+	padding: 0.625rem;
 }
 .profile_container .user_followers a {
 	color: #5999cc;
@@ -697,8 +697,8 @@ ul.tweet_overlay_options li:last-child a {
 .profile_container h3.profile_tweets_header {
 	font-family: "Open Sans";
 	font-weight: normal;
-	margin: 10px 10px 0;
+	margin: 0.625rem 0.625rem 0;
 	text-transform: uppercase;
 	color: #AAAAAA;
-	font-size: 12px;
+	font-size: 0.75rem;
 }
