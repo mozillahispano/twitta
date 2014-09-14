@@ -1,2 +1,4 @@
 out
 server/config.js
+node_modules
+dist
