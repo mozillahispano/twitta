@@ -1,0 +1,19 @@
+{
+  "name": "twitta",
+  "description": "Twitter client with <3 for Firefox OS",
+  "repository": "https://github.com/mozillahispano/twitta.git",
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "gulp-cleanhtml": "0.0.2",
+    "gulp-jshint": "^1.8.4",
+    "gulp-livereload": "^2.1.1",
+    "gulp-minify-css": "^0.3.8",
+    "gulp-rename": "^1.2.0",
+    "gulp-replace": "^0.4.0",
+    "gulp-strip-debug": "^1.0.1",
+    "gulp-uglify": "^1.0.1",
+    "gulp-util": "^3.0.1",
+    "jshint-stylish": "^0.4.0",
+    "tiny-lr": "^0.1.4"
+  }
+}
