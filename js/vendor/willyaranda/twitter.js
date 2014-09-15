@@ -826,13 +826,13 @@
     }
   }
 
-  function _fireEvent(event, msg) {
+  function _fireEvent(event, ...msg) {
     console.log('Firing ' + event + ' event');
     var toFire = listeners[event];
     if (Array.isArray(toFire)) {
       toFire.forEach(function(elem) {
           if (typeof elem === 'function') {
-              elem(msg);
+              elem(...msg);
           }
       });
     }
