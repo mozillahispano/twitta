@@ -625,6 +625,33 @@
   };
 
   /**
+   * Returns all lists the authenticating or specified user subscribes to, including
+   * their own. The user is specified using the user_id or screen_name parameters.
+   * If no user is given, the authenticating user is used.
+   *
+   * @function getLists
+   * @link https://dev.twitter.com/rest/reference/get/lists/list
+   * @param  {String}   id_str      The ID of the user for whom to return results
+   *                                for.
+   * @param  {String}   screen_name The screen name of the user for whom to return
+   *                                results for.
+   * @param  {Object}   parms       Extra parameters, check link
+   * @param  {Function} cb          Callback with the JSON returned (error, json)
+   */
+  tuiter.getLists = function(id_str, screen_name, parms, cb) {
+    var endpoint = 'https://api.twitter.com/1.1/lists/list.json';
+    var method = 'GET';
+    var params = {
+      user_id: id_str,
+      screen_name: screen_name ? normalizeScreenName(screen_name) : undefined,
+      reverse: parms.reverse
+    };
+
+    tuiter._request(endpoint, method, params, cb);
+
+  };
+
+  /**
    * Returns a variety of information about the user specified by the required user_id
    * or screen_name parameter. The author's most recent Tweet will be returned
    * inline when possible.

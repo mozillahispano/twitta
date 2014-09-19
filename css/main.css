@@ -5,10 +5,6 @@ body {
 	padding: 0;
 }
 
-section.hidden {
-	display: none;
-}
-
 /*
 ** Comunes
 */
@@ -33,8 +29,73 @@ a {
 .left {
 	float: left;
 }
+.right {
+	float: right;
+}
 .header_spacer {
 	height: 3.125rem;
+}
+input[type="text"].input_text {
+	background-image: none;
+	background-color: transparent;
+	border: solid 0.0625rem #66B1E3;
+	border-bottom-width: 0.125rem;
+	display: block;
+	width: 93%;
+	font-family: "Open Sans";
+	font-size: 0.75rem;
+	height: 2.313rem;
+	padding: 0 0.625rem; 
+}
+input[type="text"].input_text:focus {
+	border: solid 0.0625rem #999999;
+	border-bottom-width: 0.125rem;
+}
+textarea.textarea_form {
+	background-image: none;
+	background-color: transparent;
+	border: solid 0.0625rem #66B1E3;
+	border-bottom-width: 0.125rem;
+	display: block;
+	width: 93%;
+	font-family: "Open Sans";
+	font-size: 0.75rem;
+	padding: 0.625rem;
+	resize: none;
+	height: 6.25rem;
+}
+input + textarea {
+	margin-top: 0.625rem;
+}
+input[type="checkbox"].fancy_check {
+	display: none;
+}
+label.fancy_check_label {
+	display: block;
+	width: 3.75rem;
+	height: 1.688rem;
+	background-image: url(../img/check-no.png);
+	background-repeat: no-repeat;
+	border-radius: 1.25rem;
+}
+input[type="checkbox"]:checked + label.fancy_check_label {
+	background-image: url(../img/check-yes.png);
+}
+span.check_legend {
+	display: block;
+	float: left;
+	font-family: "Open Sans";
+	color: #AAAAAA;
+	font-size: 0.75rem;
+	line-height: 1.688rem;
+}
+.cols_3 .col {
+	width: 33.33%;
+	float: left;
+}
+.cols_2 .col {
+	width: 50%;
+	float: left;
 }
 
 /*
@@ -157,7 +218,7 @@ ul.dropdown_menu {
 	position: absolute;
 	top: 3.125rem;
 	right: 0;
-	width: 10.625rem;
+	width: 14.375rem;
 	background-color: #3498DB;
 	margin: 0;
 	padding: 0;
@@ -262,7 +323,9 @@ header.post_header {
 	font-size: 0.75rem;
 }
 .timeline_items .item p.post_content img {
-	max-width: 100%;
+	border: 0.3125rem solid #fff;
+  box-shadow: 0 0 0.125rem #ccc;
+	max-width: 96%;
 	display: block;
 	margin: 0.5rem 0;
 }
@@ -282,13 +345,14 @@ header.post_header {
 	line-height: 0;
 	background-repeat: no-repeat;
 	font-family: "Open Sans Extrabold";
-	font-size: 0.5625rem;
+	font-size: 0;
+	padding: 0.4375rem 0;
 	text-decoration: none;
 	color: #A9BBCE;
 }
 .timeline_items .item .post_options a.reply,
 .tweet_container .post_options a.reply {
-	background-position: 0 -1.9375rem;
+	background-position: 0 -1.938rem;
   margin-right: 0.625rem;
   padding-left: 1.25rem;
 }
@@ -296,17 +360,17 @@ header.post_header {
 .tweet_container .post_options a.retweet {
 	background-position: 0 0;
   margin-right: 0.625rem;
-  padding-left: 1.5625rem;
+  padding-left: 1.563rem;
 }
 .timeline_items .item .post_options a.favorite,
 .tweet_container .post_options a.favorite {
-	background-position: 0 -2.9375rem;
+	background-position: 0 -2.938rem;
   padding-left: 1.125rem;
 }
 .tweet_container .post_options a.share {
 	background-image: url(../img/share.png);
-	padding-left: 1.0625rem;
-	margin-left: 0.9375rem;
+	padding-left: 1.063rem;
+	margin-left: 10.3125rem;
 }
 .timeline_items .item .post_options a.favorite.active,
 .tweet_container .post_options a.favorite.active {
@@ -341,7 +405,7 @@ button.back {
 	background-color: transparent;
 	background-image: none;
 	font-family: "Open Sans Light";
-  font-size: 2.6875rem;
+  font-size: 2.688rem;
   line-height: 0;
 }
 button.back span {
@@ -354,6 +418,14 @@ span.window_title {
   font-family: "Open Sans";
   font-size: 1.125rem;
   line-height: 3.125rem;
+}
+span.window_title.two_lines {
+	line-height: 1rem;
+  padding-top: 0.5625rem;
+  float: left;
+}
+span.window_title.two_lines .subtitle {
+	font-size: 0.75rem;
 }
 
 /*
@@ -379,45 +451,44 @@ button.back:active {
 	float: left;
 }
 .tweet_container span.tweet_author,
-.tweet_container span.tweet_author_nick {
+.tweet_container span.tweet_author_nick,
+span.user_author,
+span.user_author_nick {
 	font-family: "Open Sans";
 	font-size: 1rem;
 	display: block;
 }
-.tweet_container span.tweet_author {
+.tweet_container span.tweet_author,
+span.user_author {
 	margin-top: 0.625rem;
 }
-.tweet_container span.tweet_author_nick {
+.tweet_container span.tweet_author_nick,
+span.user_author_nick {
 	color: #BABABA;
 }
-.tweet_container button.follow_user,
-.profile_container button.follow_user {
+button.follow_user {
 	width: 2.5rem;
 	height: 2.5rem;
 	background-color: #66B1E3;
 	background-position: center center;
 	background-repeat: no-repeat;
 	border: none;
-	border-radius: 0.25rem;
+	border-radius: 1.25rem;
 	float: right;
 	margin-right: 0.625rem;
 	margin-top: 0.625rem;
 }
-.tweet_container button.follow_user.follow,
-.profile_container button.follow_user.follow {
+button.follow_user.follow {
 	background-image: url(../img/follow.png);
 }
-.tweet_container button.follow_user.unfollow,
-.profile_container button.follow_user.unfollow {
+button.follow_user.unfollow {
 	background-color: #E74C3C;
 	background-image: url(../img/unfollow.png);
 }
-.tweet_container button.follow_user.unfollow:active,
-.profile_container button.follow_user.unfollow:active {
+button.follow_user.unfollow:active {
 	background-color: #C0392B;
 }
-.tweet_container button.follow_user.follow:active,
-.profile_container button.follow_user.follow:active {
+button.follow_user.follow:active {
 	background-color: #3498DB;
 }
 .tweet_container p.tweet_text {
@@ -427,23 +498,29 @@ button.back:active {
 	margin: 0.3125rem 0.625rem 0.625rem;
 	padding: 0;
 }
-.tweet_container .tweet_stats {
+.tweet_container .tweet_stats,
+.view_list_container .list_stats {
 	border-width: 0.0625rem;
 	border-color: #E1E8ED;
 	border-style: solid none solid none;
 	margin: 0.75rem 0.625rem 0.625rem;
 }
-.tweet_container .tweet_stats .stat_items {
+.tweet_container .tweet_stats .stat_items,
+.view_list_container .list_stats .stat_items {
 	border-right: solid 0.0625rem #E1E8ED;
 	float: left;
 }
 .tweet_container .tweet_stats .stat_items .retweets,
-.tweet_container .tweet_stats .stat_items .favorites {
+.tweet_container .tweet_stats .stat_items .favorites,
+.view_list_container .list_stats .stat_items .members,
+.view_list_container .list_stats .stat_items .suscribers {
 	padding-right: 1.25rem;
 	float: left;
 }
 .tweet_container .tweet_stats .stat_items .favorites span.text,
-.tweet_container .tweet_stats .stat_items .retweets span.text {
+.tweet_container .tweet_stats .stat_items .retweets span.text,
+.view_list_container .list_stats .stat_items .members span.text,
+.view_list_container .list_stats .stat_items .suscribers span.text {
 	color: #8899A6;
 	text-transform: uppercase;
 	font-family: "Open Sans";
@@ -452,7 +529,9 @@ button.back:active {
 	padding-top: 0.3125rem;
 }
 .tweet_container .tweet_stats .stat_items .favorites span.number,
-.tweet_container .tweet_stats .stat_items .retweets span.number {
+.tweet_container .tweet_stats .stat_items .retweets span.number,
+.view_list_container .list_stats .stat_items .members span.number,
+.view_list_container .list_stats .stat_items .suscribers span.number {
 	font-family: "Open Sans Semibold";
 	color: #666666;
 	padding-bottom: 0.3125rem;
@@ -497,7 +576,7 @@ button.back:active {
 }
 ul.tweet_overlay_options {
 	background-color: #FFFFFF;
-	width: 9.375rem;
+	width: 13.125rem;
 	border-radius: 0.3125rem;
 	margin: 6.25rem auto 0;
 	padding: 0;
@@ -524,7 +603,7 @@ ul.tweet_overlay_options li:last-child a {
 .compose_container .header_spacer {
 	height: 5.5rem;
 }
-.compose_container button.send_tweet {
+button.send_tweet {
 	color: #FFFFFF;
 	font-family: "Open Sans";
 	line-height: 3.125rem;
@@ -536,7 +615,7 @@ ul.tweet_overlay_options li:last-child a {
 	border: none;
 	height: 3.125rem;
 }
-.compose_container button.send_tweet:active {
+button.send_tweet:active {
 	background-color: #2383C2;
 }
 .compose_container .char_count_images_cont {
@@ -570,7 +649,7 @@ ul.tweet_overlay_options li:last-child a {
 }
 .compose_container .char_count_images_cont button.picture {
 	background-image: url(../img/picture.png);
-	margin-right: 0.9375rem;
+	margin-right: 10.3125rem;
 }
 .compose_container .char_count_images_cont button.picture:active {
 	background-image: url(../img/picture-hover.png);
@@ -617,7 +696,7 @@ ul.tweet_overlay_options li:last-child a {
 	position: absolute;
 	border-radius: 0.3125rem;
 	border: solid 0.3125rem #FFFFFF;
-	bottom: -2.3125rem;
+	bottom: -2.313rem;
 	left: 0.3125rem;
 }
 .profile_container .user_stats {
@@ -661,7 +740,7 @@ ul.tweet_overlay_options li:last-child a {
 	margin-top: 0.5rem;
 }
 .profile_container .user_info .name_nick span.name {
-	font-size: 1.0625rem;
+	font-size: 1.063rem;
 	margin-top: 0.375rem;
 }
 .profile_container .user_info .name_nick span.nickname {
@@ -701,4 +780,163 @@ ul.tweet_overlay_options li:last-child a {
 	text-transform: uppercase;
 	color: #AAAAAA;
 	font-size: 0.75rem;
+}
+
+/*
+** Estilos de Listas
+*/
+.form_section {
+	padding: 0.625rem;
+}
+.new_list_container label.fancy_check_label {
+	float: left;
+	margin-left: 0.625rem;
+}
+.new_list_container textarea.textarea_form {
+	margin-bottom: 0.625rem;
+}
+
+.list_info {
+	padding: 0.625rem 0.625rem 0;
+}
+.list_author_img {
+	float: right;
+}
+.list_name {
+	font-family: "Open Sans";
+	font-weight: normal;
+	margin: 0;
+	line-height: 1.2;
+}
+.list_author_text {
+	font-family: "Open Sans";
+	color: #999999;
+	font-size: 0.75rem;
+}
+.list_desc {
+	color: #777777;
+	font-family: "Open Sans";
+	margin: 0.3125rem 0;
+	font-size: 0.875rem;
+}
+
+.list_options .button {
+	font-family: "Open Sans";
+	font-size: 0.6875rem;
+	color: #FFFFFF;
+	line-height: 1;
+	padding: 0.3125rem;
+	background-image: none;
+	border: none;
+	margin-top: 0.75rem;
+}
+.list_options .button:first-child {
+	margin-left: 0.625rem;
+}
+.button.blue {
+	background-color: #66B1E3;
+}
+button.button.blue:active {
+	background-color: #3498db;
+}
+.button.red {
+	background-color: #E74C3C;
+}
+button.button.red:active {
+	background-color: #c0392b;
+}
+
+.list_tabs {
+	border-bottom: solid 0.0625rem #9ECDED;
+}
+.list_tabs a {
+	text-align: center;
+	text-decoration: none;
+	font-family: "Open Sans";
+	font-size: 0.75rem;
+	color: #000000;
+	height: 2.25rem;
+	line-height: 2.25rem;
+}
+.list_tabs a:hover,
+.list_tabs a:active,
+.list_tabs a.active {
+	border-bottom: solid 0.125rem #66B1E3;
+}
+
+.tab_content .user_avatar {
+	border-radius: 0.3125rem;
+}
+.tab_content.memberof,
+.tab_content.suscribedto {
+	padding: 0.625rem;
+}
+a.list_name {
+	color: #66B1E3;
+	font-family: "Open Sans Semibold";
+	text-decoration: none;
+	font-size: 0.875rem;
+}
+.tab_content p.list_desc {
+	color: #333333;
+}
+.count_members,
+span.list_owner_name {
+	font-family: "Open Sans";
+	font-size: 0.75rem;
+	color: #999999;
+}
+.all_list_container .tab_content .item {
+	border-bottom: solid 0.0625rem #E3EAF0;
+	padding-bottom: 0.3125rem;
+}
+
+.autocomplete_results {
+	background-color: white;
+  border: 0.0625rem solid #e1e8ed;
+  position: absolute;
+  width: 93%;
+  z-index: 9;
+  max-height: 12.5rem;
+  overflow: auto;
+}
+a.autocomplete_item {
+	display: block;
+	text-decoration: none;
+	font-family: "Open Sans";
+	border-bottom: solid 0.0625rem #E1E8ED;
+}
+a.autocomplete_item span.user_name {
+	line-height: 2.8rem;
+	color: #000000;
+	font-family: "Open Sans Semibold";
+	font-size: 0.75rem;
+}
+a.autocomplete_item span.user_nick {
+	color: #8899A6;
+	font-size: 0.65rem;
+}
+
+
+/*
+** Mensajes directos
+*/
+.timeline_items .item.dm.received .left {
+	float: right;
+}
+.timeline_items .item.dm .post_header {
+	display: none;
+}
+.timeline_items .item.dm p.post_content {
+	margin-top: 0.625rem;
+}
+.timeline_items .item.dm.received p.post_content {
+	text-align: right;
+}
+.timeline_items .item.dm span.post_date {
+	text-align: left;
+	margin-top: 0.3125rem;
+}
+.timeline_items .item.dm.received span.post_date {
+	text-align: right;
 }

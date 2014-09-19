@@ -1,5 +1,5 @@
 /* global home, timeline, login, user, compose, mentions, dms,
-tweetDetail */
+tweetDetail, listAll */
 
 (function(window) {
     'use strict';
@@ -16,8 +16,9 @@ tweetDetail */
             '/user/:id': user,
             '/dms': dms,
             '/tweet/:id': tweetDetail,
-            /*'/list/:id': listDetail,
-            '/settings': settings*/
+            '/lists': listAll,
+            //'/lists/:id': listDetail,
+            //'/settings': settings
             //'/search/:id': search
         });
     });
