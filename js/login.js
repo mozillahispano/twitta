@@ -47,7 +47,7 @@ var login = login || {};
         var data = [];
         data.push(m('img', {
             className: 'login_logo',
-            src: 'img/home-logo.png'
+            src: 'img/logos/128.png'
         }));
         data.push(m('h1.login_app_name', 'twitta'));
         var msg = navigator.mozL10n.get('login-message');

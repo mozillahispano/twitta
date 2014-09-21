@@ -5,36 +5,29 @@
   "type": "privileged",
   "launch_path": "/index.html",
   "developer": {
-    "name": "Guillermo López",
-    "url": "https://github.com/willyaranda"
+    "name": "Erick Leon & Guillermo López",
+    "url": "https://github.com/mozillahispano"
   },
   "installs_allowed_from": [
     "*"
   ],
-  "messages": [{
-    "push": "/index.html"
-  }, {
-    "push-register": "/index.html"
-  }],
   "permissions": {
     "desktop-notification": {
       "description": "Required to show notifications"
-    },
-    "push": {
-      "description": "Required for push notifications (future)"
     },
     "systemXHR": {
       "description": "Allow connections to the Twitter API without restrictions"
     }
   },
   "icons": {
-    "16": "/img/icons/icon16.png",
-    "32": "/img/icons/icon32.png",
-    "60": "/img/icons/icon60.png",
-    "64": "/img/icons/icon64.png",
-    "90": "/img/icons/icon90.png",
-    "120": "/img/icons/icon120.png",
-    "128": "/img/icons/icon128.png"
+    "16": "/img/logos/16.png",
+    "32": "/img/logos/32.png",
+    "48": "/img/logos/32.png",
+    "64": "/img/logos/64.png",
+    "90": "/img/logos/90.png",
+    "128": "/img/logos/128.png",
+    "256": "/img/logos/256.png",
+    "512": "/img/logos/512.png"
   },
   "origin": "app://twitta.pijusmagnificus.com/"
 }
