@@ -42,8 +42,11 @@ var tweetDetail = tweetDetail || {};
         }
         var u = tw.orig_user || tw.user;
         var ago = moment(tw.created_at()).fromNow();
+        var username = u.screen_name();
         var silentMessage = navigator.mozL10n.get('silent-user',
-            {user: '@' + u.screen_name});
+            {user: '@' + username});
+        var blockOrReportMessage = navigator.mozL10n.get('report-or-block-user',
+            {user: '@' + username});
         return [header.view(), m('div', [
             m('div.overlay_options', {
                 className: 'hide',
@@ -58,8 +61,7 @@ var tweetDetail = tweetDetail || {};
                     m('li', [
                         m('a', {
                             href: '#bloquear',
-                            'data-l10n-id': 'report-or-block-user'
-                        }, 'B10ck 0r Rep0rt')
+                        }, blockOrReportMessage)
                     ])
                 ])
             ]),
